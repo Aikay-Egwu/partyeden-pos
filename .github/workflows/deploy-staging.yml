@@ -1,0 +1,104 @@
+name: Deploy Staging (Plesk)
+
+on:
+  push:
+    branches:
+      - develop
+      - staging
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# The Laravel app lives in backend/ — run every step from there
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy to Plesk Staging
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
+
+      - name: Setup Node
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install Composer dependencies (production)
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+
+      - name: Run post-install Composer scripts
+        run: |
+          composer run-script post-autoload-dump
+          composer run-script post-update-cmd || true
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Prepare deployment package (clean dev-only files)
+        run: |
+          # Remove dev-only files and directories not needed on server
+          rm -f .env
+          rm -rf tests
+          rm -rf database/database.sqlite
+          # Keep .env.example as template reference
+          # Keep storage framework structure intact
+
+      # Deploy files to Plesk server via SSH + rsync
+      # Plesk deploy path typically looks like:
+      #   /var/www/vhosts/<your-domain>/staging.<your-domain>/httpdocs
+      #   or
+      #   /var/www/vhosts/<your-domain>/httpdocs
+      - name: Deploy via SSH rsync
+        uses: easingthemes/ssh-deploy@d07b20976719503360f4b5c41c79c439e0e3e2c3 # v4.1.10
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.PLESK_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.PLESK_HOST }}
+          REMOTE_USER: ${{ secrets.PLESK_USER }}
+          REMOTE_PORT: ${{ secrets.PLESK_PORT || 22 }}
+          SOURCE: "backend/"
+          TARGET: ${{ secrets.PLESK_DEPLOY_PATH }}
+          # Exclude server-specific files that should not be overwritten
+          EXCLUDE: ".env,.htaccess,storage/logs/*,storage/framework/cache/*,storage/framework/sessions/*,storage/framework/views/*,storage/app/*,storage/pail/*,public/storage,vendor/.htaccess,.git,.github"
+          # Set permissions suitable for Plesk (adjust if your Plesk user needs different umask)
+          SCRIPT_BEFORE: |
+            whoami
+            ls -ld $TARGET || true
+          SCRIPT_AFTER: |
+            cd $TARGET
+            # Ensure Plesk web user can read/write storage & bootstrap cache
+            chmod -R 755 storage bootstrap/cache
+            # Run Laravel post-deployment commands via PHP on the server
+            # 1. Cache config, routes, views
+            php artisan config:cache --no-ansi
+            php artisan route:cache --no-ansi || true
+            php artisan view:cache --no-ansi || true
+            # 2. Run database migrations (safe for staging)
+            php artisan migrate --force --no-ansi
+            # 3. Fix storage symlink if missing
+            if [ ! -L public/storage ]; then
+              php artisan storage:link --no-ansi
+            fi
+            # 4. Restart queue workers if you have horizon/queue listener configured
+            # php artisan queue:restart --no-ansi || true
+            echo "Deployment complete."
