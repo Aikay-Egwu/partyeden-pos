@@ -1,0 +1,4879 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminAttributeController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminAttributeController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminAttributeController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminAttributeController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminAttributeController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminAttributeController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminBlogPostController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminBlogPostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminBlogPostController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminBlogPostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminBlogPostController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminBlogPostController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminCategoryController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminCategoryController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminCategoryController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminCategoryController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminCategoryController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminCategoryController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminColorController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminColorController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminColorController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminColorController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminColorController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminColorController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminComponentController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminComponentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminComponentController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminComponentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminComponentController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminComponentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminCustomerController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminCustomerController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminCustomerController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminCustomerController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminCustomerController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminCustomerController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminDiscountController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminDiscountController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminDiscountController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminDiscountController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminDiscountController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminDiscountController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminGiftCardController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminGiftCardController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminGiftCardController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminGiftCardController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminGiftCardController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminGiftCardController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminInventoryController\:\:storeAdjustment\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminInventoryController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminLocationController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminLocationController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminLocationController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminLocationController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminLocationController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminLocationController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminOccasionController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOccasionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminOccasionController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOccasionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminOccasionController\:\:syncPayload\(\) has parameter \$productIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOccasionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminOccasionController\:\:syncPayload\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOccasionController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminOccasionController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOccasionController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$delivery_postcode\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$fulfillment_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$order_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$payment_status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminOrderController\:\:filteredOrdersQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Http/Controllers/Admin/AdminOrderController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Product\:\:\$pivot\.$#'
+			identifier: property.notFound
+			count: 4
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:duplicate\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:mapProductForEdit\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:mapProductImage\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:normalizedColorIds\(\) has parameter \$colorIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:normalizedColorIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:storeColor\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:updateAddOns\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:updateColors\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:updateKitMappings\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:updateSetupInstruction\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:updateStock\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:all\(\) contains unresolvable type\.$#'
+			identifier: method.unresolvableReturnType
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductImageController\:\:bindingType\(\) has parameter \$validated with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductImageController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductImageController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductImageController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductImageController\:\:setPrimary\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductImageController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductImageController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductImageController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductImageController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductImageController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductImageController\:\:validateBindings\(\) has parameter \$validated with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductImageController.php
+
+		-
+			message: '#^Parameter \#1 \$paths of method Illuminate\\Filesystem\\FilesystemAdapter\:\:delete\(\) expects array\|string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Admin/AdminProductImageController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminPurchaseOrderController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminPurchaseOrderController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminPurchaseOrderController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminPurchaseOrderController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminPurchaseOrderController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminPurchaseOrderController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminShipmentController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminShipmentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminShipmentController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminShipmentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminShipmentController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminShipmentController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminStaffController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminStaffController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminStaffController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminStaffController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminStaffController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminStaffController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminStockReservationController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminStockReservationController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminStockReservationController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminStockReservationController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminStockReservationController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminStockReservationController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminSupplierController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminSupplierController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminSupplierController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminSupplierController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminSupplierController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminSupplierController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminTaxCategoryController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminTaxCategoryController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminTaxCategoryController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminTaxCategoryController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminTaxCategoryController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminTaxCategoryController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminVariantController\:\:destroy\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminVariantController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminVariantController\:\:store\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminVariantController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Admin\\AdminVariantController\:\:update\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: app/Http/Controllers/Admin/AdminVariantController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/AttributeController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/AttributeValueController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/CategoryController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/ComponentController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/CountryController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/CustomerController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$count\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/DashboardController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_discount_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/DiscountController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_revenue\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/DiscountController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_uses\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/DiscountController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/LocationController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$selling_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/PriceHistoryController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:update\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/Api/PriceHistoryController.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:variants\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Controllers/Api/PriceHistoryController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>price_adjustment" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/Api/PriceHistoryController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\InventoryBalance\:\:\$total_units\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\InventoryBalance\:\:\$total_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$average_transaction_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_discounts\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_sales\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_tax\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_transactions\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/ReportController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_sales\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/StaffController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_tax\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/StaffController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Transaction\:\:\$total_transactions\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Api/StaffController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/SupplierController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/TaxCategoryController.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between bool and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: app/Http/Controllers/Api/VariantController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Store/StoreCartController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Store\\StoreCartController\:\:validateCartSelections\(\) has parameter \$validated with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Store/StoreCartController.php
+
+		-
+			message: '#^Parameter \#1 \$product of method App\\Http\\Controllers\\Store\\StoreCartController\:\:validateCartSelections\(\) expects App\\Models\\Product, App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Store/StoreCartController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\User\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/Store/StoreCheckoutController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: app/Http/Controllers/Store/StoreHomeController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\Store\\StoreProductController\:\:mapImage\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/Store/StoreProductController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: app/Http/Controllers/Store/StoreReviewController.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\Authenticate\:\:unauthenticated\(\) has parameter \$guards with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/Authenticate.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Admin\\UpdateCustomerReviewRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Admin/UpdateCustomerReviewRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Attribute\\StoreAttributeRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Attribute/StoreAttributeRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Attribute\\UpdateAttributeRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Attribute/UpdateAttributeRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\AttributeValue\\StoreAttributeValueRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/AttributeValue/StoreAttributeValueRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\AttributeValue\\UpdateAttributeValueRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/AttributeValue/UpdateAttributeValueRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\BlogPost\\StoreBlogPostRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/BlogPost/StoreBlogPostRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/BlogPost/UpdateBlogPostRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\BlogPost\\UpdateBlogPostRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/BlogPost/UpdateBlogPostRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Category\\StoreCategoryRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Category/StoreCategoryRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/Category/UpdateCategoryRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Category\\UpdateCategoryRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Category/UpdateCategoryRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Component\\StoreComponentRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Component/StoreComponentRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/Component/UpdateComponentRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Component\\UpdateComponentRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Component/UpdateComponentRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Country\\StoreCountryRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Country/StoreCountryRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Country\\UpdateCountryRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Country/UpdateCountryRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Customer\\StoreCustomerRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Customer/StoreCustomerRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Customer\\UpdateCustomerRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Customer/UpdateCustomerRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CustomerAddress\\StoreCustomerAddressRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CustomerAddress/StoreCustomerAddressRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\CustomerAddress\\UpdateCustomerAddressRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/CustomerAddress/UpdateCustomerAddressRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Discount\\StoreDiscountRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Discount/StoreDiscountRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/Discount/UpdateDiscountRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Discount\\UpdateDiscountRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Discount/UpdateDiscountRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\GiftCard\\AdjustBalanceRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/GiftCard/AdjustBalanceRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\GiftCard\\StoreGiftCardRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/GiftCard/StoreGiftCardRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\GiftCard\\UpdateGiftCardRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/GiftCard/UpdateGiftCardRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\KitMapping\\StoreKitMappingRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/KitMapping/StoreKitMappingRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\KitMapping\\UpdateKitMappingRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/KitMapping/UpdateKitMappingRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Location\\StoreLocationRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Location/StoreLocationRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Location\\UpdateLocationRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Location/UpdateLocationRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\LoyaltyTransaction\\StoreLoyaltyTransactionRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/LoyaltyTransaction/StoreLoyaltyTransactionRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Occasion\\StoreOccasionRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Occasion/StoreOccasionRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/Occasion/UpdateOccasionRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Occasion\\UpdateOccasionRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Occasion/UpdateOccasionRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Order\\StoreOrderRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Order/StoreOrderRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Order\\UpdateOrderRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Order/UpdateOrderRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\OrderItem\\StoreOrderItemRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/OrderItem/StoreOrderItemRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\OrderItem\\UpdateOrderItemRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/OrderItem/UpdateOrderItemRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\PriceHistory\\StorePriceHistoryRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/PriceHistory/StorePriceHistoryRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Product\\StoreProductRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Product/StoreProductRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/Product/UpdateProductRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Product\\UpdateProductRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Product/UpdateProductRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\ProductImage\\StoreProductImageRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/ProductImage/StoreProductImageRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\PurchaseOrder\\StorePurchaseOrderRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/PurchaseOrder/StorePurchaseOrderRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\PurchaseOrder\\UpdatePurchaseOrderRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/PurchaseOrder/UpdatePurchaseOrderRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\PurchaseOrderItem\\StorePurchaseOrderItemRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/PurchaseOrderItem/StorePurchaseOrderItemRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\PurchaseOrderItem\\UpdatePurchaseOrderItemRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/PurchaseOrderItem/UpdatePurchaseOrderItemRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\ReturnRequest\\StoreReturnRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/ReturnRequest/StoreReturnRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\ReturnRequest\\UpdateReturnRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/ReturnRequest/UpdateReturnRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\ReturnedItem\\StoreReturnedItemRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/ReturnedItem/StoreReturnedItemRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Search\\SearchRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Search/SearchRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Shipment\\StoreShipmentRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Shipment/StoreShipmentRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Shipment\\UpdateShipmentRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Shipment/UpdateShipmentRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Staff\\StoreStaffRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Staff/StoreStaffRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Requests/Staff/UpdateStaffRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Staff\\UpdateStaffRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Staff/UpdateStaffRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\StockReservation\\StoreStockReservationRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/StockReservation/StoreStockReservationRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Store\\StoreCustomerReviewRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Store/StoreCustomerReviewRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Supplier\\StoreSupplierRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Supplier/StoreSupplierRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Supplier\\UpdateSupplierRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Supplier/UpdateSupplierRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\SupplierProduct\\StoreSupplierProductRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/SupplierProduct/StoreSupplierProductRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\SupplierProduct\\UpdateSupplierProductRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/SupplierProduct/UpdateSupplierProductRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\TaxCategory\\StoreTaxCategoryRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/TaxCategory/StoreTaxCategoryRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/TaxCategory/UpdateTaxCategoryRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\TaxCategory\\UpdateTaxCategoryRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/TaxCategory/UpdateTaxCategoryRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\TillSession\\CloseTillSessionRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/TillSession/CloseTillSessionRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\TillSession\\OpenTillSessionRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/TillSession/OpenTillSessionRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Transaction\\StoreTransactionRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Transaction/StoreTransactionRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Transaction\\VoidTransactionRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Transaction/VoidTransactionRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Variant\\StoreVariantRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Variant/StoreVariantRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/Variant/UpdateVariantRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\Variant\\UpdateVariantRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/Variant/UpdateVariantRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\VariantAttribute\\StoreVariantAttributeRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/VariantAttribute/StoreVariantAttributeRequest.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeResource\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeResource\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\AttributeResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\AttributeResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/AttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$attribute_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$color_hex\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AttributeValueResource\:\:\$value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\AttributeValueResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\AttributeValueResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/AttributeValueResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$auditable_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$auditable_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$event\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$ip_address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$new_values\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$old_values\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$user_agent\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\AuditLogResource\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\AuditLogResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\AuditLogResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/AuditLogResource.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:currentPage\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:firstItem\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:lastItem\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:lastPage\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:nextPageUrl\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:perPage\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:previousPageUrl\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:total\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Call to an undefined method App\\Http\\Resources\\BaseCollection\:\:url\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\BaseCollection\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/BaseCollection.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$image_path\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$parent_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$slug\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CategoryResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\CategoryResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\CategoryResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/CategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$cost_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$selling_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$sku\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ComponentResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ComponentResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\ComponentResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/ComponentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$code3\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$currency_symbol\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$phone_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CountryResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\CountryResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\CountryResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/CountryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$address_line_1\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$address_line_2\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$country_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$is_default\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$postal_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerAddressResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\CustomerAddressResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\CustomerAddressResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/CustomerAddressResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$company_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$date_of_birth\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\CustomerResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\CustomerResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\CustomerResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/CustomerResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$apply_to_all\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$ends_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$is_stackable\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$max_discount_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$min_purchase_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$starts_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\DiscountResource\:\:\$value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\DiscountResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\DiscountResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/DiscountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$current_balance\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$expires_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$issued_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$issued_by\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$message\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$original_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$recipient_email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$recipient_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\GiftCardResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\GiftCardResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/GiftCardResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$balance_after\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$gift_card_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$staff_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$transaction_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\GiftCardTransactionResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\GiftCardTransactionResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/GiftCardTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$available_quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$location_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$reserved_quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryBalanceResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\InventoryBalanceResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\InventoryBalanceResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/InventoryBalanceResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$location_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$reason\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$reference_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$reference_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\InventoryMovementResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\InventoryMovementResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\InventoryMovementResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/InventoryMovementResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\KitMappingResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\KitMappingResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\KitMappingResource\:\:\$kit_product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\KitMappingResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\KitMappingResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\KitMappingResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\KitMappingResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\KitMappingResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\KitMappingResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/KitMappingResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$address_line_1\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$address_line_2\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$country\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$manager_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$postal_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LocationResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\LocationResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\LocationResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/LocationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$points_balance\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$total_points_earned\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$total_points_redeemed\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\LoyaltyAccountResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\LoyaltyAccountResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/LoyaltyAccountResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$balance_after\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$loyalty_account_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$points\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$staff_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$transaction_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\LoyaltyTransactionResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\LoyaltyTransactionResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/LoyaltyTransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$discount_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$order_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$product_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$tax_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$unit_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderItemResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\OrderItemResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\OrderItemResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/OrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$amount_paid\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$billing_address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$created_by\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$discount_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$location_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$order_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$paid_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$payment_method\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$payment_status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$paypal_capture_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$paypal_order_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$paypal_payer_email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$paypal_payer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$placed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$shipping_address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$shipping_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$subtotal\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$tax_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\OrderResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\OrderResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\OrderResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/OrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PriceHistoryResource\:\:\$changed_by\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PriceHistoryResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PriceHistoryResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PriceHistoryResource\:\:\$new_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PriceHistoryResource\:\:\$old_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PriceHistoryResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PriceHistoryResource\:\:\$reason\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PriceHistoryResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\PriceHistoryResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\PriceHistoryResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/PriceHistoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$alt_text\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$file_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$file_size\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$is_primary\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$mime_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$sort_order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductImageResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ProductImageResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\ProductImageResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/ProductImageResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$barcode\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$category_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$cost_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$product_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$reorder_level\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$selling_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$sku\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$tax_category_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$track_inventory\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$unit\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ProductResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\ProductResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/ProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$purchase_order_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$quantity_received\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$total_cost\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$unit_cost\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\PurchaseOrderItemResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\PurchaseOrderItemResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/PurchaseOrderItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$expected_delivery_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$location_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$order_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$po_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$received_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$supplier_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$total_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\PurchaseOrderResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\PurchaseOrderResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\PurchaseOrderResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/PurchaseOrderResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$location_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$processed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$processed_by\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$reason\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$return_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$staff_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$total_refund\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$transaction_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ReturnResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\ReturnResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/ReturnResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$condition\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$disposition\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$refund_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$return_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ReturnedItemResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ReturnedItemResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\ReturnedItemResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/ReturnedItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$carrier\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$delivered_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$order_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$shipped_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$shipping_address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$shipping_method\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$tracking_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\ShipmentResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\ShipmentResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\ShipmentResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/ShipmentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$employee_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$first_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$hire_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$hourly_rate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$last_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$termination_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StaffResource\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\StaffResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\StaffResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/StaffResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$expires_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$location_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$order_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\StockReservationResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\StockReservationResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\StockReservationResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/StockReservationResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$cost_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$currency\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$is_preferred\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$lead_time_days\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$min_order_qty\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$supplier_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$supplier_sku\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierProductResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\SupplierProductResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\SupplierProductResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/SupplierProductResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$address_line_1\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$address_line_2\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$city\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$contact_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$country_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$payment_terms\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$postal_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$state\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$tax_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\SupplierResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\SupplierResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\SupplierResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/SupplierResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TaxCategoryResource\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TaxCategoryResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TaxCategoryResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TaxCategoryResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TaxCategoryResource\:\:\$is_default\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TaxCategoryResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TaxCategoryResource\:\:\$rate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TaxCategoryResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\TaxCategoryResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\TaxCategoryResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/TaxCategoryResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$cash_sales\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$closed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$closing_balance\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$expected_balance\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$location_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$opened_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$opening_balance\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$staff_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TillSessionResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\TillSessionResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\TillSessionResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/TillSessionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$discount_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$product_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$tax_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$transaction_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$unit_price\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionItemResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\TransactionItemResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\TransactionItemResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/TransactionItemResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionPaymentResource\:\:\$amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionPaymentResource\:\:\$change_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionPaymentResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionPaymentResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionPaymentResource\:\:\$payment_method\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionPaymentResource\:\:\$reference\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionPaymentResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionPaymentResource\:\:\$transaction_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\TransactionPaymentResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\TransactionPaymentResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/TransactionPaymentResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$discount_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$subtotal\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$tax_amount\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$transaction_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\TransactionResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\TransactionResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\TransactionResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/TransactionResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\UserResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\UserResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\UserResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/UserResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantAttributeResource\:\:\$attribute_value_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantAttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantAttributeResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantAttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantAttributeResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantAttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantAttributeResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantAttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantAttributeResource\:\:\$variant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantAttributeResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\VariantAttributeResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/VariantAttributeResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\VariantAttributeResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/VariantAttributeResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$barcode\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$cost_price_adjustment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$price_adjustment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$product_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$sku\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Access to an undefined property App\\Http\\Resources\\VariantResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Method App\\Http\\Resources\\VariantResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Property App\\Http\\Resources\\VariantResource\:\:\$collects has no type specified\.$#'
+			identifier: missingType.property
+			count: 1
+			path: app/Http/Resources/VariantResource.php
+
+		-
+			message: '#^Class App\\Models\\Attribute uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Attribute.php
+
+		-
+			message: '#^Class App\\Models\\AttributeValue uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/AttributeValue.php
+
+		-
+			message: '#^Method App\\Models\\AttributeValue\:\:variants\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Variant, \$this\(App\\Models\\AttributeValue\), Illuminate\\Database\\Eloquent\\Relations\\Pivot, ''pivot''\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Variant, \$this\(App\\Models\\AttributeValue\), App\\Models\\VariantAttribute, ''pivot''\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/AttributeValue.php
+
+		-
+			message: '#^Class App\\Models\\AuditLog uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/AuditLog.php
+
+		-
+			message: '#^Class App\\Models\\BlogPost uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/BlogPost.php
+
+		-
+			message: '#^Method App\\Models\\BlogPost\:\:scopePublished\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/BlogPost.php
+
+		-
+			message: '#^Class App\\Models\\Country uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Country.php
+
+		-
+			message: '#^Class App\\Models\\Customer uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Customer.php
+
+		-
+			message: '#^Class App\\Models\\CustomerAddress uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CustomerAddress.php
+
+		-
+			message: '#^Class App\\Models\\CustomerReview uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CustomerReview.php
+
+		-
+			message: '#^Method App\\Models\\CustomerReview\:\:scopeApproved\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CustomerReview.php
+
+		-
+			message: '#^Class App\\Models\\DeliveryZone uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/DeliveryZone.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\HasMany\<App\\Models\\DeliveryZonePostcodePrefix\> in PHPDoc tag @return does not specify all template types of class Illuminate\\Database\\Eloquent\\Relations\\HasMany\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.lessTypes
+			count: 1
+			path: app/Models/DeliveryZone.php
+
+		-
+			message: '#^Method App\\Models\\DeliveryZone\:\:prefixes\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany\<App\\Models\\DeliveryZonePostcodePrefix\> but returns Illuminate\\Database\\Eloquent\\Relations\\HasMany\<App\\Models\\DeliveryZonePostcodePrefix, \$this\(App\\Models\\DeliveryZone\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/DeliveryZone.php
+
+		-
+			message: '#^Class App\\Models\\DeliveryZonePostcodePrefix uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/DeliveryZonePostcodePrefix.php
+
+		-
+			message: '#^Method App\\Models\\DeliveryZonePostcodePrefix\:\:zone\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<App\\Models\\DeliveryZone, App\\Models\\DeliveryZonePostcodePrefix\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<App\\Models\\DeliveryZone, \$this\(App\\Models\\DeliveryZonePostcodePrefix\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/DeliveryZonePostcodePrefix.php
+
+		-
+			message: '#^Class App\\Models\\Discount uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Discount.php
+
+		-
+			message: '#^Class App\\Models\\GiftCard uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/GiftCard.php
+
+		-
+			message: '#^Class App\\Models\\GiftCardTransaction uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/GiftCardTransaction.php
+
+		-
+			message: '#^Class App\\Models\\InventoryBalance uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/InventoryBalance.php
+
+		-
+			message: '#^Class App\\Models\\InventoryMovement uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/InventoryMovement.php
+
+		-
+			message: '#^Method App\\Models\\KitMapping\:\:component\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/KitMapping.php
+
+		-
+			message: '#^Class App\\Models\\Location uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Location.php
+
+		-
+			message: '#^Class App\\Models\\LoyaltyAccount uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/LoyaltyAccount.php
+
+		-
+			message: '#^Class App\\Models\\LoyaltySetting uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/LoyaltySetting.php
+
+		-
+			message: '#^Class App\\Models\\LoyaltyTransaction uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/LoyaltyTransaction.php
+
+		-
+			message: '#^Class App\\Models\\Occasion uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Occasion.php
+
+		-
+			message: '#^Class App\\Models\\Order uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Order.php
+
+		-
+			message: '#^Method App\\Models\\Order\:\:deliveryZone\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Order.php
+
+		-
+			message: '#^Method App\\Models\\Order\:\:scopeDateRange\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Order.php
+
+		-
+			message: '#^Method App\\Models\\Order\:\:scopeDateRange\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Order.php
+
+		-
+			message: '#^Class App\\Models\\OrderItem uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/OrderItem.php
+
+		-
+			message: '#^Method App\\Models\\OrderItem\:\:customizationPrimaryColor\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/OrderItem.php
+
+		-
+			message: '#^Method App\\Models\\OrderItem\:\:customizationSecondaryColor\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/OrderItem.php
+
+		-
+			message: '#^Class App\\Models\\PriceHistory uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PriceHistory.php
+
+		-
+			message: '#^Class App\\Models\\ProductImage uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ProductImage.php
+
+		-
+			message: '#^Class App\\Models\\PurchaseOrder uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PurchaseOrder.php
+
+		-
+			message: '#^Class App\\Models\\PurchaseOrderItem uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PurchaseOrderItem.php
+
+		-
+			message: '#^Class App\\Models\\ReturnModel uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ReturnModel.php
+
+		-
+			message: '#^Method App\\Models\\ReturnModel\:\:scopeDateRange\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ReturnModel.php
+
+		-
+			message: '#^Method App\\Models\\ReturnModel\:\:scopeDateRange\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ReturnModel.php
+
+		-
+			message: '#^Class App\\Models\\ReturnedItem uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/ReturnedItem.php
+
+		-
+			message: '#^Class App\\Models\\Shipment uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Shipment.php
+
+		-
+			message: '#^Class App\\Models\\Staff uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Staff.php
+
+		-
+			message: '#^Class App\\Models\\StockReservation uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/StockReservation.php
+
+		-
+			message: '#^Class App\\Models\\Supplier uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Supplier.php
+
+		-
+			message: '#^Class App\\Models\\SupplierProduct uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/SupplierProduct.php
+
+		-
+			message: '#^Class App\\Models\\TaxCategory uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TaxCategory.php
+
+		-
+			message: '#^Class App\\Models\\TillSession uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TillSession.php
+
+		-
+			message: '#^Class App\\Models\\Transaction uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Transaction.php
+
+		-
+			message: '#^Method App\\Models\\Transaction\:\:scopeDateRange\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Transaction.php
+
+		-
+			message: '#^Method App\\Models\\Transaction\:\:scopeDateRange\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Transaction.php
+
+		-
+			message: '#^Class App\\Models\\TransactionItem uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TransactionItem.php
+
+		-
+			message: '#^Class App\\Models\\TransactionPayment uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/TransactionPayment.php
+
+		-
+			message: '#^Class App\\Models\\User has PHPDoc tag @property for property \$permissions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Class App\\Models\\VariantAttribute uses generic trait Illuminate\\Database\\Eloquent\\Factories\\HasFactory but does not specify its types\: TFactory$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/VariantAttribute.php
+
+		-
+			message: '#^Cannot call method hasPermission\(\) on class\-string\|object\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Method App\\Services\\BestSellerService\:\:topProducts\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/BestSellerService.php
+
+		-
+			message: '#^Method App\\Services\\BestSellerService\:\:topSellingProductIds\(\) has parameter \$excludeIds with generic class Illuminate\\Support\\Collection but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/BestSellerService.php
+
+		-
+			message: '#^Method App\\Services\\BestSellerService\:\:topSellingProductIds\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/BestSellerService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$preorder\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$product_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$selling_price\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Variant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Variant\>\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Variant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Variant\>\:\:\$price_adjustment\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:images\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Call to an undefined method App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:kitMappings\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:add\(\) has parameter \$customization with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:contents\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:hasCustomization\(\) has parameter \$item with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:hasCustomization\(\) has parameter \$resolvedAddOns with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:itemKey\(\) has parameter \$options with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:normalizedAddOnIds\(\) has parameter \$addOnIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:normalizedAddOnIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:resolveAddOns\(\) has parameter \$addOnIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:resolveAddOns\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:resolveColor\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Method App\\Services\\CartService\:\:summary\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/CartService.php
+
+		-
+			message: '#^Class Database\\Factories\\CategoryFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/CategoryFactory.php
+
+		-
+			message: '#^Class Database\\Factories\\ComponentFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/ComponentFactory.php
+
+		-
+			message: '#^Class Database\\Factories\\KitMappingFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/KitMappingFactory.php
+
+		-
+			message: '#^Class Database\\Factories\\ProductFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/ProductFactory.php
+
+		-
+			message: '#^Class Database\\Factories\\VariantFactory extends generic class Illuminate\\Database\\Eloquent\\Factories\\Factory but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: database/factories/VariantFactory.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:comment\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2026_01_28_000000_create_orders_table.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:comment\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: database/migrations/2026_01_29_000000_create_order_items_table.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:comment\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: database/migrations/2026_12_01_000004_create_product_add_ons_table.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Schema\\ForeignKeyDefinition\:\:comment\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: database/migrations/2026_12_01_000005_create_setup_instructions_table.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: database/seeders/ProductSeeder.php
+
+		-
+			message: '#^Method Database\\Seeders\\ShopDataSeeder\:\:seedProductImages\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: database/seeders/ShopDataSeeder.php
+
+		-
+			message: '#^Method Database\\Seeders\\ShopDataSeeder\:\:seedProducts\(\) is unused\.$#'
+			identifier: method.unused
+			count: 1
+			path: database/seeders/ShopDataSeeder.php
+
+		-
+			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: database/seeders/ShopDataSeeder.php

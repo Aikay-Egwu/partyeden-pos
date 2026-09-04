@@ -1,0 +1,31 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Policies;
+
+use App\Models\Transaction;
+use App\Models\User;
+
+class TransactionPolicy
+{
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+
+    public function view(User $user, Transaction $transaction): bool
+    {
+        return true;
+    }
+
+    public function create(User $user): bool
+    {
+        return $user->can('process sales');
+    }
+
+    public function void(User $user, Transaction $transaction): bool
+    {
+        return $user->can('manage transactions');
+    }
+}

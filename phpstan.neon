@@ -1,0 +1,19 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+    - vendor/nesbot/carbon/extension.neon
+    # Temporary baseline of pre-existing errors — burn down over time, do not add to it
+    - phpstan-baseline.neon
+
+parameters:
+    paths:
+        - app/
+        - bootstrap/app.php
+        - config/
+        - database/
+        - routes/
+
+    level: 7
+
+    # Let Larastan infer model column types from the migration files
+    databaseMigrationsPath:
+        - database/migrations
