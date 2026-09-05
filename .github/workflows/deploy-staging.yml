@@ -70,35 +70,39 @@ jobs:
       #   or
       #   /var/www/vhosts/<your-domain>/httpdocs
       - name: Deploy via SSH rsync
-        uses: easingthemes/ssh-deploy@d07b20976719503360f4b5c41c79c439e0e3e2c3 # v4.1.10
-        with:
+        # Real v6.0.3 commit SHA from official release:
+        # https://github.com/easingthemes/ssh-deploy/releases/tag/v6.0.3
+        uses: easingthemes/ssh-deploy@2cc5b27bf3029d0455dd5e09fe02633904031447 # v6.0.3
+        env:
+          # ssh-deploy reads config from env vars (see action README)
           SSH_PRIVATE_KEY: ${{ secrets.PLESK_SSH_KEY }}
           REMOTE_HOST: ${{ secrets.PLESK_HOST }}
           REMOTE_USER: ${{ secrets.PLESK_USER }}
-          REMOTE_PORT: ${{ secrets.PLESK_PORT || 22 }}
+          REMOTE_PORT: ${{ secrets.PLESK_PORT || '22' }}
+          # Rsync from the backend folder root directly into Plesk docroot
           SOURCE: "./"
           TARGET: ${{ secrets.PLESK_DEPLOY_PATH }}
-          # Exclude server-specific files that should not be overwritten
+          # Exclude server-specific files that should not be overwritten on deploy
           EXCLUDE: ".env,.htaccess,storage/logs/*,storage/framework/cache/*,storage/framework/sessions/*,storage/framework/views/*,storage/app/*,storage/pail/*,public/storage,vendor/.htaccess,.git,.github"
-          # Set permissions suitable for Plesk (adjust if your Plesk user needs different umask)
+          # Run on remote before rsync (verify target exists)
           SCRIPT_BEFORE: |
             whoami
-            ls -ld $TARGET || true
+            ls -ld "$TARGET" || true
+          # Run on remote after rsync (Laravel post-deploy)
           SCRIPT_AFTER: |
-            cd $TARGET
+            cd "$TARGET"
             # Ensure Plesk web user can read/write storage & bootstrap cache
             chmod -R 755 storage bootstrap/cache
-            # Run Laravel post-deployment commands via PHP on the server
             # 1. Cache config, routes, views
             php artisan config:cache --no-ansi
             php artisan route:cache --no-ansi || true
             php artisan view:cache --no-ansi || true
-            # 2. Run database migrations (safe for staging)
+            # 2. Run database migrations (safe for staging — --force skips interactive prompt)
             php artisan migrate --force --no-ansi
             # 3. Fix storage symlink if missing
             if [ ! -L public/storage ]; then
               php artisan storage:link --no-ansi
             fi
-            # 4. Restart queue workers if you have horizon/queue listener configured
+            # 4. Restart queue workers if you have horizon/queue listener configured in Plesk
             # php artisan queue:restart --no-ansi || true
             echo "Deployment complete."
