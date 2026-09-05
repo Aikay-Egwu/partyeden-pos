@@ -84,7 +84,7 @@ jobs:
           TARGET: ${{ secrets.PLESK_DEPLOY_PATH }}
           # Exclude server-specific files that should not be overwritten on deploy
           EXCLUDE: ".env,.htaccess,storage/logs/*,storage/framework/cache/*,storage/framework/sessions/*,storage/framework/views/*,storage/app/*,storage/pail/*,public/storage,vendor/.htaccess,.git,.github"
-          # Run on remote before rsync (verify target exists)
+          # Run on remote before rsync (verify target exists) 
           SCRIPT_BEFORE: |
             whoami
             ls -ld "$TARGET" || true
