@@ -1,0 +1,99 @@
+name: Deploy to Staging
+
+# Fires automatically whenever develop is updated (i.e. right after a PR
+# that passed CI Checks is merged). Can also be triggered manually.
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+        env:
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+
+      - name: Assemble standalone bundle
+        # next.config.js must have `output: 'standalone'` for this folder to exist.
+        # Next's standalone build doesn't include static assets or /public by
+        # default, so we copy them in ourselves — this is the officially
+        # documented way to do it.
+        run: |
+          cp -r public .next/standalone/public
+          cp -r .next/static .next/standalone/.next/static
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-build
+          path: .next/standalone
+          retention-days: 1
+
+  deploy:
+    name: Deploy to server
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: staging-build
+          path: release
+
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload files with rsync
+        # --delete removes files on the server that no longer exist in the
+        # build so stale pages/chunks don't pile up. tmp/ and any .env files
+        # are excluded so we never wipe out server-side runtime config.
+        run: |
+          rsync -az --delete \
+            --exclude 'tmp/' \
+            --exclude '.env' \
+            --exclude '.env.production.local' \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SSH_PORT }}" \
+            release/ \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+
+      - name: Restart the Node.js app (Passenger convention)
+        # Plesk has no CLI command to restart a Node app — touching
+        # tmp/restart.txt inside the app root is the documented workaround.
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "${{ secrets.SSH_PORT }}" \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "mkdir -p '${{ secrets.DEPLOY_PATH }}/tmp' && touch '${{ secrets.DEPLOY_PATH }}/tmp/restart.txt'"
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

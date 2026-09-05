@@ -10,10 +10,10 @@ on:
 permissions:
   contents: read
 
-# The Laravel app lives in backend/ — run every step from there
+# This workflow file lives inside backend/ — steps run from the backend folder root
 defaults:
   run:
-    working-directory: backend
+    working-directory: .
 
 jobs:
   build-and-deploy:
@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: backend/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install Composer dependencies (production)
         run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
@@ -76,7 +76,7 @@ jobs:
           REMOTE_HOST: ${{ secrets.PLESK_HOST }}
           REMOTE_USER: ${{ secrets.PLESK_USER }}
           REMOTE_PORT: ${{ secrets.PLESK_PORT || 22 }}
-          SOURCE: "backend/"
+          SOURCE: "./"
           TARGET: ${{ secrets.PLESK_DEPLOY_PATH }}
           # Exclude server-specific files that should not be overwritten
           EXCLUDE: ".env,.htaccess,storage/logs/*,storage/framework/cache/*,storage/framework/sessions/*,storage/framework/views/*,storage/app/*,storage/pail/*,public/storage,vendor/.htaccess,.git,.github"
