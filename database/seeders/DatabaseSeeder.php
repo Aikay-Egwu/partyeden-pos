@@ -16,7 +16,11 @@ class DatabaseSeeder extends Seeder
     {
         // Seed database with real product catalog, categories, images, and users
         // from the transformed JSON files in storage/app/public/shop/
-        $this->call([ShopDataSeeder::class, DeliveryZoneSeeder::class]);
+        $this->call([
+            //UserSeeder::class,
+            ShopDataSeeder::class,
+            DeliveryZoneSeeder::class,
+        ]);
 
     }
 }
