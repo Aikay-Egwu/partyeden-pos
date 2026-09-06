@@ -93,9 +93,24 @@ test('captureOrder creates order on successful PayPal capture', function (): voi
         'quantity' => 1,
     ]);
 
-    fakePaypalOrderDetails('PAYPAL-ORDER-123', '20.00');
-
     Http::fake([
+        'https://api-m.sandbox.paypal.com/v1/oauth2/token' => Http::response([
+            'access_token' => 'fake-token',
+            'token_type' => 'Bearer',
+            'expires_in' => 3600,
+        ], 200),
+        'https://api-m.sandbox.paypal.com/v2/checkout/orders/PAYPAL-ORDER-123' => Http::response([
+            'id' => 'PAYPAL-ORDER-123',
+            'status' => 'APPROVED',
+            'purchase_units' => [
+                [
+                    'amount' => [
+                        'currency_code' => 'GBP',
+                        'value' => '20.00',
+                    ],
+                ],
+            ],
+        ], 200),
         'https://api-m.sandbox.paypal.com/v2/checkout/orders/PAYPAL-ORDER-123/capture' => Http::response([
             'id' => 'PAYPAL-ORDER-123',
             'status' => 'COMPLETED',
@@ -151,7 +166,10 @@ test('captureOrder creates order on successful PayPal capture', function (): voi
     // Verify cart is cleared
     $this->get(route('store.cart'))
         ->assertOk()
-        ->assertSee('Your cart is empty', false);
+        ->assertInertia(fn ($page) => $page->has('cart')
+            ->where('cart.count', 0)
+            ->where('cart.items', [])
+        );
 });
 
 test('captureOrder returns error on failed PayPal capture', function (): void {
