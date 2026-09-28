@@ -28,6 +28,7 @@ class Product extends Model
     protected $casts = [
         'cost_price' => 'decimal:2',
         'selling_price' => 'decimal:2',
+        'turnover_time_hours' => 'decimal:2',
         'is_active' => 'boolean',
         'is_kit' => 'boolean',
         'track_inventory' => 'boolean',

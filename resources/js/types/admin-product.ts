@@ -115,6 +115,7 @@ export type AdminProduct = {
     description?: string;
     cost_price: string;
     selling_price: string;
+    turnover_time_hours: string;
     product_type: string;
     is_active: boolean;
     is_kit: boolean;

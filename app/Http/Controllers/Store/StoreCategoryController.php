@@ -7,7 +7,9 @@ namespace App\Http\Controllers\Store;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,6 +19,38 @@ use Inertia\Response;
  */
 class StoreCategoryController extends Controller
 {
+    public function index(Request $request): Response
+    {
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+        ]);
+        $search = trim($validated['search'] ?? '');
+
+        $categories = Category::query()
+            ->where('is_active', true)
+            ->when($search !== '', fn (Builder $query) => $query->where(
+                fn (Builder $query) => $query
+                    ->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%"),
+            ))
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug', 'description', 'image_path'])
+            ->map(fn (Category $category) => [
+                'id' => $category->id,
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'description' => $category->description,
+                'image' => $category->image_path ? Storage::url($category->image_path) : null,
+            ]);
+
+        return Inertia::render('store/categories/index', [
+            'categories' => $categories,
+            'filters' => ['search' => $search],
+        ]);
+    }
+
     public function show(Request $request, Category $category): Response
     {
         $products = Product::onlineVisible()->where('category_id', $category->id)

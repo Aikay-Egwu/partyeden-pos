@@ -13,6 +13,11 @@ use Illuminate\Support\Facades\Http;
 
 uses(RefreshDatabase::class);
 
+function paymentExpectedAt(): string
+{
+    return now('Europe/London')->addDay()->setTime(16, 0)->format('Y-m-d\TH:i');
+}
+
 beforeEach(function (): void {
     // Mock PayPal OAuth for all tests
     Http::fake([
@@ -67,6 +72,7 @@ test('createOrder returns paypal order ID for non-empty cart', function (): void
 
     $response = $this->postJson('/payment/create-order', [
         'fulfillment_type' => 'pickup',
+        'expected_at' => paymentExpectedAt(),
     ]);
 
     $response->assertOk()
@@ -79,6 +85,7 @@ test('createOrder returns paypal order ID for non-empty cart', function (): void
 test('createOrder returns 422 for empty cart', function (): void {
     $response = $this->postJson('/payment/create-order', [
         'fulfillment_type' => 'pickup',
+        'expected_at' => paymentExpectedAt(),
     ]);
 
     $response->assertStatus(422)
@@ -143,6 +150,7 @@ test('captureOrder creates order on successful PayPal capture', function (): voi
         'last_name' => 'Doe',
         'email' => 'john@example.com',
         'fulfillment_type' => 'pickup',
+        'expected_at' => paymentExpectedAt(),
     ]);
 
     $response->assertOk()
@@ -195,6 +203,7 @@ test('captureOrder returns error on failed PayPal capture', function (): void {
         'last_name' => 'Doe',
         'email' => 'john@example.com',
         'fulfillment_type' => 'pickup',
+        'expected_at' => paymentExpectedAt(),
     ]);
 
     $response->assertStatus(402)
@@ -232,6 +241,7 @@ test('captureOrder rejects delivery without postcode', function (): void {
         'last_name' => 'Doe',
         'email' => 'john@example.com',
         'fulfillment_type' => 'delivery',
+        'expected_at' => paymentExpectedAt(),
         'delivery_postcode' => '',
         'address_line1' => '10 Downing Street',
         'city' => 'London',
@@ -255,6 +265,7 @@ test('createOrder rejects delivery outside the available zone', function (): voi
     $response = $this->postJson('/payment/create-order', [
         'email' => 'john@example.com',
         'fulfillment_type' => 'delivery',
+        'expected_at' => paymentExpectedAt(),
         'delivery_postcode' => 'ZZ1 1ZZ',
     ]);
 
@@ -291,6 +302,7 @@ test('captureOrder rejects delivery when the zone minimum order is not met', fun
         'last_name' => 'Doe',
         'email' => 'john@example.com',
         'fulfillment_type' => 'delivery',
+        'expected_at' => paymentExpectedAt(),
         'delivery_postcode' => 'SW1A 1AA',
         'address_line1' => '10 Downing Street',
         'city' => 'London',
@@ -319,6 +331,7 @@ test('captureOrder rejects a delivery capture without a structured address', fun
         'last_name' => 'Doe',
         'email' => 'john@example.com',
         'fulfillment_type' => 'delivery',
+        'expected_at' => paymentExpectedAt(),
         'delivery_postcode' => 'SW1A 1AA',
     ]);
 
@@ -361,6 +374,7 @@ test('captureOrder rejects the capture when a cart item exceeds available stock'
         'last_name' => 'Doe',
         'email' => 'john@example.com',
         'fulfillment_type' => 'pickup',
+        'expected_at' => paymentExpectedAt(),
     ]);
 
     $response->assertStatus(422)
@@ -387,6 +401,7 @@ test('captureOrder rejects capture when the PayPal amount does not match the ord
         'last_name' => 'Doe',
         'email' => 'john@example.com',
         'fulfillment_type' => 'pickup',
+        'expected_at' => paymentExpectedAt(),
     ]);
 
     $response->assertStatus(422)
@@ -421,6 +436,7 @@ test('captureOrder rejects a PayPal order ID that already produced an order', fu
         'last_name' => 'Doe',
         'email' => 'john@example.com',
         'fulfillment_type' => 'pickup',
+        'expected_at' => paymentExpectedAt(),
     ]);
 
     $response->assertStatus(409)

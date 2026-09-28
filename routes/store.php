@@ -4,6 +4,7 @@ use App\Http\Controllers\Store\StoreBlogController;
 use App\Http\Controllers\Store\StoreCartController;
 use App\Http\Controllers\Store\StoreCategoryController;
 use App\Http\Controllers\Store\StoreCheckoutController;
+use App\Http\Controllers\Store\StoreFaqController;
 use App\Http\Controllers\Store\StoreOccasionController;
 use App\Http\Controllers\Store\StoreOrderController;
 use App\Http\Controllers\Store\StorePaymentController;
@@ -22,6 +23,7 @@ Route::middleware('throttle:60,1')->group(function (): void {
     Route::get('products/{product}', [StoreProductController::class, 'show'])->name('store.products.show');
 
     // Categories
+    Route::get('categories', [StoreCategoryController::class, 'index'])->name('store.categories.index');
     Route::get('categories/{category}', [StoreCategoryController::class, 'show'])->name('store.categories.show');
 
     // Occasions
@@ -31,6 +33,7 @@ Route::middleware('throttle:60,1')->group(function (): void {
     // Reviews and gallery (read-only)
     Route::get('reviews', [StoreReviewController::class, 'index'])->name('store.reviews.index');
     Route::get('gallery', [StoreReviewController::class, 'gallery'])->name('store.gallery.index');
+    Route::get('faq', [StoreFaqController::class, 'index'])->name('store.faqs.index');
 
     // Blog
     Route::get('blog', [StoreBlogController::class, 'index'])->name('store.blog.index');
@@ -62,13 +65,23 @@ Route::middleware('throttle:15,1')->group(function (): void {
     Route::get('checkout/loyalty-account', [StoreCheckoutController::class, 'lookupLoyalty'])->name('store.checkout.loyalty-account');
 });
 
-// Order placement + PayPal payment (strict limit — money-touching endpoints)
+// Order placement + payment processing (strict limit — money-touching endpoints)
 Route::middleware('throttle:10,1')->group(function (): void {
     Route::post('orders', [StoreOrderController::class, 'store'])->name('store.orders.store');
     Route::post('payment/create-order', [StorePaymentController::class, 'createOrder'])
         ->name('store.payment.create-order');
     Route::post('payment/capture-order', [StorePaymentController::class, 'captureOrder'])
         ->name('store.payment.capture-order');
+    // Stripe PaymentIntents flow (replaces the previous closure stubs with controller actions)
+    Route::post('payment/stripe-intent', [StorePaymentController::class, 'stripeIntent'])
+        ->name('store.payment.stripe-intent');
+    Route::post('payment/stripe-confirm', [StorePaymentController::class, 'stripeConfirm'])
+        ->name('store.payment.stripe-confirm');
+    // Stripe webhook is NOT throttled (Stripe retries aggressively) and is CSRF-exempt
+    Route::withoutMiddleware('web')->group(function (): void {
+        Route::post('payment/stripe-webhook', [StorePaymentController::class, 'stripeWebhook'])
+            ->name('store.payment.stripe-webhook');
+    });
 });
 
 // Public review submission (anonymous + file upload — strictest limit)

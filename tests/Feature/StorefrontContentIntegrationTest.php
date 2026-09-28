@@ -77,6 +77,7 @@ function createAdmin(): User
 
 test('homepage uses dynamic occasion, bestseller, testimonial, gallery, and blog data', function (): void {
     $category = Category::factory()->create();
+    Category::factory()->create(['parent_id' => $category->id]);
 
     $manualProduct = Product::factory()->create([
         'category_id' => $category->id,
@@ -133,6 +134,10 @@ test('homepage uses dynamic occasion, bestseller, testimonial, gallery, and blog
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('store/home')
+            ->has('categories', 1)
+            ->where('categories.0.id', $category->id)
+            ->where('categories.0.name', $category->name)
+            ->where('categoryCount', 2)
             ->has('occasions', 1)
             ->has('bestSellers', 2)
             ->where('bestSellers.0.id', $manualProduct->id)
@@ -140,6 +145,58 @@ test('homepage uses dynamic occasion, bestseller, testimonial, gallery, and blog
             ->has('featuredTestimonials', 1)
             ->has('galleryPreview', 1)
             ->has('latestBlogPosts', 1)
+        );
+});
+
+test('homepage category grid shows the first five active top-level categories', function (): void {
+    $expectedCategories = collect(range(1, 6))->map(
+        fn (int $sortOrder) => Category::factory()->create([
+            'name' => "Category {$sortOrder}",
+            'slug' => "category-{$sortOrder}",
+            'sort_order' => $sortOrder,
+            'is_active' => true,
+        ]),
+    );
+    Category::factory()->create([
+        'name' => 'Inactive category',
+        'slug' => 'inactive-category',
+        'is_active' => false,
+    ]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('store/home')
+            ->has('categories', 5)
+            ->where('categories.0.id', $expectedCategories[0]->id)
+            ->where('categories.4.id', $expectedCategories[4]->id)
+            ->where('categoryCount', 6)
+        );
+});
+
+test('category index lists every active category including subcategories', function (): void {
+    $parent = Category::factory()->create([
+        'name' => 'Birthday Balloons',
+        'slug' => 'birthday-balloons',
+    ]);
+    $child = Category::factory()->create([
+        'name' => 'Number Balloons',
+        'slug' => 'number-balloons',
+        'parent_id' => $parent->id,
+    ]);
+    Category::factory()->create([
+        'name' => 'Hidden Category',
+        'slug' => 'hidden-category',
+        'is_active' => false,
+    ]);
+
+    $this->get(route('store.categories.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('store/categories/index')
+            ->has('categories', 2)
+            ->where('categories.0.id', $parent->id)
+            ->where('categories.1.id', $child->id)
         );
 });
 

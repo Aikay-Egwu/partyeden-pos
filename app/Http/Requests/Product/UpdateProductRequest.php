@@ -28,6 +28,7 @@ class UpdateProductRequest extends FormRequest
             'tax_category_id' => ['nullable', 'uuid', 'exists:tax_categories,id'],
             'cost_price' => ['sometimes', 'numeric', 'min:0'],
             'selling_price' => ['sometimes', 'numeric', 'min:0'],
+            'turnover_time_hours' => ['sometimes', 'numeric', 'min:0', 'max:9999.99'],
             'product_type' => ['sometimes', 'string', 'in:standard,kit,service'],
             'is_active' => ['sometimes', 'boolean'],
             'track_inventory' => ['sometimes', 'boolean'],

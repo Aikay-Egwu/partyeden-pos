@@ -7,6 +7,7 @@ use App\Models\Occasion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia;
 
 uses(RefreshDatabase::class);
 
@@ -47,6 +48,32 @@ test('category page renders with sub-categories', function () {
     Category::factory()->create(['parent_id' => $category->id]);
 
     $this->get(route('store.categories.show', $category->id))->assertOk();
+});
+
+test('category index filters active categories by search query', function () {
+    $matchingCategory = Category::factory()->create([
+        'name' => 'Birthday Balloons',
+        'description' => 'Bright themes for birthdays',
+        'is_active' => true,
+    ]);
+    Category::factory()->create([
+        'name' => 'Wedding Decor',
+        'description' => 'For the big day',
+        'is_active' => true,
+    ]);
+    Category::factory()->create([
+        'name' => 'Birthday Supplies',
+        'is_active' => false,
+    ]);
+
+    $this->get(route('store.categories.index', ['search' => 'Birthday']))
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('store/categories/index')
+            ->has('categories', 1)
+            ->where('categories.0.id', $matchingCategory->id)
+            ->where('filters.search', 'Birthday')
+        );
 });
 
 // ── Occasions ────────────────────────────────────────────────────────

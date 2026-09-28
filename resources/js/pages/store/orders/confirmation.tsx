@@ -39,6 +39,7 @@ type Order = {
     subtotal: string;
     shipping_amount: string;
     fulfillment_type: string;
+    expected_at?: string | null;
     delivery_postcode?: string | null;
     placed_at: string;
     items: OrderItem[];
@@ -52,12 +53,13 @@ type Order = {
 
 type Props = {
     order: Order;
+    checkoutTimezone: string;
 };
 
 /**
  * Order confirmation page shown after successful checkout.
  */
-export default function OrderConfirmation({ order }: Props) {
+export default function OrderConfirmation({ order, checkoutTimezone }: Props) {
     return (
         <>
             <Head title="Order Confirmed" />
@@ -65,7 +67,7 @@ export default function OrderConfirmation({ order }: Props) {
                 {/* Success */}
                 <div className="flex flex-col items-center text-center">
                     <CheckCircle className="mb-4 size-16 text-green-500" />
-                    <h1 className="text-2xl font-semibold tracking-tight">
+                    <h1 className="text-2xl font-semibold tracking-tight text-gray-800">
                         Thank You!
                     </h1>
                     <p className="mt-1 text-muted-foreground">
@@ -82,15 +84,33 @@ export default function OrderConfirmation({ order }: Props) {
                                 <span className="text-muted-foreground">
                                     Order Number
                                 </span>
-                                <span className="font-mono font-medium">
+                                <span className="font-mono font-medium text-gray-800">
                                     {order.order_number}
                                 </span>
                             </div>
+                            {order.expected_at && (
+                                <div className="flex justify-between">
+                                    <span className="text-muted-foreground">
+                                        {order.fulfillment_type === 'delivery'
+                                            ? 'Delivery time'
+                                            : 'Collection time'}
+                                    </span>
+                                    <span className="text-right text-gray-800">
+                                        {new Date(
+                                            order.expected_at,
+                                        ).toLocaleString('en-GB', {
+                                            dateStyle: 'medium',
+                                            timeStyle: 'short',
+                                            timeZone: checkoutTimezone,
+                                        })}
+                                    </span>
+                                </div>
+                            )}
                             <div className="flex justify-between">
                                 <span className="text-muted-foreground">
                                     Date
                                 </span>
-                                <span>
+                                <span className="text-gray-800">
                                     {new Date(order.placed_at).toLocaleString()}
                                 </span>
                             </div>
@@ -98,7 +118,7 @@ export default function OrderConfirmation({ order }: Props) {
                                 <span className="text-muted-foreground">
                                     Status
                                 </span>
-                                <span className="capitalize">
+                                <span className="text-gray-800 capitalize">
                                     {order.status}
                                 </span>
                             </div>
@@ -106,7 +126,7 @@ export default function OrderConfirmation({ order }: Props) {
                                 <span className="text-muted-foreground">
                                     Fulfillment
                                 </span>
-                                <span className="capitalize">
+                                <span className="text-gray-800 capitalize">
                                     {order.fulfillment_type}
                                 </span>
                             </div>
@@ -116,7 +136,7 @@ export default function OrderConfirmation({ order }: Props) {
                                         <span className="text-muted-foreground">
                                             Delivery Zone
                                         </span>
-                                        <span>
+                                        <span className="text-gray-800">
                                             {order.delivery_zone?.name ??
                                                 'Matched at checkout'}
                                         </span>
@@ -126,7 +146,7 @@ export default function OrderConfirmation({ order }: Props) {
                                             <span className="text-muted-foreground">
                                                 Postcode
                                             </span>
-                                            <span>
+                                            <span className="text-gray-800">
                                                 {order.delivery_postcode}
                                             </span>
                                         </div>
@@ -143,7 +163,7 @@ export default function OrderConfirmation({ order }: Props) {
                             <ul className="space-y-1 text-sm">
                                 {order.items.map((item) => (
                                     <li key={item.id} className="space-y-1">
-                                        <div className="flex justify-between gap-3">
+                                        <div className="flex justify-between gap-3 text-gray-800">
                                             <span>
                                                 {item.product_name} x
                                                 {item.quantity}
@@ -240,13 +260,15 @@ export default function OrderConfirmation({ order }: Props) {
                                 <span className="text-muted-foreground">
                                     Subtotal
                                 </span>
-                                <span>{formatCurrency(order.subtotal)}</span>
+                                <span className="text-gray-800">
+                                    {formatCurrency(order.subtotal)}
+                                </span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-muted-foreground">
                                     Delivery
                                 </span>
-                                <span>
+                                <span className="text-gray-800">
                                     {Number(order.shipping_amount) > 0
                                         ? formatCurrency(order.shipping_amount)
                                         : 'Free'}
@@ -254,14 +276,15 @@ export default function OrderConfirmation({ order }: Props) {
                             </div>
                         </div>
                         <div className="mt-4 flex justify-between border-t pt-2 text-base font-semibold">
-                            <span>Total</span>
-                            <span>{formatCurrency(order.total)}</span>
+                            <span className="text-gray-800">
+                                {formatCurrency(order.total)}
+                            </span>
                         </div>
                     </div>
 
                     {/* Customer info */}
                     {order.customer && (
-                        <div className="rounded-lg border p-4 text-sm">
+                        <div className="rounded-lg border p-4 text-sm text-gray-800">
                             <p>
                                 A confirmation email will be sent to{' '}
                                 <span className="font-medium">

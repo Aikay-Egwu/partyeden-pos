@@ -20,6 +20,7 @@ class ProductFactory extends Factory
             'description' => $this->faker->paragraph(),
             'cost_price' => $this->faker->randomFloat(4, 1, 100),
             'selling_price' => $this->faker->randomFloat(4, 5, 200),
+            'turnover_time_hours' => 0,
             'product_type' => 'standard',
             'is_active' => true,
             'track_inventory' => $this->faker->boolean(),

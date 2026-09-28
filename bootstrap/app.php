@@ -25,9 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        // Exempt PayPal webhook from CSRF — called by PayPal servers directly
+        // Exempt PayPal + Stripe webhooks from CSRF — called by payment servers directly
         $middleware->validateCsrfTokens(except: [
             'api/paypal/webhook',
+            'payment/stripe-webhook',
         ]);
 
         // Override the default 'auth' alias with our Inertia-compatible version

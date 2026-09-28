@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             // UserSeeder::class,
             ShopDataSeeder::class,
             DeliveryZoneSeeder::class,
+            FaqSeeder::class,
         ]);
 
     }

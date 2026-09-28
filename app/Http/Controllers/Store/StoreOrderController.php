@@ -13,6 +13,7 @@ use App\Services\CartService;
 use App\Services\DeliveryZoneMatcher;
 use App\Services\InventoryService;
 use App\Services\LoyaltyService;
+use App\Services\OrderScheduleService;
 use App\Services\OrderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class StoreOrderController extends Controller
         private InventoryService $inventory,
         private LoyaltyService $loyalty,
         private OrderService $orders,
+        private OrderScheduleService $schedule,
     ) {}
 
     // Place an order from the cart
@@ -49,6 +51,11 @@ class StoreOrderController extends Controller
         $phone = $request->filled('phone') ? $request->string('phone')->toString() : null;
         $notes = $request->filled('notes') ? $request->string('notes')->toString() : null;
         $fulfillmentType = $request->string('fulfillment_type')->toString();
+        $expectedAt = $this->schedule->validateExpectedAt(
+            $request->string('expected_at')->toString(),
+            $cartContents,
+            $fulfillmentType,
+        );
         $requestedLoyaltyPoints = $request->filled('loyalty_points')
             ? (float) $request->input('loyalty_points')
             : 0.0;
@@ -112,6 +119,7 @@ class StoreOrderController extends Controller
                 deliveryPostcode: $deliveryPostcode,
                 shippingAmount: $shippingAmount,
                 notes: $notes,
+                expectedAt: $expectedAt,
                 loyaltyAccount: $loyaltyAccount,
                 loyaltyRedemption: $loyaltyRedemption,
                 shippingAddress: $fulfillmentType === 'delivery' ? [
@@ -155,6 +163,7 @@ class StoreOrderController extends Controller
                         'childItems.product',
                     ]),
             ]),
+            'checkoutTimezone' => config('checkout.timezone'),
         ]);
     }
 

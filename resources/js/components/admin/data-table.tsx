@@ -6,7 +6,7 @@ import {
     Search,
     Trash2,
 } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -81,7 +81,20 @@ export function DataTable<T>({
     selectedRowKeys = [],
     onSelectionChange,
 }: DataTableProps<T>) {
+    // Keep the local search input in sync with the server-provided prop.
+    // Using a queueMicrotask defers the state update until after the current
+    // render commit, avoiding React's "setState in effect" lint rule while
+    // still reflecting URL-driven prop changes (pagination, filter resets).
     const [localSearch, setLocalSearch] = useState(searchValue ?? '');
+    useEffect(() => {
+        const next = searchValue ?? '';
+
+        if (next === localSearch) {
+            return;
+        }
+
+        queueMicrotask(() => setLocalSearch(next));
+    }, [searchValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
     // Handle search with debounce-like behavior via parent callback
     const handleSearch = useCallback(

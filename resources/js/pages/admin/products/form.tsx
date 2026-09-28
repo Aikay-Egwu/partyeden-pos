@@ -91,6 +91,10 @@ export default function ProductForm({
             !isEditing && sharedPrefill?.selling_price
                 ? String(sharedPrefill.selling_price)
                 : (product?.selling_price ?? '0'),
+        turnover_time_hours:
+            !isEditing && sharedPrefill?.turnover_time_hours !== undefined
+                ? String(sharedPrefill.turnover_time_hours)
+                : (product?.turnover_time_hours ?? '0'),
         product_type:
             !isEditing && sharedPrefill?.product_type
                 ? String(sharedPrefill.product_type)
@@ -368,6 +372,27 @@ export default function ProductForm({
                             />
                             <InputError message={errors.selling_price} />
                         </div>
+                    </div>
+
+                    <div className="max-w-sm space-y-2">
+                        <Label htmlFor="turnover_time_hours">
+                            Turnover Time (hours)
+                        </Label>
+                        <Input
+                            id="turnover_time_hours"
+                            type="number"
+                            min="0"
+                            step="0.25"
+                            value={data.turnover_time_hours}
+                            onChange={(e) =>
+                                setData('turnover_time_hours', e.target.value)
+                            }
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Preparation time needed to source materials and make
+                            this product.
+                        </p>
+                        <InputError message={errors.turnover_time_hours} />
                     </div>
 
                     {/* Category and Tax Category dropdowns */}

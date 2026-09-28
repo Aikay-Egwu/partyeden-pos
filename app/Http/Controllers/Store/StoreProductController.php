@@ -6,8 +6,10 @@ namespace App\Http\Controllers\Store;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Occasion;
 use App\Models\Product;
 use App\Models\ProductImage;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -21,19 +23,43 @@ class StoreProductController extends Controller
     // Product listing with search, category filter, sort
     public function index(Request $request): Response
     {
-        $products = Product::onlineVisible()->where('is_active', true)
-            ->when($request->search, fn ($q, $s) => $q->where(function ($q) use ($s) {
-                $q->where('name', 'like', "%{$s}%")
-                    ->orWhere('sku', 'like', "%{$s}%");
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+            'category' => ['nullable', 'string', 'max:255'],
+            'occation' => ['nullable', 'string', 'max:255'],
+            'occasion' => ['nullable', 'string', 'max:255'],
+            'sort' => ['nullable', 'in:newest,name,price_asc,price_desc'],
+        ]);
+        $search = trim($validated['search'] ?? '');
+        $occasionSlug = $validated['occation'] ?? $validated['occasion'] ?? '';
+        $sort = $validated['sort'] ?? 'newest';
+
+        $products = Product::query()
+            ->onlineVisible()
+            ->where('is_active', true)
+            ->when($search !== '', fn (Builder $query) => $query->where(function (Builder $query) use ($search) {
+                $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('sku', 'like', "%{$search}%")
+                    ->orWhereHas('category', fn (Builder $categoryQuery) => $categoryQuery
+                        ->where('is_active', true)
+                        ->where('name', 'like', "%{$search}%"));
             }))
-            ->when($request->category, fn ($q, $c) => $q->where('category_id', $c))
-            ->when($request->sort === 'price_asc', fn ($q) => $q->orderBy('selling_price', 'asc'))
-            ->when($request->sort === 'price_desc', fn ($q) => $q->orderBy('selling_price', 'desc'))
-            ->when(
-                $request->sort === 'newest' || ! $request->sort,
-                fn ($q) => $q->latest(),
-            )
-            ->when($request->sort === 'name', fn ($q) => $q->orderBy('name', 'asc'))
+            ->when($validated['category'] ?? null, fn (Builder $query, string $slug) => $query->whereHas(
+                'category',
+                fn (Builder $categoryQuery) => $categoryQuery
+                    ->where('slug', $slug)
+                    ->where('is_active', true),
+            ))
+            ->when($occasionSlug !== '', fn (Builder $query) => $query->whereHas(
+                'occasions',
+                fn (Builder $occasionQuery) => $occasionQuery
+                    ->where('slug', $occasionSlug)
+                    ->where('is_active', true),
+            ))
+            ->when($sort === 'price_asc', fn (Builder $query) => $query->orderBy('selling_price'))
+            ->when($sort === 'price_desc', fn (Builder $query) => $query->orderByDesc('selling_price'))
+            ->when($sort === 'newest', fn (Builder $query) => $query->latest())
+            ->when($sort === 'name', fn (Builder $query) => $query->orderBy('name'))
             ->with(['category', 'images' => fn ($q) => $q
                 ->orderByDesc('is_primary')
                 ->orderBy('sort_order')
@@ -60,10 +86,21 @@ class StoreProductController extends Controller
 
         return Inertia::render('store/products/index', [
             'products' => $products,
-            'categories' => Category::where('is_active', true)
+            'categories' => Category::query()
+                ->where('is_active', true)
                 ->orderBy('name')
-                ->get(['id', 'name']),
-            'filters' => $request->only(['search', 'category', 'sort']),
+                ->get(['id', 'name', 'slug']),
+            'occasions' => Occasion::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get(['id', 'name', 'slug']),
+            'filters' => [
+                'search' => $search,
+                'category' => $validated['category'] ?? '',
+                'occation' => $occasionSlug,
+                'sort' => $sort,
+            ],
         ]);
     }
 

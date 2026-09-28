@@ -2,6 +2,7 @@
 
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Occasion;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Variant;
@@ -59,6 +60,112 @@ test('store product listing uses the default product image url', function () {
                 return collect($products)->contains(fn (array $entry) => $entry['id'] === $product->id
                     && $entry['primary_image'] === $defaultImage->fresh()->url);
             })
+        );
+});
+
+test('store product listing filters by search, category slug, and occasion slug', function () {
+    $category = Category::factory()->create([
+        'name' => 'Birthday Balloons',
+        'slug' => 'birthday-balloons',
+    ]);
+    $otherCategory = Category::factory()->create([
+        'slug' => 'wedding-balloons',
+    ]);
+    $occasion = Occasion::factory()->create([
+        'name' => 'Birthday',
+        'slug' => 'birthday',
+    ]);
+    $matchingProduct = Product::factory()->create([
+        'name' => 'Birthday Number Balloon',
+        'sku' => 'BIRTHDAY-01',
+        'category_id' => $category->id,
+        'is_active' => true,
+        'is_online_visible' => true,
+    ]);
+    $matchingProduct->occasions()->attach($occasion->id, [
+        'id' => (string) Str::uuid(),
+        'sort_order' => 0,
+    ]);
+    Product::factory()->create([
+        'name' => 'Birthday Wedding Balloon',
+        'category_id' => $otherCategory->id,
+        'is_active' => true,
+        'is_online_visible' => true,
+    ]);
+    Product::factory()->create([
+        'name' => 'Hidden Birthday Number Balloon',
+        'category_id' => $category->id,
+        'is_active' => true,
+        'is_online_visible' => false,
+    ]);
+
+    $this->get(route('store.products', [
+        'search' => 'Birthday',
+        'category' => $category->slug,
+        'occation' => $occasion->slug,
+    ]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('store/products/index')
+            ->has('products.data', 1)
+            ->where('products.data.0.id', $matchingProduct->id)
+            ->where('filters.search', 'Birthday')
+            ->where('filters.category', $category->slug)
+            ->where('filters.occation', $occasion->slug)
+            ->where('categories.0.slug', 'birthday-balloons')
+            ->where('occasions.0.slug', 'birthday')
+        );
+});
+
+test('store product search also matches the active product category name', function () {
+    $category = Category::factory()->create([
+        'name' => 'Baby Shower',
+        'is_active' => true,
+    ]);
+    $product = Product::factory()->create([
+        'name' => 'Pastel Balloon Bundle',
+        'category_id' => $category->id,
+        'is_active' => true,
+        'is_online_visible' => true,
+    ]);
+    Product::factory()->create([
+        'name' => 'Pastel Table Runner',
+        'is_active' => true,
+        'is_online_visible' => true,
+    ]);
+
+    $this->get(route('store.products', ['search' => 'Baby Shower']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.id', $product->id)
+            ->where('filters.search', 'Baby Shower')
+        );
+});
+
+test('store product listing accepts correctly spelled occasion query parameter', function () {
+    $occasion = Occasion::factory()->create([
+        'slug' => 'baby-shower',
+    ]);
+    $product = Product::factory()->create([
+        'is_active' => true,
+        'is_online_visible' => true,
+    ]);
+    $product->occasions()->attach($occasion->id, [
+        'id' => (string) Str::uuid(),
+        'sort_order' => 0,
+    ]);
+    Product::factory()->create([
+        'is_active' => true,
+        'is_online_visible' => true,
+    ]);
+
+    $this->get(route('store.products', ['occasion' => $occasion->slug]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('products.data', 1)
+            ->where('products.data.0.id', $product->id)
+            ->where('filters.occation', $occasion->slug)
         );
 });
 

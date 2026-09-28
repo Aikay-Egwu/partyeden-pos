@@ -23,6 +23,7 @@ class ProductResource extends JsonResource
             'tax_category_id' => $this->tax_category_id,
             'cost_price' => $this->cost_price,
             'selling_price' => $this->selling_price,
+            'turnover_time_hours' => $this->turnover_time_hours,
             'product_type' => $this->product_type,
             'is_active' => $this->is_active,
             'track_inventory' => $this->track_inventory,

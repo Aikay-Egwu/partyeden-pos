@@ -129,6 +129,11 @@ const adminNavSections: { label: string; items: AdminNavItem[] }[] = [
                 icon: FileText,
             },
             {
+                title: 'FAQs',
+                href: '/admin/faqs',
+                icon: MessageSquare,
+            },
+            {
                 title: 'Audit Logs',
                 href: '/admin/audit-logs',
                 icon: ClipboardList,

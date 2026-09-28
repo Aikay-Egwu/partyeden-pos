@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\OrderStatusChanged;
+use App\Jobs\SendOrderDeliveredEmail;
 use App\Jobs\SendOrderStatusEmail;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
@@ -90,6 +91,11 @@ class AppServiceProvider extends ServiceProvider
             OrderStatusChanged::class,
             function (OrderStatusChanged $event): void {
                 SendOrderStatusEmail::dispatch($event->order, $event->previousStatus);
+
+                // Send specialized delivery confirmation when order is delivered
+                if ($event->order->status === 'delivered') {
+                    SendOrderDeliveredEmail::dispatch($event->order);
+                }
             },
         );
     }

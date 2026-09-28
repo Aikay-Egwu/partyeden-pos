@@ -14,8 +14,11 @@ use App\Services\CartService;
 use App\Services\DeliveryZoneMatcher;
 use App\Services\InventoryService;
 use App\Services\LoyaltyService;
+use App\Services\OrderScheduleService;
 use App\Services\OrderService;
 use App\Services\PaypalService;
+use App\Services\StripeService;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -23,20 +26,24 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 
 /**
- * PayPal payment lifecycle controller.
+ * PayPal + Stripe payment lifecycle controller.
  *
- * Handles the PayPal checkout flow from order creation through capture,
- * plus webhook processing for asynchronous payment events.
+ * Handles the PayPal (Smart Button) and Stripe (PaymentIntents / Elements)
+ * checkout flows: remote order creation, server-side capture/confirm with
+ * amount+stock+delivery validation, local Order creation via OrderService,
+ * and webhook processing for asynchronous payment events.
  */
 final class StorePaymentController extends Controller
 {
     public function __construct(
         private CartService $cart,
         private PaypalService $paypal,
+        private StripeService $stripe,
         private DeliveryZoneMatcher $deliveryZoneMatcher,
         private InventoryService $inventory,
         private LoyaltyService $loyalty,
         private OrderService $orders,
+        private OrderScheduleService $schedule,
     ) {}
 
     /**
@@ -56,8 +63,18 @@ final class StorePaymentController extends Controller
             ], 422);
         }
 
+        $fulfillmentType = $request->string('fulfillment_type')->toString();
+        $validated = $request->validate([
+            'expected_at' => ['required', 'date_format:Y-m-d\TH:i'],
+        ]);
+        $this->schedule->validateExpectedAt(
+            (string) $validated['expected_at'],
+            $cartContents,
+            $fulfillmentType,
+        );
+
         $deliveryDetails = $this->resolveDeliveryDetails(
-            $request->string('fulfillment_type')->toString(),
+            $fulfillmentType,
             $request->input('delivery_postcode'),
             (float) $cartContents['total'],
         );
@@ -146,6 +163,11 @@ final class StorePaymentController extends Controller
         $phone = $request->filled('phone') ? $request->string('phone')->toString() : null;
         $notes = $request->filled('notes') ? $request->string('notes')->toString() : null;
         $fulfillmentType = $request->string('fulfillment_type')->toString();
+        $expectedAt = $this->schedule->validateExpectedAt(
+            $request->string('expected_at')->toString(),
+            $cartContents,
+            $fulfillmentType,
+        );
         $requestedLoyaltyPoints = $request->filled('loyalty_points')
             ? (float) $request->input('loyalty_points')
             : 0.0;
@@ -280,6 +302,7 @@ final class StorePaymentController extends Controller
                 deliveryPostcode: $deliveryPostcode,
                 shippingAmount: $shippingAmount,
                 notes: $notes,
+                expectedAt: $expectedAt,
                 loyaltyAccount: $loyaltyAccount,
                 loyaltyRedemption: $loyaltyRedemption,
                 paymentAttributes: [
@@ -592,5 +615,561 @@ final class StorePaymentController extends Controller
             'shipping_amount' => (float) $zone->delivery_price,
             'error' => null,
         ];
+    }
+
+    /**
+     * Create a Stripe PaymentIntent for the current cart contents.
+     *
+     * Validates the cart, delivery zone, and loyalty redemption server-side;
+     * computes the exact total; converts to pence; creates the PaymentIntent
+     * via StripeService and returns the client_secret + loyalty breakdown.
+     * No local Order is created yet — that happens after confirm.
+     */
+    public function stripeIntent(Request $request): JsonResponse
+    {
+        $cartContents = $this->cart->contents();
+
+        if ($cartContents['count'] === 0) {
+            return response()->json([
+                'error' => 'Your cart is empty.',
+            ], 422);
+        }
+
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+            'fulfillment_type' => ['required', 'in:pickup,delivery'],
+            'delivery_postcode' => ['nullable', 'string', 'max:16'],
+            'expected_at' => ['required', 'date_format:Y-m-d\TH:i'],
+            'loyalty_points' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $fulfillmentType = (string) $validated['fulfillment_type'];
+        $expectedAt = $this->schedule->validateExpectedAt(
+            (string) $validated['expected_at'],
+            $cartContents,
+            $fulfillmentType,
+        );
+        $deliveryPostcode = $validated['delivery_postcode'] ?? null;
+
+        $deliveryDetails = $this->resolveDeliveryDetails(
+            $fulfillmentType,
+            $deliveryPostcode,
+            (float) $cartContents['total'],
+        );
+
+        if ($deliveryDetails['error'] !== null) {
+            return response()->json([
+                'error' => $deliveryDetails['error'],
+            ], 422);
+        }
+
+        $shippingAmount = $deliveryDetails['shipping_amount'];
+        $loyaltyAccount = $this->loyalty->accountForEmail((string) $validated['email']);
+        $requestedPoints = isset($validated['loyalty_points'])
+            ? (float) $validated['loyalty_points']
+            : 0.0;
+
+        $loyaltyRedemption = $this->loyalty->redemptionPreview(
+            $loyaltyAccount,
+            $requestedPoints,
+            (float) $cartContents['total'] + $shippingAmount,
+        );
+
+        $expectedTotal = max(
+            ((float) $cartContents['total'] + $shippingAmount) - $loyaltyRedemption['amount'],
+            0,
+        );
+
+        if ($expectedTotal < 0.01) {
+            return response()->json([
+                'error' => 'Order total must be at least £0.01 for card payment.',
+            ], 422);
+        }
+
+        try {
+            $pi = $this->stripe->createPaymentIntent(
+                amountPounds: $expectedTotal,
+                extra: [
+                    'description' => 'Party Eden Order',
+                    'receipt_email' => (string) $validated['email'],
+                    'metadata' => [
+                        'expected_at' => $expectedAt->format('Y-m-d\TH:i:s\Z'),
+                        'fulfillment_type' => $fulfillmentType,
+                        'turnover_minutes' => (string) $this->schedule->maximumTurnoverMinutes($cartContents),
+                    ],
+                ],
+            );
+        } catch (\RuntimeException $e) {
+            Log::error('Stripe PaymentIntent creation failed', [
+                'error' => $e->getMessage(),
+                'previous' => $e->getPrevious()?->getMessage(),
+            ]);
+
+            $message = $e->getMessage();
+            if (app()->environment('production')) {
+                // Never leak internal Stripe setup messages to shoppers in
+                // production. Our key-guard messages above are dev-facing.
+                $message = 'Could not start payment. Please try again later.';
+            }
+
+            return response()->json([
+                'error' => $message,
+            ], 502);
+        }
+
+        $clientSecret = $pi->client_secret ?? null;
+        if (! is_string($clientSecret) || $clientSecret === '') {
+            return response()->json([
+                'error' => 'Could not start payment. Please try again.',
+            ], 502);
+        }
+
+        return response()->json([
+            'client_secret' => $clientSecret,
+            'loyaltyDiscount' => $loyaltyRedemption['amount'],
+            'loyaltyPoints' => $loyaltyRedemption['points'],
+            'amount' => number_format($expectedTotal, 2, '.', ''),
+        ]);
+    }
+
+    /**
+     * Finalize a successful Stripe PaymentIntent and create the local Order.
+     *
+     * Called by the frontend immediately after `stripe.confirmPayment` resolves.
+     * Treats the client-supplied `payment_intent_id` as untrusted — always
+     * re-fetches the PaymentIntent from Stripe to verify status, amount,
+     * and currency before creating the order. Mirrors captureOrder's validation
+     * (delivery, stock, idempotency, amount tampering guard) byte-for-byte.
+     */
+    public function stripeConfirm(Request $request): JsonResponse
+    {
+        $cartContents = $this->cart->contents();
+
+        if ($cartContents['count'] === 0) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Your cart is empty.',
+            ], 422);
+        }
+
+        $validated = $request->validate([
+            'payment_intent_id' => ['required', 'string', 'max:64'],
+            'first_name' => ['required', 'string', 'max:100'],
+            'last_name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:50'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+            'fulfillment_type' => ['required', 'in:pickup,delivery'],
+            'expected_at' => ['required', 'date_format:Y-m-d\TH:i'],
+            'delivery_postcode' => ['nullable', 'string', 'max:16'],
+            'address_line1' => ['nullable', 'string', 'max:255'],
+            'address_line2' => ['nullable', 'string', 'max:255'],
+            'city' => ['nullable', 'string', 'max:255'],
+            'loyalty_points' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $paymentIntentId = (string) $validated['payment_intent_id'];
+        $email = (string) $validated['email'];
+        $firstName = (string) $validated['first_name'];
+        $lastName = (string) $validated['last_name'];
+        $phone = isset($validated['phone']) ? (string) $validated['phone'] : null;
+        $notes = isset($validated['notes']) ? (string) $validated['notes'] : null;
+        $fulfillmentType = (string) $validated['fulfillment_type'];
+        $requestedLoyaltyPoints = isset($validated['loyalty_points'])
+            ? (float) $validated['loyalty_points']
+            : 0.0;
+
+        $deliveryDetails = $this->resolveDeliveryDetails(
+            $fulfillmentType,
+            $validated['delivery_postcode'] ?? null,
+            (float) $cartContents['total'],
+        );
+
+        if ($deliveryDetails['error'] !== null) {
+            return response()->json([
+                'success' => false,
+                'error' => $deliveryDetails['error'],
+            ], 422);
+        }
+
+        $deliveryZone = $deliveryDetails['zone'];
+        $deliveryPostcode = $deliveryDetails['postcode'];
+        $shippingAmount = (string) $deliveryDetails['shipping_amount'];
+
+        if (Order::withTrashed()->where('stripe_payment_intent_id', $paymentIntentId)->exists()) {
+            Log::warning('Stripe confirm rejected: order already exists for this PaymentIntent', [
+                'payment_intent_id' => $paymentIntentId,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'This payment has already been processed.',
+            ], 409);
+        }
+
+        $shortages = $this->inventory->findCartShortages($cartContents['items']);
+
+        if ($shortages !== []) {
+            return response()->json([
+                'success' => false,
+                'error' => $shortages[0],
+            ], 422);
+        }
+
+        $loyaltyAccount = $this->loyalty->accountForEmail($email);
+        $loyaltyRedemption = $this->loyalty->redemptionPreview(
+            $loyaltyAccount,
+            $requestedLoyaltyPoints,
+            (float) $cartContents['total'] + (float) $shippingAmount,
+        );
+
+        $expectedTotal = max(
+            ((float) $cartContents['total'] + (float) $shippingAmount) - $loyaltyRedemption['amount'],
+            0,
+        );
+        $expectedPence = $this->stripe->toSmallestUnit($expectedTotal);
+        $expectedCurrency = strtolower((string) config('stripe.currency', 'gbp'));
+
+        try {
+            $pi = $this->stripe->retrievePaymentIntent($paymentIntentId);
+        } catch (\RuntimeException $e) {
+            Log::error('Stripe retrievePaymentIntent failed before confirm', [
+                'payment_intent_id' => $paymentIntentId,
+                'error' => $e->getMessage(),
+            ]);
+
+            $message = $e->getMessage();
+            if (app()->environment('production')) {
+                $message = 'Payment could not be verified. Please try again.';
+            }
+
+            return response()->json([
+                'success' => false,
+                'error' => $message,
+            ], 402);
+        }
+
+        $metadata = $pi->metadata;
+        $metadataExpectedAt = is_object($metadata) ? $metadata->expected_at : null;
+        $metadataFulfillmentType = is_object($metadata) ? $metadata->fulfillment_type : null;
+        $metadataTurnoverMinutes = is_object($metadata) ? $metadata->turnover_minutes : null;
+        $intentCreatedAt = isset($pi->created)
+            ? CarbonImmutable::createFromTimestamp((int) $pi->created, 'UTC')
+            : null;
+
+        if (
+            ! is_string($metadataExpectedAt)
+            || ! is_string($metadataFulfillmentType)
+            || ! is_numeric($metadataTurnoverMinutes)
+            || ! $intentCreatedAt instanceof CarbonImmutable
+            || $metadataFulfillmentType !== $fulfillmentType
+        ) {
+            return response()->json([
+                'success' => false,
+                'error' => 'The selected fulfillment time could not be verified. Please restart checkout.',
+            ], 422);
+        }
+
+        $expectedAt = $this->schedule->validateExpectedAt(
+            (string) $validated['expected_at'],
+            $cartContents,
+            $fulfillmentType,
+            $intentCreatedAt,
+            (int) $metadataTurnoverMinutes,
+        );
+
+        if ($expectedAt->format('Y-m-d\TH:i:s\Z') !== $metadataExpectedAt) {
+            return response()->json([
+                'success' => false,
+                'error' => 'The selected fulfillment time has changed. Please restart checkout.',
+            ], 422);
+        }
+
+        $receivedPence = (int) ($pi->amount_received);
+        $receivedCurrency = (string) ($pi->currency ?? '');
+        $piStatus = (string) ($pi->status ?? '');
+
+        if ($piStatus !== 'succeeded') {
+            Log::warning('Stripe confirm rejected: PaymentIntent not succeeded', [
+                'payment_intent_id' => $paymentIntentId,
+                'status' => $piStatus,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Payment was not completed. Please try again.',
+            ], 402);
+        }
+
+        if ($receivedCurrency !== $expectedCurrency || $receivedPence !== $expectedPence) {
+            Log::warning('Stripe confirm rejected: amount or currency mismatch', [
+                'payment_intent_id' => $paymentIntentId,
+                'received_pence' => $receivedPence,
+                'expected_pence' => $expectedPence,
+                'received_currency' => $receivedCurrency,
+                'expected_currency' => $expectedCurrency,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'The payment amount does not match your order total. Please restart checkout.',
+            ], 422);
+        }
+
+        $stripeChargeId = $this->stripe->extractChargeId($pi);
+        $paymentAttributes = [
+            'payment_status' => 'paid',
+            'payment_method' => 'stripe',
+            'stripe_payment_intent_id' => $paymentIntentId,
+            'stripe_charge_id' => $stripeChargeId,
+            'stripe_payment_method_type' => $this->stripe->extractPaymentMethodType($pi),
+            'stripe_card_last4' => $this->stripe->extractCardLast4($pi),
+            'stripe_card_brand' => $this->stripe->extractCardBrand($pi),
+            'amount_paid' => $this->stripe->extractAmountReceived($pi),
+            'paid_at' => now(),
+        ];
+
+        try {
+            $order = $this->orders->createFromCart(
+                cartContents: $cartContents,
+                customerData: [
+                    'email' => $email,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'phone' => $phone,
+                ],
+                fulfillmentType: $fulfillmentType,
+                deliveryZone: $deliveryZone,
+                deliveryPostcode: $deliveryPostcode,
+                shippingAmount: $shippingAmount,
+                notes: $notes,
+                expectedAt: $expectedAt,
+                loyaltyAccount: $loyaltyAccount,
+                loyaltyRedemption: $loyaltyRedemption,
+                paymentAttributes: $paymentAttributes,
+                shippingAddress: $fulfillmentType === 'delivery' ? [
+                    'line1' => (string) $validated['address_line1'],
+                    'line2' => isset($validated['address_line2']) ? (string) $validated['address_line2'] : null,
+                    'city' => (string) $validated['city'],
+                ] : null,
+            );
+        } catch (\Throwable $e) {
+            Log::error('Order creation failed after Stripe payment success', [
+                'payment_intent_id' => $paymentIntentId,
+                'stripe_charge_id' => $stripeChargeId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Order could not be placed. Your payment was captured; please contact support.',
+            ], 500);
+        }
+
+        $this->inventory->reserveForOrder($order);
+        $this->inventory->convertReservationToDeduction($order);
+
+        SendOrderConfirmationEmail::dispatch($order);
+
+        $this->cart->clear();
+
+        return response()->json([
+            'success' => true,
+            'redirectUrl' => URL::signedRoute('store.orders.confirmation', ['order' => $order->id]),
+        ]);
+    }
+
+    /**
+     * Handle incoming Stripe webhook notifications.
+     *
+     * Verifies the signature via StripeService, dispatches to typed handlers, and
+     * returns HTTP 200 immediately to satisfy Stripe's ack requirement.
+     */
+    public function stripeWebhook(Request $request): Response
+    {
+        $body = $request->getContent();
+
+        if ($body === '' || $body === '0') {
+            Log::warning('Stripe webhook received empty body');
+
+            return response('', 400);
+        }
+
+        /** @var string|null $sigHeader */
+        $sigHeader = $request->headers->get('Stripe-Signature');
+        if (! is_string($sigHeader) || $sigHeader === '') {
+            Log::warning('Stripe webhook missing Stripe-Signature header');
+
+            return response('', 400);
+        }
+
+        $event = $this->stripe->verifyWebhookSignature($body, $sigHeader);
+
+        if ($event === null) {
+            return response('', 400);
+        }
+
+        /** @var string */
+        $eventType = $event['type'] ?? 'unknown';
+
+        Log::info('Stripe webhook received', [
+            'event_type' => $eventType,
+        ]);
+
+        switch ($eventType) {
+            case 'payment_intent.succeeded':
+                $this->handleStripePaymentIntentSucceeded($event);
+                break;
+
+            case 'payment_intent.payment_failed':
+                $this->handleStripePaymentIntentFailed($event);
+                break;
+
+            case 'charge.refunded':
+                $this->handleStripeChargeRefunded($event);
+                break;
+
+            default:
+                Log::info('Stripe webhook: unhandled event type', [
+                    'event_type' => $eventType,
+                ]);
+                break;
+        }
+
+        return response('', 200);
+    }
+
+    /**
+     * Handle payment_intent.succeeded webhook (belt-and-braces fallback).
+     *
+     * If stripeConfirm normally marks the order paid — but if stripeConfirm crashes
+     * between the Stripe API call succeeding and the Order being persisted,
+     * this handler ensures the order still gets marked paid and admin
+     * once Stripe confirms the charge was good.
+     *
+     * @param  array<string, mixed>  $event
+     */
+    private function handleStripePaymentIntentSucceeded(array $event): void
+    {
+        /** @var array<string, mixed>|null $piData */
+        $piData = $event['data']['object'] ?? null;
+
+        if (! is_array($piData)) {
+            Log::warning('Stripe webhook: payment_intent.succeeded missing object');
+
+            return;
+        }
+
+        /** @var string|null $piId */
+        $piId = $piData['id'] ?? null;
+
+        if (! is_string($piId)) {
+            return;
+        }
+
+        $order = Order::where('stripe_payment_intent_id', $piId)->first();
+
+        if (! $order instanceof Order) {
+            Log::info('Stripe webhook: payment_intent.succeeded no local order yet (stripeConfirm likely pending or still running)', [
+                'payment_intent_id' => $piId,
+            ]);
+
+            return;
+        }
+
+        if ($order->payment_status !== 'paid') {
+            /** @var int|null $penceReceived */
+            $penceReceived = $piData['amount_received'] ?? null;
+            $amountReceived = is_int($penceReceived)
+                ? $this->stripe->fromSmallestUnit($penceReceived)
+                : $order->amount_paid;
+
+            /** @var array<string, mixed>|null $firstCharge */
+            $firstCharge = $piData['charges']['data'][0] ?? null;
+            $chargeId = is_array($firstCharge) && isset($firstCharge['id']) && is_string($firstCharge['id'])
+                ? $firstCharge['id']
+                : $order->stripe_charge_id;
+
+            $order->update([
+                'payment_status' => 'paid',
+                'stripe_charge_id' => $chargeId,
+                'amount_paid' => $amountReceived,
+                'paid_at' => $order->paid_at ?? now(),
+            ]);
+
+            Log::info('Order payment status updated via Stripe webhook', [
+                'order_id' => $order->id,
+                'payment_intent_id' => $piId,
+            ]);
+        }
+    }
+
+    /**
+     * Handle payment_intent.payment_failed webhook.
+     *
+     * Normally nothing needs to happen at this point: the PI was never confirmed by the client
+     * but failed upstream. Useful for logging /admin debugging /retry decisions later.
+     *
+     * @param  array<string, mixed>  $event
+     */
+    private function handleStripePaymentIntentFailed(array $event): void
+    {
+        /** @var array<string, mixed>|null $piData */
+        $piData = $event['data']['object'] ?? null;
+
+        $piId = is_array($piData) && isset($piData['id']) && is_string($piData['id'])
+            ? $piData['id']
+            : 'unknown';
+
+        /** @var string|null $code */
+        $code = $piData['last_payment_error']['code'] ?? null;
+        /** @var string|null $message */
+        $message = $piData['last_payment_error']['message'] ?? null;
+
+        Log::warning('Stripe webhook: payment_intent.payment_failed', [
+            'payment_intent_id' => $piId,
+            'code' => $code,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Handle charge.refunded webhook — mark order as refunded.
+     *
+     * @param  array<string, mixed>  $event
+     */
+    private function handleStripeChargeRefunded(array $event): void
+    {
+        /** @var array<string, mixed>|null $chargeData */
+        $chargeData = $event['data']['object'] ?? null;
+
+        if (! is_array($chargeData)) {
+            return;
+        }
+
+        /** @var string|null $chargeId */
+        $chargeId = $chargeData['id'] ?? null;
+        if (! is_string($chargeId)) {
+            return;
+        }
+
+        $order = Order::where('stripe_charge_id', $chargeId)->first();
+
+        if (! $order instanceof Order) {
+            Log::warning('Stripe webhook: no order found for charge.refunded', [
+                'charge_id' => $chargeId,
+            ]);
+
+            return;
+        }
+
+        $order->update([
+            'payment_status' => 'refunded',
+        ]);
+
+        Log::info('Order marked as refunded via Stripe webhook', [
+            'order_id' => $order->id,
+            'charge_id' => $chargeId,
+        ]);
     }
 }

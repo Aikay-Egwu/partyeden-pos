@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { Copy, Loader2 } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type {
     Column,
@@ -56,6 +56,9 @@ export default function ProductsIndex({ products, filters }: Props) {
     const deleteDialog = useDeleteDialog<Product>();
     const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
 
+    // Debounce timer to avoid hammering the server on every keystroke
+    const searchTimer = useRef<number | null>(null);
+
     // Derive pagination meta and links from the Inertia paginator shape
     const meta: PaginationMeta = {
         current_page: products.current_page,
@@ -74,20 +77,40 @@ export default function ProductsIndex({ products, filters }: Props) {
         next: products.next_page_url,
     };
 
-    // Handle search with page reload
+    // Debounced search handler — fires 300ms after typing stops.
+    // Resets to page 1 so the user actually sees results on a narrowed search.
     const handleSearch = useCallback(
         (value: string) => {
-            router.get(
-                '/admin/products',
-                { search: value, ...filters },
-                {
-                    preserveState: true,
-                    preserveScroll: true,
-                },
-            );
+            if (searchTimer.current) {
+                window.clearTimeout(searchTimer.current);
+            }
+
+            searchTimer.current = window.setTimeout(() => {
+                router.get(
+                    '/admin/products',
+                    {
+                        ...filters,
+                        search: value || undefined,
+                        page: value ? 1 : undefined,
+                    },
+                    {
+                        preserveState: true,
+                        preserveScroll: true,
+                    },
+                );
+            }, 300);
         },
         [filters],
     );
+
+    // Clean up pending debounce on unmount
+    useEffect(() => {
+        return () => {
+            if (searchTimer.current) {
+                window.clearTimeout(searchTimer.current);
+            }
+        };
+    }, []);
 
     const handleDuplicate = useCallback(async (product: Product) => {
         setDuplicatingId(product.id);

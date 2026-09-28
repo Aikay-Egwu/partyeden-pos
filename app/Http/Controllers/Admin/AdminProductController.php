@@ -129,6 +129,7 @@ class AdminProductController extends Controller
                 'tax_category_id' => $product->tax_category_id,
                 'cost_price' => $product->cost_price,
                 'selling_price' => $product->selling_price,
+                'turnover_time_hours' => $product->turnover_time_hours,
                 'product_type' => $product->product_type,
                 'customise_color' => $product->customise_color,
                 'customise_text' => $product->customise_text,
@@ -227,7 +228,7 @@ class AdminProductController extends Controller
         $validated = $request->validate([
             'main_colors' => ['array'],
             'main_colors.*' => ['exists:colors,id'],
-            'secondary_colors' => ['array', 'max:2'],
+            'secondary_colors' => ['array'],
             'secondary_colors.*' => ['exists:colors,id'],
         ]);
 
@@ -238,14 +239,6 @@ class AdminProductController extends Controller
         if ($product->customise_color && $mainColorIds === []) {
             return redirect()->back()->withErrors([
                 'main_colors' => 'Products with color customization enabled require at least one main color.',
-            ]);
-        }
-
-        // Validate that main and secondary colors do not overlap
-        $overlap = array_intersect($mainColorIds, $secondaryColorIds);
-        if ($overlap !== []) {
-            return redirect()->back()->withErrors([
-                'secondary_colors' => 'Secondary colors must not overlap with main colors.',
             ]);
         }
 
@@ -376,6 +369,7 @@ class AdminProductController extends Controller
             'description' => $product->description,
             'cost_price' => $product->cost_price,
             'selling_price' => $product->selling_price,
+            'turnover_time_hours' => $product->turnover_time_hours,
             'product_type' => $product->product_type,
             'is_active' => $product->is_active,
             'is_kit' => $product->is_kit,

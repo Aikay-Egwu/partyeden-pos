@@ -61,7 +61,17 @@ class StoreHomeController extends Controller
             'categories' => Category::whereNull('parent_id')
                 ->where('is_active', true)
                 ->orderBy('sort_order')
-                ->get(['id', 'name', 'slug', 'image_path']),
+                ->orderBy('name')
+                ->take(5)
+                ->get(['id', 'name', 'slug', 'description', 'image_path'])
+                ->map(fn (Category $category) => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'slug' => $category->slug,
+                    'description' => $category->description,
+                    'image' => $category->image_path ? Storage::url($category->image_path) : null,
+                ]),
+            'categoryCount' => Category::where('is_active', true)->count(),
             // Best sellers carousel (same query for now; replace with sales-sorted later)
             'bestSellers' => $bestSellerService
                 ->topProducts(10)

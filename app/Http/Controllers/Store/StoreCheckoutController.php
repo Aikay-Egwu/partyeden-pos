@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Services\CartService;
 use App\Services\DeliveryZoneMatcher;
 use App\Services\LoyaltyService;
+use App\Services\OrderScheduleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -25,6 +26,7 @@ class StoreCheckoutController extends Controller
         private CartService $cart,
         private DeliveryZoneMatcher $deliveryZoneMatcher,
         private LoyaltyService $loyalty,
+        private OrderScheduleService $schedule,
     ) {}
 
     public function index(): Response|RedirectResponse
@@ -51,6 +53,13 @@ class StoreCheckoutController extends Controller
                 'phone' => $customer->phone,
             ] : null,
             'loyaltySettings' => $this->loyalty->settings(),
+            'minimumExpectedAt' => $this->schedule
+                ->minimumExpectedAt($cartContents, 'pickup')
+                ->format('Y-m-d\TH:i'),
+            'minimumDeliveryAt' => $this->schedule
+                ->minimumExpectedAt($cartContents, 'delivery')
+                ->format('Y-m-d\TH:i'),
+            'maximumTurnoverTimeHours' => (float) $cartContents['turnover_time_hours'],
         ]);
     }
 

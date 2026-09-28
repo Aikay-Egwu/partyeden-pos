@@ -29,6 +29,12 @@ class Order extends Model
         'paypal_capture_id',
         'paypal_payer_email',
         'paypal_payer_id',
+        'stripe_payment_intent_id',
+        'stripe_charge_id',
+        'stripe_customer_id',
+        'stripe_payment_method_type',
+        'stripe_card_last4',
+        'stripe_card_brand',
         'subtotal',
         'tax_amount',
         'discount_amount',
@@ -46,6 +52,7 @@ class Order extends Model
         'shipping_city',
         'notes',
         'fulfillment_type',
+        'expected_at',
         'delivery_zone_id',
         'delivery_postcode',
         'created_by',
@@ -66,6 +73,7 @@ class Order extends Model
         'total' => 'decimal:4',
         'amount_paid' => 'decimal:4',
         'placed_at' => 'datetime',
+        'expected_at' => 'immutable_datetime',
         'paid_at' => 'datetime',
     ];
 

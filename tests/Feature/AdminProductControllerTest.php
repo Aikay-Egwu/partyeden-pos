@@ -29,9 +29,11 @@ test('admin can create product', function () {
         'name' => 'Test Product',
         'sku' => 'TEST-123',
         'product_type' => 'standard',
+        'turnover_time_hours' => 2.5,
     ])->assertRedirect(route('products.index'));
 
     $this->assertDatabaseHas('products', [
         'sku' => 'TEST-123',
+        'turnover_time_hours' => 2.5,
     ]);
 });

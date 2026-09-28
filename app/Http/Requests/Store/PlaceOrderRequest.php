@@ -28,6 +28,7 @@ class PlaceOrderRequest extends FormRequest
             'phone' => 'nullable|string|max:50',
             'notes' => 'nullable|string|max:1000',
             'fulfillment_type' => 'required|string|in:pickup,delivery',
+            'expected_at' => ['required', 'date_format:Y-m-d\TH:i'],
             'delivery_postcode' => 'nullable|string|max:20',
             // Structured delivery address (required for delivery orders)
             'address_line1' => 'required_if:fulfillment_type,delivery|nullable|string|max:255',

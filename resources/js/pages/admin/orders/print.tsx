@@ -53,6 +53,7 @@ type Order = {
     total: string;
     notes: string | null;
     fulfillment_type?: string | null;
+    expected_at?: string | null;
     delivery_postcode?: string | null;
     customer?: {
         id: string;
@@ -66,13 +67,14 @@ type Order = {
 
 type Props = {
     order: Order;
+    checkoutTimezone: string;
 };
 
 /**
  * Print-friendly pick list for fulfilment staff.
  * Uses a layout-free page so the browser print output only contains the pick list.
  */
-export default function OrderPrint({ order }: Props) {
+export default function OrderPrint({ order, checkoutTimezone }: Props) {
     useEffect(() => {
         const timer = window.setTimeout(() => window.print(), 150);
 
@@ -134,6 +136,19 @@ export default function OrderPrint({ order }: Props) {
                         <p className="capitalize">
                             {order.fulfillment_type ?? 'Pickup'}
                         </p>
+                        {order.expected_at && (
+                            <p className="mt-2 font-semibold">
+                                Expected:{' '}
+                                {new Date(order.expected_at).toLocaleString(
+                                    'en-GB',
+                                    {
+                                        dateStyle: 'medium',
+                                        timeStyle: 'short',
+                                        timeZone: checkoutTimezone,
+                                    },
+                                )}
+                            </p>
+                        )}
                         {order.fulfillment_type === 'delivery' && (
                             <div className="mt-2 space-y-1 text-muted-foreground">
                                 <p>Zone: {order.deliveryZone?.name ?? '-'}</p>

@@ -193,7 +193,7 @@ test('customisable product requires at least one main color', function () {
         ->assertSessionHasErrors(['main_colors']);
 });
 
-test('product cannot have more than two secondary colors', function () {
+test('product accepts more than two secondary colors', function () {
     $user = adminUser();
     $this->actingAs($user);
 
@@ -209,10 +209,13 @@ test('product cannot have more than two secondary colors', function () {
             'secondary_colors' => [$secondaryOne->id, $secondaryTwo->id, $secondaryThree->id],
         ])
         ->assertRedirect(route('products.edit', $product))
-        ->assertSessionHasErrors(['secondary_colors']);
+        ->assertSessionHasNoErrors();
+
+    $product->refresh();
+    expect($product->secondaryColors->count())->toBe(3);
 });
 
-test('product main and secondary colors cannot overlap', function () {
+test('product main and secondary colors can overlap', function () {
     $user = adminUser();
     $this->actingAs($user);
 
@@ -225,7 +228,11 @@ test('product main and secondary colors cannot overlap', function () {
             'secondary_colors' => [$color->id],
         ])
         ->assertRedirect(route('products.edit', $product))
-        ->assertSessionHasErrors(['secondary_colors']);
+        ->assertSessionHasNoErrors();
+
+    $product->refresh();
+    expect($product->mainColors->pluck('color_id')->contains($color->id))->toBeTrue();
+    expect($product->secondaryColors->pluck('color_id')->contains($color->id))->toBeTrue();
 });
 
 test('admin can create and update setup instructions', function () {

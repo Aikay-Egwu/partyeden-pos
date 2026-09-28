@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('orders', function (Blueprint $table): void {
+            $table->timestamp('expected_at')->nullable()
+                ->comment('Customer-requested delivery or collection date and time');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('orders', function (Blueprint $table): void {
+            $table->dropColumn('expected_at');
+        });
+    }
+};

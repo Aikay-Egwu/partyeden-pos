@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminCustomerController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminDeliveryZoneController;
 use App\Http\Controllers\Admin\AdminDiscountController;
+use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminGiftCardController;
 use App\Http\Controllers\Admin\AdminInventoryController;
 use App\Http\Controllers\Admin\AdminLocationController;
@@ -67,6 +68,8 @@ Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->group(fun
     Route::resource('blog-posts', AdminBlogPostController::class)->parameters([
         'blog-posts' => 'blog_post',
     ]);
+    Route::patch('faqs/{faq}/visibility', [AdminFaqController::class, 'updateVisibility'])->name('faqs.visibility.update');
+    Route::resource('faqs', AdminFaqController::class)->except(['show']);
 
     // ── Inventory ───────────────────────────────────────────────────
     Route::resource('locations', AdminLocationController::class);
