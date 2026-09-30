@@ -202,6 +202,7 @@ class AdminOrderController extends Controller
         ]);
     }
 
+    /** @return Builder<Order> */
     private function filteredOrdersQuery(Request $request): Builder
     {
         /** @var string|null $search */

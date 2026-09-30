@@ -850,9 +850,9 @@ final class StorePaymentController extends Controller
         }
 
         $metadata = $pi->metadata;
-        $metadataExpectedAt = is_object($metadata) ? $metadata->expected_at : null;
-        $metadataFulfillmentType = is_object($metadata) ? $metadata->fulfillment_type : null;
-        $metadataTurnoverMinutes = is_object($metadata) ? $metadata->turnover_minutes : null;
+        $metadataExpectedAt = $metadata['expected_at'] ?? null;
+        $metadataFulfillmentType = $metadata['fulfillment_type'] ?? null;
+        $metadataTurnoverMinutes = $metadata['turnover_minutes'] ?? null;
         $intentCreatedAt = isset($pi->created)
             ? CarbonImmutable::createFromTimestamp((int) $pi->created, 'UTC')
             : null;

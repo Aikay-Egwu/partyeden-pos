@@ -27,7 +27,9 @@ class PriceHistoryController extends ApiController
 
     public function store(StorePriceHistoryRequest $request): PriceHistoryResource
     {
-        $product = Product::findOrFail($request->input('product_id'));
+        $product = Product::query()
+            ->whereKey($request->input('product_id'))
+            ->firstOrFail();
         $variantId = $request->input('variant_id');
 
         $oldPrice = $variantId

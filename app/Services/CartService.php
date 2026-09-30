@@ -33,13 +33,19 @@ class CartService
         $turnoverTimeHours = 0.0;
 
         foreach ($cart as $key => $item) {
-            $product = Product::find($item['product_id']);
+            $productId = $item['product_id'] ?? null;
+            if (! is_string($productId)) {
+                continue;
+            }
+
+            $product = Product::query()->whereKey($productId)->first();
             if (! $product || ! $product->is_active) {
                 continue; // Product no longer available, skip
             }
 
-            $variant = $item['variant_id']
-                ? Variant::find($item['variant_id'])
+            $variantId = $item['variant_id'] ?? null;
+            $variant = is_string($variantId)
+                ? Variant::query()->whereKey($variantId)->first()
                 : null;
 
             $price = $variant

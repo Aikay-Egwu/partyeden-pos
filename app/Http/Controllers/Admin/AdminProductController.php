@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\AuditLog;
 use App\Models\Category;
 use App\Models\Color;
@@ -17,6 +18,7 @@ use App\Models\Location;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\TaxCategory;
+use App\Models\Variant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -442,7 +444,7 @@ class AdminProductController extends Controller
             'variants' => $product->variants
                 ->sortBy('name')
                 ->values()
-                ->map(function ($variant) {
+                ->map(function (Variant $variant): array {
                     return [
                         'id' => $variant->id,
                         'sku' => $variant->sku,
@@ -452,7 +454,7 @@ class AdminProductController extends Controller
                         'cost_price_adjustment' => $variant->cost_price_adjustment,
                         'is_active' => $variant->is_active,
                         'attribute_values' => $variant->attributeValues
-                            ->map(fn ($attributeValue) => [
+                            ->map(fn (AttributeValue $attributeValue): array => [
                                 'id' => $attributeValue->id,
                                 'value' => $attributeValue->value,
                                 'attribute' => $attributeValue->attribute?->only(['id', 'name']),
