@@ -72,12 +72,12 @@ jobs:
       - name: Deploy via SSH rsync
         uses: easingthemes/ssh-deploy@d07b20976719503360f4b5c41c79c439e0e3e2c3 # v4.1.10
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.PLESK_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.PLESK_HOST }}
-          REMOTE_USER: ${{ secrets.PLESK_USER }}
-          REMOTE_PORT: ${{ secrets.PLESK_PORT || 22 }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
           SOURCE: "./"
-          TARGET: ${{ secrets.PLESK_DEPLOY_PATH }}
+          TARGET: ${{ secrets.DEPLOY_PATH }}
           # Exclude server-specific files that should not be overwritten
           EXCLUDE: ".env,.htaccess,storage/logs/*,storage/framework/cache/*,storage/framework/sessions/*,storage/framework/views/*,storage/app/*,storage/pail/*,public/storage,vendor/.htaccess,.git,.github"
           # Set permissions suitable for Plesk (adjust if your Plesk user needs different umask)
