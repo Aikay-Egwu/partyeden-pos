@@ -1,4 +1,4 @@
-name: CI
+name: CI for Partyeden
 
 on:
   push:

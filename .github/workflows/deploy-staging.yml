@@ -1,4 +1,4 @@
-name: Deploy to Staging
+name: Deploy Partyeden to Staging
 
 on:
   push:
