@@ -10,11 +10,13 @@ use Illuminate\Validation\ValidationException;
 
 final class OrderScheduleService
 {
+    /** @param array<string, mixed> $cartContents */
     public function maximumTurnoverMinutes(array $cartContents): int
     {
         return (int) ceil((float) ($cartContents['turnover_time_hours'] ?? 0) * 60);
     }
 
+    /** @param array<string, mixed> $cartContents */
     public function minimumExpectedAt(
         array $cartContents,
         string $fulfillmentType,
@@ -42,6 +44,7 @@ final class OrderScheduleService
         return $minimum;
     }
 
+    /** @param array<string, mixed> $cartContents */
     public function validateExpectedAt(
         string $expectedAt,
         array $cartContents,

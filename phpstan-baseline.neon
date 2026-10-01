@@ -199,66 +199,6 @@ parameters:
 			path: app/Http/Controllers/Admin/AdminOccasionController.php
 
 		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$customer\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$delivery_postcode\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$fulfillment_type\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$notes\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$order_number\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$payment_status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$total\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
-			message: '#^Method App\\Http\\Controllers\\Admin\\AdminOrderController\:\:filteredOrdersQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Http/Controllers/Admin/AdminOrderController.php
-
-		-
 			message: '#^Access to an undefined property App\\Models\\Product\:\:\$pivot\.$#'
 			identifier: property.notFound
 			count: 4
@@ -345,12 +285,6 @@ parameters:
 		-
 			message: '#^Method App\\Http\\Controllers\\Admin\\AdminProductController\:\:updateStock\(\) has no return type specified\.$#'
 			identifier: missingType.return
-			count: 1
-			path: app/Http/Controllers/Admin/AdminProductController.php
-
-		-
-			message: '#^Return type of call to method Illuminate\\Support\\Collection\<int,array\<string, mixed\>\>\:\:all\(\) contains unresolvable type\.$#'
-			identifier: method.unresolvableReturnType
 			count: 1
 			path: app/Http/Controllers/Admin/AdminProductController.php
 
@@ -589,24 +523,6 @@ parameters:
 			path: app/Http/Controllers/Api/LocationController.php
 
 		-
-			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$selling_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Api/PriceHistoryController.php
-
-		-
-			message: '#^Call to an undefined method App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:update\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Http/Controllers/Api/PriceHistoryController.php
-
-		-
-			message: '#^Call to an undefined method App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:variants\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: app/Http/Controllers/Api/PriceHistoryController.php
-
-		-
 			message: '#^Using nullsafe property access "\?\-\>price_adjustment" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
 			identifier: nullsafe.neverNull
 			count: 1
@@ -691,20 +607,8 @@ parameters:
 			path: app/Http/Controllers/Api/VariantController.php
 
 		-
-			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Controllers/Store/StoreCartController.php
-
-		-
 			message: '#^Method App\\Http\\Controllers\\Store\\StoreCartController\:\:validateCartSelections\(\) has parameter \$validated with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: app/Http/Controllers/Store/StoreCartController.php
-
-		-
-			message: '#^Parameter \#1 \$product of method App\\Http\\Controllers\\Store\\StoreCartController\:\:validateCartSelections\(\) expects App\\Models\\Product, App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\> given\.$#'
-			identifier: argument.type
 			count: 1
 			path: app/Http/Controllers/Store/StoreCartController.php
 
@@ -2917,102 +2821,6 @@ parameters:
 			path: app/Http/Resources/ProductImageResource.php
 
 		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$barcode\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$category_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$cost_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$description\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$product_type\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$reorder_level\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$selling_price\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$sku\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$tax_category_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$track_inventory\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$unit\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
-			message: '#^Access to an undefined property App\\Http\\Resources\\ProductResource\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Http/Resources/ProductResource.php
-
-		-
 			message: '#^Method App\\Http\\Resources\\ProductResource\:\:toArray\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -4681,60 +4489,6 @@ parameters:
 			path: app/Services/BestSellerService.php
 
 		-
-			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$is_active\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/CartService.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/CartService.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$preorder\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/CartService.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$product_type\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/CartService.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:\$selling_price\.$#'
-			identifier: property.notFound
-			count: 2
-			path: app/Services/CartService.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Variant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Variant\>\:\:\$name\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/CartService.php
-
-		-
-			message: '#^Access to an undefined property App\\Models\\Variant\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Variant\>\:\:\$price_adjustment\.$#'
-			identifier: property.notFound
-			count: 1
-			path: app/Services/CartService.php
-
-		-
-			message: '#^Call to an undefined method App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:images\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Services/CartService.php
-
-		-
-			message: '#^Call to an undefined method App\\Models\\Product\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\Product\>\:\:kitMappings\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: app/Services/CartService.php
-
-		-
 			message: '#^Method App\\Services\\CartService\:\:add\(\) has parameter \$customization with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -4859,18 +4613,6 @@ parameters:
 			identifier: property.notFound
 			count: 2
 			path: database/seeders/ProductSeeder.php
-
-		-
-			message: '#^Method Database\\Seeders\\ShopDataSeeder\:\:seedProductImages\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: database/seeders/ShopDataSeeder.php
-
-		-
-			message: '#^Method Database\\Seeders\\ShopDataSeeder\:\:seedProducts\(\) is unused\.$#'
-			identifier: method.unused
-			count: 1
-			path: database/seeders/ShopDataSeeder.php
 
 		-
 			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
