@@ -1,5 +1,6 @@
 name: Deploy Partyeden to Staging
 
+# Trigger this workflow whenever code is pushed to the staging branch
 on:
   push:
     branches: [staging]
@@ -7,9 +8,11 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Links to the "staging" environment in GitHub (for environment-specific secrets and protection rules)
     environment: staging
 
     steps:
+      # Connect to the staging server over SSH and run the deployment script
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1
         with:
@@ -18,43 +21,68 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            # Exit immediately if any command fails
             set -e
+
+            # Ensure the deploy directory exists, then move into it
+            mkdir -p ${{ secrets.DEPLOY_PATH }}
             cd ${{ secrets.DEPLOY_PATH }}
 
-            echo "==> Trusting this directory for Git (avoids 'dubious ownership' errors)"
+            # Mark this directory as safe for Git (prevents "dubious ownership" errors on shared servers)
             git config --global --get-all safe.directory 2>/dev/null | grep -qxF "$(pwd)" || git config --global --add safe.directory "$(pwd)"
 
-            echo "==> Pulling latest staging code"
+            # Use the deploy key for Git SSH operations (read-only access to the repo)
             export GIT_SSH_COMMAND="ssh -i /var/www/vhosts/partyeden.co.uk/staging-files/.ssh/github_deploy_key -o IdentitiesOnly=yes"
-            git fetch --all
-            git reset --hard origin/staging
 
+            # Pull the latest code — either fetch if repo exists, or clone fresh on first deploy
+            if [ -d .git ]; then
+              echo "==> Pulling latest staging code"
+              git fetch --all
+              git reset --hard origin/staging
+            else
+              echo "==> No git repo found — cloning staging for the first time"
+              cd ..
+              rm -rf "$(basename "${{ secrets.DEPLOY_PATH }}")"
+              git clone --branch staging --single-branch git@github.com:${{ github.repository }}.git "$(basename "${{ secrets.DEPLOY_PATH }}")"
+              cd "${{ secrets.DEPLOY_PATH }}"
+            fi
+
+            # Install PHP dependencies (production only, optimized autoloader for performance)
             echo "==> Installing PHP dependencies"
             composer install --no-dev --optimize-autoloader --no-interaction
 
+            # Install Node.js dependencies (exact versions from package-lock.json)
             echo "==> Installing frontend dependencies"
             npm ci
 
+            # Build frontend assets (JavaScript, CSS) and the Inertia SSR bundle
+            # The SSR port is read from .env so the server-side renderer binds to the right port
             echo "==> Building assets (client + SSR), mirroring Plesk's own build step"
             export INERTIA_SSR_PORT=$(grep -oP '(?<=^INERTIA_SSR_PORT=).*' .env || true)
             rm -rf public/hot
             npm run build:ssr
 
+            # Apply any pending database migrations (safe for production with --force)
             echo "==> Running database migrations"
             php artisan migrate --force
 
+            # Rebuild Laravel's caches so the app uses the latest config, routes, and views
             echo "==> Refreshing caches"
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            # Ensure the storage symlink exists (links public/storage to storage/app/public)
             php artisan storage:link || true
 
+            # Stop the Inertia SSR process — Supervisor will automatically restart it with the new code
             echo "==> Restarting the Inertia SSR process (Supervisor auto-restarts it)"
             php artisan inertia:stop-ssr || true
 
+            # Signal queue workers to gracefully restart so they pick up the new code
             echo "==> Restarting queue workers so they pick up new code"
             php artisan queue:restart || true
 
+      # Quick health check — hit the staging URL and fail the deploy if it returns a 5xx error
       - name: Smoke test
         run: |
           STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.APP_URL }})
