@@ -81,8 +81,7 @@ jobs:
           SOURCE: "./"
           TARGET: ${{ secrets.DEPLOY_PATH }}
           ARGS: "-rlptzv --no-owner --no-group --omit-dir-times"
-          EXCLUDE: ".env, storage/logs/*, storage/framework/cache/*, storage/framework/sessions/*, storage/framework/views/*, storage/pail/*, public/storage, .git, .github"
-          #EXCLUDE: ".env, storage/logs/*, storage/framework/cache/*, storage/framework/sessions/*, storage/framework/views/*, storage/app/*, storage/pail/*, public/storage, .git, .github"
+          EXCLUDE: ".env, storage/logs/*, storage/framework/cache/*, storage/framework/sessions/*, storage/framework/views/*, storage/app/*, storage/pail/*, public/storage, .git, .github"
           SCRIPT_BEFORE: |
             whoami
             mkdir -p ${{ secrets.DEPLOY_PATH }}
@@ -138,9 +137,8 @@ jobs:
             $PHP_BIN artisan view:cache --no-ansi || true
             $PHP_BIN artisan migrate --force --no-ansi
             
-            # 7. Create storage symlink if missing
-            if [ ! -L public/storage ]; then
-              $PHP_BIN artisan storage:link --no-ansi || true
-            fi
+            # 7. Cleanly recreate storage symlink
+            rm -rf public/storage
+            $PHP_BIN artisan storage:link --no-ansi || true
             
             echo "Deployment complete."
