@@ -80,6 +80,7 @@ jobs:
           REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
           SOURCE: "./"
           TARGET: ${{ secrets.DEPLOY_PATH }}
+          ARGS: "-rlptzv --no-owner --no-group --omit-dir-times"
           EXCLUDE: ".env, .htaccess, storage/logs/*, storage/framework/cache/*, storage/framework/sessions/*, storage/framework/views/*, storage/app/*, storage/pail/*, public/storage, vendor/.htaccess, .git, .github"
           SCRIPT_BEFORE: |
             whoami
@@ -92,8 +93,18 @@ jobs:
           SCRIPT_AFTER: |
             cd ${{ secrets.DEPLOY_PATH }}
             
-            # Ensure permissions for storage and cache
-            chmod -R 755 storage bootstrap/cache
+            # Fix file and folder permissions to ensure web server read access (prevents 403)
+            find . -type d -exec chmod 755 {} +
+            find . -type f -exec chmod 644 {} +
+            chmod -R 775 storage bootstrap/cache
+            
+            # If deploying as root, restore ownership to Plesk subscription user (:psacln / :psaserv)
+            if [ "$(id -u)" -eq 0 ]; then
+              TARGET_OWNER=$(stat -c '%U:%G' .. 2>/dev/null || stat -f '%Su:%Sg' .. 2>/dev/null || true)
+              if [ -n "$TARGET_OWNER" ] && [ "$TARGET_OWNER" != "root:root" ]; then
+                chown -R "$TARGET_OWNER" .
+              fi
+            fi
             
             # Run Laravel post-deployment commands
             php artisan config:cache --no-ansi
