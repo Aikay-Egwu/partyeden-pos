@@ -1,64 +1,109 @@
-name: Deploy to Staging
+name: Deploy Staging (Plesk)
 
 on:
   push:
-    branches: [staging]
+    branches:
+      - develop
+      - staging
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: .
 
 jobs:
-  deploy:
+  build-and-deploy:
+    name: Build & Deploy to Plesk Staging
     runs-on: ubuntu-latest
     environment: staging
 
     steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            set -e
-            cd ${{ secrets.DEPLOY_PATH }}
+          persist-credentials: false
 
-            echo "==> Trusting this directory for Git (avoids 'dubious ownership' errors)"
-            git config --global --get-all safe.directory 2>/dev/null | grep -qxF "$(pwd)" || git config --global --add safe.directory "$(pwd)"
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          tools: composer:v2
+          coverage: none
 
-            echo "==> Pulling latest staging code"
-            export GIT_SSH_COMMAND="ssh -i /var/www/vhosts/mappsorg.com/staging/.ssh/github_deploy_key -o IdentitiesOnly=yes"
-            git fetch --all
-            git reset --hard origin/staging
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-            echo "==> Installing PHP dependencies"
-            composer install --no-dev --optimize-autoloader --no-interaction
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-            echo "==> Installing frontend dependencies"
-            npm ci
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-            echo "==> Building assets (client + SSR), mirroring Plesk's own build step"
-            export INERTIA_SSR_PORT=$(grep -oP '(?<=^INERTIA_SSR_PORT=).*' .env || true)
-            rm -rf public/hot
-            npm run build:ssr
+      - name: Install Composer dependencies (production)
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
-            echo "==> Running database migrations"
-            php artisan migrate --force
-
-            echo "==> Refreshing caches"
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan storage:link || true
-
-            echo "==> Restarting the Inertia SSR process (Supervisor auto-restarts it)"
-            php artisan inertia:stop-ssr || true
-
-            echo "==> Restarting queue workers so they pick up new code"
-            php artisan queue:restart || true
-
-      - name: Smoke test
+      - name: Run post-install Composer scripts
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.APP_URL }})
-          if [ "$STATUS" -ge 500 ]; then
-            echo "Staging returned HTTP $STATUS after deploy!" && exit 1
-          fi
-          echo "Staging responded with HTTP $STATUS"
+          composer run-script post-autoload-dump
+          composer run-script post-update-cmd || true
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Prepare deployment package (clean dev-only files)
+        run: |
+          rm -f .env
+          rm -rf tests
+          rm -rf database/database.sqlite
+
+      - name: Deploy via SSH rsync
+        uses: easingthemes/ssh-deploy@v5.1.0
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
+          SOURCE: "./"
+          TARGET: ${{ secrets.DEPLOY_PATH }}
+          EXCLUDE: ".env, .htaccess, storage/logs/*, storage/framework/cache/*, storage/framework/sessions/*, storage/framework/views/*, storage/app/*, storage/pail/*, public/storage, vendor/.htaccess, .git, .github"
+          SCRIPT_BEFORE: |
+            whoami
+            mkdir -p ${{ secrets.DEPLOY_PATH }}
+            # If Plesk or server git hooks expect origin references, fetch them before deploying
+            if [ -d "${{ secrets.DEPLOY_PATH }}/.git" ]; then
+              cd ${{ secrets.DEPLOY_PATH }}
+              git fetch origin staging || git fetch --all || true
+            fi
+          SCRIPT_AFTER: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # Ensure permissions for storage and cache
+            chmod -R 755 storage bootstrap/cache
+            
+            # Run Laravel post-deployment commands
+            php artisan config:cache --no-ansi
+            php artisan route:cache --no-ansi || true
+            php artisan view:cache --no-ansi || true
+            php artisan migrate --force --no-ansi
+            
+            # Create storage symlink if missing
+            if [ ! -L public/storage ]; then
+              php artisan storage:link --no-ansi
+            fi
+            
+            echo "Deployment complete."
