@@ -81,7 +81,7 @@ jobs:
           SOURCE: "./"
           TARGET: ${{ secrets.DEPLOY_PATH }}
           ARGS: "-rlptzv --no-owner --no-group --omit-dir-times"
-          EXCLUDE: ".env, .htaccess, storage/logs/*, storage/framework/cache/*, storage/framework/sessions/*, storage/framework/views/*, storage/app/*, storage/pail/*, public/storage, vendor/.htaccess, .git, .github"
+          EXCLUDE: ".env, storage/logs/*, storage/framework/cache/*, storage/framework/sessions/*, storage/framework/views/*, storage/app/*, storage/pail/*, public/storage, .git, .github"
           SCRIPT_BEFORE: |
             whoami
             mkdir -p ${{ secrets.DEPLOY_PATH }}
