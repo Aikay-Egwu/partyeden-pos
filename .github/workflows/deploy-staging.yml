@@ -15,6 +15,9 @@ jobs:
       # Connect to the staging server over SSH and run the deployment script
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1
+        env:
+          # Pass the GitHub deploy key into the SSH session so we can write it to a temp file on the server
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
@@ -24,6 +27,14 @@ jobs:
             # Exit immediately if any command fails
             set -e
 
+            # Write the deploy key to a temporary file for Git SSH operations
+            DEPLOY_KEY_FILE=$(mktemp)
+            echo "$DEPLOY_KEY" > "$DEPLOY_KEY_FILE"
+            chmod 600 "$DEPLOY_KEY_FILE"
+
+            # Clean up the temp key file when the script exits (success or failure)
+            trap "rm -f $DEPLOY_KEY_FILE" EXIT
+
             # Ensure the deploy directory exists, then move into it
             mkdir -p ${{ secrets.DEPLOY_PATH }}
             cd ${{ secrets.DEPLOY_PATH }}
@@ -31,8 +42,8 @@ jobs:
             # Mark this directory as safe for Git (prevents "dubious ownership" errors on shared servers)
             git config --global --get-all safe.directory 2>/dev/null | grep -qxF "$(pwd)" || git config --global --add safe.directory "$(pwd)"
 
-            # Use the deploy key for Git SSH operations (read-only access to the repo)
-            export GIT_SSH_COMMAND="ssh -i /var/www/vhosts/partyeden.co.uk/staging-files/.ssh/github_deploy_key -o IdentitiesOnly=yes"
+            # Use the temp deploy key for Git SSH operations, and trust GitHub's host key
+            export GIT_SSH_COMMAND="ssh -i $DEPLOY_KEY_FILE -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
 
             # Pull the latest code — either fetch if repo exists, or clone fresh on first deploy
             if [ -d .git ]; then
