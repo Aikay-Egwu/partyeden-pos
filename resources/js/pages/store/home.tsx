@@ -1,18 +1,22 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { CartSidebar } from '@/components/store/cart-sidebar';
-import { FigmaAnnouncementBar } from '@/components/store/FigmaAnnouncementBar';
-import { FigmaBespokeInstalls } from '@/components/store/FigmaBespokeInstalls';
+//import { FigmaAnnouncementBar } from '@/components/store/FigmaAnnouncementBar';
+//import { FigmaBespokeInstalls } from '@/components/store/FigmaBespokeInstalls';
 import { FigmaBestsellersRow } from '@/components/store/FigmaBestsellersRow';
+import type { StoreProductSummary } from '@/components/store/FigmaBestsellersRow';
 import { FigmaCategoriesGrid } from '@/components/store/FigmaCategoriesGrid';
-import { FigmaFeatureRow } from '@/components/store/FigmaFeatureRow';
+import { FigmaCelebrationServices } from '@/components/store/FigmaCelebrationServices';
+//import { FigmaFeatureRow } from '@/components/store/FigmaFeatureRow';
 import { FigmaFooter } from '@/components/store/FigmaFooter';
 import { FigmaHeader } from '@/components/store/FigmaHeader';
 import { FigmaHeroSection } from '@/components/store/FigmaHeroSection';
-import { FigmaLiveCustomiser } from '@/components/store/FigmaLiveCustomiser';
-import { FigmaNewsletter } from '@/components/store/FigmaNewsletter';
-import { FigmaPaletteSwatches } from '@/components/store/FigmaPaletteSwatches';
-import { FigmaReviewsFaq } from '@/components/store/FigmaReviewsFaq';
+//import { FigmaLiveCustomiser } from '@/components/store/FigmaLiveCustomiser';
+//import { FigmaNewsletter } from '@/components/store/FigmaNewsletter';
+import { FigmaOccasionsRow } from '@/components/store/FigmaOccasionsRow';
+import type { FigmaOccasionCard } from '@/components/store/FigmaOccasionsRow';
+//import { FigmaPaletteSwatches } from '@/components/store/FigmaPaletteSwatches';
+//import { FigmaReviewsFaq } from '@/components/store/FigmaReviewsFaq';
 
 type StoreCategory = {
     id: string;
@@ -25,6 +29,9 @@ type StoreCategory = {
 type Props = {
     categories: StoreCategory[];
     categoryCount: number;
+    occasions?: FigmaOccasionCard[];
+    bestSellers?: StoreProductSummary[];
+    heroCarousel?: { src: string; alt: string }[];
 };
 
 /**
@@ -45,7 +52,13 @@ type Props = {
  * Every block is an independent, typed, reusable Figma* component
  * living under `components/store/`.
  */
-export default function Home({ categories, categoryCount }: Props) {
+export default function Home({
+    categories,
+    categoryCount,
+    occasions,
+    bestSellers,
+    heroCarousel,
+}: Props) {
     const pageProps = usePage().props as unknown as {
         cart?: {
             items?: Array<{
@@ -89,22 +102,26 @@ export default function Home({ categories, categoryCount }: Props) {
             {/* Page canvas — Pop &amp; Joy cream/lilac background */}
             <div className="min-h-screen w-full bg-popjoy-bg">
                 {/* Header stack */}
-                <FigmaAnnouncementBar />
+                {/* <FigmaAnnouncementBar /> */}
                 <FigmaHeader onCartClick={() => setCartOpen(true)} />
 
                 {/* Main content landmark */}
                 <main id="main" role="main">
-                    <FigmaHeroSection />
-                    <FigmaFeatureRow />
+                    <FigmaHeroSection carouselImages={heroCarousel} />
+                    {/* <FigmaFeatureRow /> */}
+
                     <FigmaCategoriesGrid
                         categories={categories}
                         totalCategories={categoryCount}
                     />
+                    <FigmaOccasionsRow occasions={occasions ?? []} />
                     {/* <FigmaLiveCustomiser /> */}
-                    {/* <FigmaBestsellersRow /> */}
+                    <FigmaBestsellersRow products={bestSellers} />
+                    <FigmaCelebrationServices />
+
                     {/* <FigmaPaletteSwatches /> */}
                     {/* <FigmaBespokeInstalls /> */}
-                    <FigmaReviewsFaq />
+                    {/* <FigmaReviewsFaq /> */}
                     {/* <FigmaNewsletter /> */}
                 </main>
 

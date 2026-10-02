@@ -27,6 +27,16 @@ import { formatCurrency } from '@/lib/currency';
 const normalizePostcode = (postcode: string) =>
     postcode.replace(/\s+/g, '').toUpperCase().trim();
 
+/**
+ * Allowed time-of-day windows per fulfillment type (24h "HH:MM").
+ * Delivery: 5:00 PM–9:00 PM. Collection: 12:00 PM–5:30 PM.
+ * Must stay in sync with OrderScheduleService on the server.
+ */
+const FULFILLMENT_WINDOWS = {
+    delivery: { start: '17:00', end: '21:00', label: '5:00 PM and 9:00 PM' },
+    pickup: { start: '12:00', end: '17:30', label: '12:00 PM and 5:30 PM' },
+} as const;
+
 type CartItem = {
     line_key: string;
     product_id: string;
@@ -378,8 +388,18 @@ export default function CheckoutPage({
             return;
         }
 
-        if (data.fulfillment_type === 'delivery' && selectedTime < '15:00') {
-            toast.error('Delivery is available from 3:00 PM onwards.');
+        const isDelivery = data.fulfillment_type === 'delivery';
+        const timeWindow = isDelivery
+            ? FULFILLMENT_WINDOWS.delivery
+            : FULFILLMENT_WINDOWS.pickup;
+
+        if (
+            selectedTime &&
+            (selectedTime < timeWindow.start || selectedTime > timeWindow.end)
+        ) {
+            toast.error(
+                `${isDelivery ? 'Delivery' : 'Collection'} is available between ${timeWindow.label}.`,
+            );
 
             return;
         }
@@ -897,8 +917,11 @@ export default function CheckoutPage({
                                                     ? 'hour'
                                                     : 'hours'}{' '}
                                                 based on the longest-turnaround
-                                                item. Delivery is available from
-                                                3:00 PM onwards.
+                                                item.{' '}
+                                                {data.fulfillment_type ===
+                                                'delivery'
+                                                    ? 'Delivery is available between 5:00 PM and 9:00 PM.'
+                                                    : 'Collection is available between 12:00 PM and 5:30 PM.'}
                                             </p>
                                             <InputError
                                                 message={errors.expected_at}

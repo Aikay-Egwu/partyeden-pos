@@ -10,6 +10,26 @@ use Illuminate\Validation\ValidationException;
 
 final class OrderScheduleService
 {
+    /**
+     * Allowed time-of-day windows per fulfillment type (24h "H:i", local
+     * checkout timezone). Delivery: 5:00 PM–9:00 PM. Collection: 12:00 PM–5:30 PM.
+     *
+     * @var array<string, array{0: string, 1: string}>
+     */
+    private const FULFILLMENT_WINDOWS = [
+        'delivery' => ['17:00', '21:00'],
+        'pickup' => ['12:00', '17:30'],
+    ];
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    private function windowFor(string $fulfillmentType): array
+    {
+        return self::FULFILLMENT_WINDOWS[$fulfillmentType]
+            ?? self::FULFILLMENT_WINDOWS['pickup'];
+    }
+
     /** @param array<string, mixed> $cartContents */
     public function maximumTurnoverMinutes(array $cartContents): int
     {
@@ -34,11 +54,14 @@ final class OrderScheduleService
             $minimum = $minimum->startOfMinute()->addMinute();
         }
 
-        if ($fulfillmentType === 'delivery') {
-            $deliveryStart = $now->setTime(15, 0);
-            if ($minimum->lessThan($deliveryStart)) {
-                $minimum = $deliveryStart;
-            }
+        // Never schedule before the window opens today (e.g. collection before 12:00).
+        [$windowStart] = $this->windowFor($fulfillmentType);
+        $start = $now->setTime(
+            (int) substr($windowStart, 0, 2),
+            (int) substr($windowStart, 3, 2),
+        );
+        if ($minimum->lessThan($start)) {
+            $minimum = $start;
         }
 
         return $minimum;
@@ -79,9 +102,14 @@ final class OrderScheduleService
             ]);
         }
 
-        if ($fulfillmentType === 'delivery' && $scheduledAt->format('H:i') < '15:00') {
+        [$windowStart, $windowEnd] = $this->windowFor($fulfillmentType);
+        $time = $scheduledAt->format('H:i');
+
+        if ($time < $windowStart || $time > $windowEnd) {
             throw ValidationException::withMessages([
-                'expected_at' => 'Delivery is available from 3:00 PM onwards.',
+                'expected_at' => $fulfillmentType === 'delivery'
+                    ? 'Delivery is available between 5:00 PM and 9:00 PM.'
+                    : 'Collection is available between 12:00 PM and 5:30 PM.',
             ]);
         }
 

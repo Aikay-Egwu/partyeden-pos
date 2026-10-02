@@ -15,7 +15,9 @@ uses(RefreshDatabase::class);
 
 function paymentExpectedAt(): string
 {
-    return now('Europe/London')->addDay()->setTime(16, 0)->format('Y-m-d\TH:i');
+    // 17:00 sits inside both fulfillment windows (delivery 17:00–21:00,
+    // collection 12:00–17:30), so the shared helper works for either type.
+    return now('Europe/London')->addDay()->setTime(17, 0)->format('Y-m-d\TH:i');
 }
 
 beforeEach(function (): void {

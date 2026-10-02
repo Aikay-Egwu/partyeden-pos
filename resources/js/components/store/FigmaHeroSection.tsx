@@ -1,6 +1,18 @@
 import { Link } from '@inertiajs/react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { cn } from '@/lib/utils';
+
+/**
+ * A single hero carousel slide.
+ */
+export type FigmaHeroSlide = {
+    /** Image source URL */
+    src: string;
+    /** Accessible alt text */
+    alt: string;
+};
 
 /**
  * Trust badge item used in the hero section trust row.
@@ -21,6 +33,11 @@ export type FigmaTrustBadge = {
 export type FigmaHeroSectionProps = {
     /** Optional trust badges. Falls back to the 4 default badges. */
     trustBadges?: FigmaTrustBadge[];
+    /**
+     * Optional hero carousel slides (typically loaded from `public/carousel`).
+     * Falls back to a single default image when empty/omitted.
+     */
+    carouselImages?: FigmaHeroSlide[];
     /** Optional additional className for the section container */
     className?: string;
     /** Optional id attribute for the outer section */
@@ -28,11 +45,18 @@ export type FigmaHeroSectionProps = {
 };
 
 const defaultTrustBadges: FigmaTrustBadge[] = [
-    { icon: '🎈', label: '100% Pre-inflated' },
-    { icon: '🚚', label: '7-Day Named Delivery' },
+    { icon: '🎈', label: '100% designed for you' },
+    { icon: '🚚', label: 'Delivered to your door' },
     { icon: '✨', label: 'Eco Latex & Ribbons' },
     { icon: '⭐', label: '4.9/5 (8,500+ Reviews)' },
 ];
+
+const defaultSlides: FigmaHeroSlide[] = [
+    { src: '/images/home-page.jpg', alt: 'Luxury birthday balloon bouquet' },
+];
+
+/** Auto-advance interval for the hero carousel (ms). */
+const CAROUSEL_INTERVAL = 5000;
 
 /**
  * Hero section matching the Figma `.section1Herosection` + `.container19` spec.
@@ -49,9 +73,46 @@ const defaultTrustBadges: FigmaTrustBadge[] = [
  */
 export function FigmaHeroSection({
     trustBadges = defaultTrustBadges,
+    carouselImages,
     className,
     id,
 }: FigmaHeroSectionProps) {
+    const slides =
+        carouselImages && carouselImages.length > 0
+            ? carouselImages
+            : defaultSlides;
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const goTo = useCallback(
+        (index: number) =>
+            setActiveIndex(
+                ((index % slides.length) + slides.length) % slides.length,
+            ),
+        [slides.length],
+    );
+    const showNext = useCallback(
+        () => goTo(activeIndex + 1),
+        [goTo, activeIndex],
+    );
+    const showPrev = useCallback(
+        () => goTo(activeIndex - 1),
+        [goTo, activeIndex],
+    );
+
+    // Auto-advance while there is more than one slide.
+    useEffect(() => {
+        if (slides.length < 2) {
+            return;
+        }
+
+        const timer = setInterval(
+            () => setActiveIndex((prev) => (prev + 1) % slides.length),
+            CAROUSEL_INTERVAL,
+        );
+
+        return () => clearInterval(timer);
+    }, [slides.length]);
+
     return (
         <section
             id={id}
@@ -135,11 +196,9 @@ export function FigmaHeroSection({
                         >
                             Shop now
                         </span>
-                        <img
-                            src="/figma-img/muhjqso4-fkgmdpk.svg"
-                            alt=""
+                        <ArrowRight
                             aria-hidden="true"
-                            className="h-2.75 w-3.75 shrink-0"
+                            className="h-5 w-5 shrink-0 text-popjoy-gold-ink"
                         />
                     </Link>
 
@@ -160,18 +219,16 @@ export function FigmaHeroSection({
                                 <span className="font-plus-jakarta text-xs leading-5 font-bold tracking-[0.35px] text-white sm:text-sm">
                                     Shop Personalised Balloons
                                 </span>
-                                <img
-                                    src="/figma-img/muhjqso4-eqzsvcn.svg"
-                                    alt=""
+                                <ArrowRight
                                     aria-hidden="true"
-                                    className="h-2.75 w-2.75 shrink-0"
+                                    className="h-4 w-4 shrink-0 text-white"
                                 />
                             </div>
                         </a>
 
                         {/* Secondary gold CTA */}
                         <a
-                            href="#"
+                            href="/products?category=birthday"
                             className="inline-flex w-full items-center justify-between gap-2 rounded-full border border-popjoy-gold/30 bg-popjoy-gold px-5 py-3.25 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] transition-opacity hover:opacity-90 sm:w-auto sm:justify-center"
                             style={{ borderColor: 'rgba(120,90,0,0.2)' }}
                         >
@@ -181,11 +238,9 @@ export function FigmaHeroSection({
                             >
                                 Explore Birthday Stacks
                             </span>
-                            <img
-                                src="/figma-img/muhjqso4-pz848wl.svg"
-                                alt=""
+                            <ArrowRight
                                 aria-hidden="true"
-                                className="h-3.5 w-3.5 shrink-0 sm:ml-0"
+                                className="h-4 w-4 shrink-0 text-popjoy-gold-ink sm:ml-0"
                             />
                         </a>
                     </div>
@@ -213,7 +268,7 @@ export function FigmaHeroSection({
 
                 {/* Right: hero visual collage — stacked below text on mobile */}
                 <div className="relative flex w-full max-w-135 flex-col items-start">
-                    {/* Main hero image wrapper — fluid height via aspect */}
+                    {/* Main hero image carousel — fluid height via aspect */}
                     <div className="relative w-full max-w-121.75 self-center">
                         <div
                             className="relative aspect-479/488 w-full shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-popjoy-purple-bg sm:h-122 sm:w-119.75"
@@ -223,11 +278,72 @@ export function FigmaHeroSection({
                                     '0px 25px 50px -12px rgba(0,0,0,0.25)',
                             }}
                         >
-                            <img
-                                src="/images/home-page.jpg"
-                                alt="Luxury birthday balloon bouquet"
-                                className="h-full w-full shrink-0 self-stretch overflow-hidden object-cover"
-                            />
+                            {/* Slides — crossfade the active one in */}
+                            {slides.map((slide, index) => (
+                                <img
+                                    key={slide.src}
+                                    src={slide.src}
+                                    alt={slide.alt}
+                                    aria-hidden={index !== activeIndex}
+                                    className={cn(
+                                        'absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out',
+                                        index === activeIndex
+                                            ? 'opacity-100'
+                                            : 'opacity-0',
+                                    )}
+                                />
+                            ))}
+
+                            {slides.length > 1 && (
+                                <>
+                                    {/* Previous arrow */}
+                                    <button
+                                        type="button"
+                                        onClick={showPrev}
+                                        aria-label="Previous image"
+                                        className="absolute top-1/2 left-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-popjoy-ink shadow-sm backdrop-blur transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-popjoy-purple focus-visible:outline-none"
+                                    >
+                                        <ChevronLeft
+                                            aria-hidden="true"
+                                            className="h-5 w-5"
+                                        />
+                                    </button>
+
+                                    {/* Next arrow */}
+                                    <button
+                                        type="button"
+                                        onClick={showNext}
+                                        aria-label="Next image"
+                                        className="absolute top-1/2 right-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-popjoy-ink shadow-sm backdrop-blur transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-popjoy-purple focus-visible:outline-none"
+                                    >
+                                        <ChevronRight
+                                            aria-hidden="true"
+                                            className="h-5 w-5"
+                                        />
+                                    </button>
+
+                                    {/* Dots */}
+                                    <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2">
+                                        {slides.map((slide, index) => (
+                                            <button
+                                                key={slide.src}
+                                                type="button"
+                                                onClick={() => goTo(index)}
+                                                aria-label={`Go to image ${index + 1}`}
+                                                aria-current={
+                                                    index === activeIndex
+                                                }
+                                                className={cn(
+                                                    'h-2 rounded-full transition-all duration-300',
+                                                    index === activeIndex
+                                                        ? 'w-5 bg-white'
+                                                        : 'w-2 bg-white/50 hover:bg-white/80',
+                                                )}
+                                            />
+                                        ))}
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
 

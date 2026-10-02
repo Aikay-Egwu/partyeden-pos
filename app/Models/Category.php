@@ -23,6 +23,7 @@ class Category extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'featured' => 'boolean',
     ];
 
     /** @return BelongsTo<Category, $this> */

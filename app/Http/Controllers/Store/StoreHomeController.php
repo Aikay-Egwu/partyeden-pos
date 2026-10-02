@@ -11,9 +11,11 @@ use App\Models\CustomerReview;
 use App\Models\Occasion;
 use App\Models\Product;
 use App\Services\BestSellerService;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use SplFileInfo;
 
 /**
  * Storefront home page controller.
@@ -45,8 +47,27 @@ class StoreHomeController extends Controller
         ];
 
         return Inertia::render('store/home', [
+            // Hero carousel images: every image file dropped into public/carousel,
+            // sorted by name. Empty list => the hero falls back to its default image.
+            'heroCarousel' => collect(
+                File::isDirectory(public_path('carousel'))
+                    ? File::files(public_path('carousel'))
+                    : []
+            )
+                ->filter(fn (SplFileInfo $file) => in_array(
+                    strtolower($file->getExtension()),
+                    ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'],
+                    true,
+                ))
+                ->sortBy(fn (SplFileInfo $file) => $file->getFilename())
+                ->map(fn (SplFileInfo $file) => [
+                    'src' => '/carousel/'.$file->getFilename(),
+                    'alt' => 'Party Eden balloon display',
+                ])
+                ->values(),
             'occasions' => Occasion::query()
                 ->where('is_active', true)
+                ->where('featured', true)
                 ->orderBy('sort_order')
                 ->orderBy('name')
                 ->take(8)
@@ -55,11 +76,13 @@ class StoreHomeController extends Controller
                     'id' => $occasion->id,
                     'name' => $occasion->name,
                     'slug' => $occasion->slug,
+                    'description' => $occasion->description,
                     'image' => $occasion->image_path ? Storage::url($occasion->image_path) : null,
                 ]),
-            // Top-level active categories for the featured grid
+            // Featured top-level categories for the home page grid
             'categories' => Category::whereNull('parent_id')
                 ->where('is_active', true)
+                ->where('featured', true)
                 ->orderBy('sort_order')
                 ->orderBy('name')
                 ->take(5)

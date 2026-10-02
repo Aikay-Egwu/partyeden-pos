@@ -2,7 +2,7 @@ import { Head, Link, usePage } from '@inertiajs/react';
 import { ShoppingBag, SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
 import { CartSidebar } from '@/components/store/cart-sidebar';
-import { FigmaAnnouncementBar } from '@/components/store/FigmaAnnouncementBar';
+//import { FigmaAnnouncementBar } from '@/components/store/FigmaAnnouncementBar';
 import { FigmaFooter } from '@/components/store/FigmaFooter';
 import { FigmaHeader } from '@/components/store/FigmaHeader';
 import { formatCurrency } from '@/lib/currency';
@@ -107,7 +107,7 @@ export default function ProductListing({
                 Skip to products
             </a>
 
-            <FigmaAnnouncementBar />
+            {/* <FigmaAnnouncementBar /> */}
             <FigmaHeader onCartClick={() => setCartOpen(true)} />
             <main
                 id="catalog-main"

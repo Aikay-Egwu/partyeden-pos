@@ -38,9 +38,9 @@ const defaultNavLinks: FigmaNavLink[] = [
     { labelPrimary: 'Shop', href: '/products' },
     { labelPrimary: 'Categories', href: '/categories' },
     { labelPrimary: 'Occasions', href: '/occasions' },
-    { labelPrimary: 'Reviews', href: '/reviews' },
+    /* { labelPrimary: 'Reviews', href: '/reviews' },
     { labelPrimary: 'Gallery', href: '/gallery' },
-    { labelPrimary: 'Blog', href: '/blog' },
+    { labelPrimary: 'Blog', href: '/blog' }, */
 ];
 
 /**
@@ -124,7 +124,7 @@ export function FigmaHeader({
                 </nav>
 
                 <div className="ml-auto inline-flex shrink-0 items-center gap-3">
-                    <div className="hidden w-56 xl:block">
+                    <div className="hidden w-72 xl:block">
                         <CatalogSearch placeholder="Search themes, ages..." />
                     </div>
                     {/* Cart icon with live gold item count badge */}

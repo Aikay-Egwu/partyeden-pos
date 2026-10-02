@@ -76,7 +76,7 @@ function createAdmin(): User
 }
 
 test('homepage uses dynamic occasion, bestseller, testimonial, gallery, and blog data', function (): void {
-    $category = Category::factory()->create();
+    $category = Category::factory()->create(['featured' => true]);
     Category::factory()->create(['parent_id' => $category->id]);
 
     $manualProduct = Product::factory()->create([
@@ -101,6 +101,7 @@ test('homepage uses dynamic occasion, bestseller, testimonial, gallery, and blog
         'description' => 'Birthday balloons and celebration sets.',
         'sort_order' => 1,
         'is_active' => true,
+        'featured' => true,
     ]);
 
     $manualProduct->occasions()->attach($occasion->id, [
@@ -148,15 +149,24 @@ test('homepage uses dynamic occasion, bestseller, testimonial, gallery, and blog
         );
 });
 
-test('homepage category grid shows the first five active top-level categories', function (): void {
+test('homepage category grid shows the first five featured active top-level categories', function (): void {
     $expectedCategories = collect(range(1, 6))->map(
         fn (int $sortOrder) => Category::factory()->create([
             'name' => "Category {$sortOrder}",
             'slug' => "category-{$sortOrder}",
             'sort_order' => $sortOrder,
             'is_active' => true,
+            'featured' => true,
         ]),
     );
+    // Active but not featured => excluded from the home grid.
+    Category::factory()->create([
+        'name' => 'Unfeatured category',
+        'slug' => 'unfeatured-category',
+        'sort_order' => 0,
+        'is_active' => true,
+        'featured' => false,
+    ]);
     Category::factory()->create([
         'name' => 'Inactive category',
         'slug' => 'inactive-category',
@@ -170,7 +180,37 @@ test('homepage category grid shows the first five active top-level categories', 
             ->has('categories', 5)
             ->where('categories.0.id', $expectedCategories[0]->id)
             ->where('categories.4.id', $expectedCategories[4]->id)
-            ->where('categoryCount', 6)
+            ->where('categoryCount', 7)
+        );
+});
+
+test('homepage occasion row only shows featured active occasions', function (): void {
+    $featured = Occasion::factory()->create([
+        'name' => 'Birthday',
+        'slug' => 'birthday',
+        'is_active' => true,
+        'featured' => true,
+    ]);
+    Occasion::factory()->create([
+        'name' => 'Corporate',
+        'slug' => 'corporate',
+        'is_active' => true,
+        'featured' => false,
+    ]);
+    Occasion::factory()->create([
+        'name' => 'Wedding',
+        'slug' => 'wedding',
+        'is_active' => false,
+        'featured' => true,
+    ]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('store/home')
+            ->has('occasions', 1)
+            ->where('occasions.0.id', $featured->id)
+            ->where('occasions.0.slug', $featured->slug)
         );
 });
 

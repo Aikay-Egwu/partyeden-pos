@@ -19,6 +19,7 @@ class CategoryFactory extends Factory
             'slug' => Str::slug($name),
             'description' => $this->faker->sentence(),
             'is_active' => true,
+            'featured' => false,
         ];
     }
 }

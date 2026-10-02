@@ -1,7 +1,7 @@
 import { usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { CartSidebar } from '@/components/store/cart-sidebar';
-import { FigmaAnnouncementBar } from '@/components/store/FigmaAnnouncementBar';
+//import { FigmaAnnouncementBar } from '@/components/store/FigmaAnnouncementBar';
 import { FigmaFooter } from '@/components/store/FigmaFooter';
 import { FigmaHeader } from '@/components/store/FigmaHeader';
 
@@ -54,7 +54,7 @@ export default function StoreLayout({
 
     return (
         <div className="min-h-screen w-full bg-popjoy-bg">
-            <FigmaAnnouncementBar />
+            {/* <FigmaAnnouncementBar /> */}
             <FigmaHeader
                 cartCount={cart?.count ?? 0}
                 onCartClick={() => setCartOpen(true)}
