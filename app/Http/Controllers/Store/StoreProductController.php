@@ -40,12 +40,12 @@ class StoreProductController extends Controller
             ->when($search !== '', fn (Builder $query) => $query->where(function (Builder $query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
                     ->orWhere('sku', 'like', "%{$search}%")
-                    ->orWhereHas('category', fn (Builder $categoryQuery) => $categoryQuery
+                    ->orWhereHas('categories', fn (Builder $categoryQuery) => $categoryQuery
                         ->where('is_active', true)
                         ->where('name', 'like', "%{$search}%"));
             }))
             ->when($validated['category'] ?? null, fn (Builder $query, string $slug) => $query->whereHas(
-                'category',
+                'categories',
                 fn (Builder $categoryQuery) => $categoryQuery
                     ->where('slug', $slug)
                     ->where('is_active', true),
@@ -60,7 +60,7 @@ class StoreProductController extends Controller
             ->when($sort === 'price_desc', fn (Builder $query) => $query->orderByDesc('selling_price'))
             ->when($sort === 'newest', fn (Builder $query) => $query->latest())
             ->when($sort === 'name', fn (Builder $query) => $query->orderBy('name'))
-            ->with(['category', 'images' => fn ($q) => $q
+            ->with(['categories', 'images' => fn ($q) => $q
                 ->orderByDesc('is_primary')
                 ->orderBy('sort_order')
                 ->orderBy('created_at')])
@@ -79,7 +79,7 @@ class StoreProductController extends Controller
                     'selling_price' => $product->selling_price,
                     'product_type' => $product->product_type,
                     'is_active' => $product->is_active,
-                    'category' => $product->category?->only(['id', 'name']),
+                    'categories' => $product->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
                     'primary_image' => $primaryImage?->url,
                 ];
             });
@@ -112,7 +112,7 @@ class StoreProductController extends Controller
         }
 
         $product->load([
-            'category',
+            'categories',
             'images.variant',
             'images.primaryColor',
             'images.addonProduct',
@@ -144,7 +144,7 @@ class StoreProductController extends Controller
                 'customise_color' => $product->customise_color,
                 'customise_text' => $product->customise_text,
                 'preorder' => $product->preorder,
-                'category' => $product->category?->only(['id', 'name']),
+                'categories' => $product->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
                 'images' => $product->images
                     // Keep gallery payload order stable for the frontend selectors.
                     ->sortBy(fn (ProductImage $image) => [

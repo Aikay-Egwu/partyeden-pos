@@ -27,7 +27,7 @@ class StoreHomeController extends Controller
     {
         // Shared product query builder for active products with images
         $baseProductQuery = fn () => Product::onlineVisible()->where('is_active', true)
-            ->with(['category', 'images' => fn ($q) => $q
+            ->with(['categories', 'images' => fn ($q) => $q
                 ->whereNull('variant_id')
                 ->whereNull('primary_color_id')
                 ->whereNull('addon_product_id')
@@ -42,7 +42,7 @@ class StoreHomeController extends Controller
             'selling_price' => $p->selling_price,
             'product_type' => $p->product_type,
             'is_active' => $p->is_active,
-            'category' => $p->category?->only(['id', 'name']),
+            'categories' => $p->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
             'primary_image' => $p->images->first()?->url,
         ];
 

@@ -43,7 +43,13 @@ const statusColors: Record<string, string> = {
  * Colored badge for status fields.
  * Maps common status strings to appropriate colors; falls back to default for unknowns.
  */
-export function StatusBadge({ value, bgColor }: { value: string; bgColor?: string }) {
+export function StatusBadge({
+    value,
+    bgColor,
+}: {
+    value: string;
+    bgColor?: string;
+}) {
     const colorClass = statusColors[value.toLowerCase()] ?? '';
 
     return (
@@ -60,5 +66,7 @@ export function StatusBadge({ value, bgColor }: { value: string; bgColor?: strin
  * Simple boolean badge: shows "Active" in green or "Inactive" in gray.
  */
 export function ActiveBadge({ active }: { active: boolean }) {
-    return <StatusBadge value={active ? 'active' : 'inactive'} bgColor="red-300" />;
+    return (
+        <StatusBadge value={active ? 'active' : 'inactive'} bgColor="red-300" />
+    );
 }

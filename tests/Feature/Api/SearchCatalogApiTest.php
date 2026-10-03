@@ -67,7 +67,7 @@ test('store creates a product in the database', function () {
         ->postJson('/api/v1/products', [
             'sku' => 'PARTY-001',
             'name' => 'Party Hat',
-            'category_id' => $category->id,
+            'category_ids' => [$category->id],
             'selling_price' => 4.99,
         ])
         ->assertCreated();
@@ -75,6 +75,8 @@ test('store creates a product in the database', function () {
     $this->assertDatabaseHas('products', [
         'sku' => 'PARTY-001',
         'name' => 'Party Hat',
+    ]);
+    $this->assertDatabaseHas('category_product', [
         'category_id' => $category->id,
     ]);
 });

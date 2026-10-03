@@ -63,11 +63,14 @@ export function FigmaCelebrationServices({
 
                         {/* Description */}
                         <p className="font-sans text-base leading-relaxed text-white/85 sm:text-lg">
-                            For kids and adult birthdays, weddings, anniversaries:{' '}
+                            For kids and adult birthdays, weddings,
+                            anniversaries:{' '}
                             <span className="font-semibold text-popjoy-gold">
                                 Let us talk.
                             </span>{' '}
-                            From immersive thematic styling to full-scale event production, our sister brand Kaito Events brings extraordinary visions to life.
+                            From immersive thematic styling to full-scale event
+                            production, our sister brand Kaito Events brings
+                            extraordinary visions to life.
                         </p>
 
                         {/* Occasion tags */}

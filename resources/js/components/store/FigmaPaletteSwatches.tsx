@@ -112,7 +112,7 @@ export function FigmaPaletteSwatches({
             id={sectionId}
             aria-labelledby={headingId}
             className={cn(
-                'flex w-full flex-col items-start gap-8 bg-white px-4 py-12 sm:px-6 sm:gap-10 sm:py-16 lg:px-8',
+                'flex w-full flex-col items-start gap-8 bg-white px-4 py-12 sm:gap-10 sm:px-6 sm:py-16 lg:px-8',
                 className,
             )}
         >
@@ -139,7 +139,7 @@ export function FigmaPaletteSwatches({
             </div>
 
             {/* 6 swatches row: grid 2/3/6 cols with wrapping */}
-            <div className="grid w-full shrink-0 grid-cols-2 items-start gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6 self-stretch">
+            <div className="grid w-full shrink-0 grid-cols-2 items-start gap-3 self-stretch sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
                 {swatches.map((swatch, index) => (
                     <button
                         key={`${swatch.name}-${index}`}
@@ -193,10 +193,10 @@ export function FigmaPaletteSwatches({
             </div>
 
             {/* Combo showcase banner + CTA: stack on mobile, row on md+ */}
-            <div className="flex w-full shrink-0 flex-col items-stretch justify-between gap-5 rounded-3xl border border-popjoy-gold-border bg-popjoy-gold/15 p-5 sm:p-6 md:flex-row md:items-center md:gap-6 self-stretch">
+            <div className="flex w-full shrink-0 flex-col items-stretch justify-between gap-5 self-stretch rounded-3xl border border-popjoy-gold-border bg-popjoy-gold/15 p-5 sm:p-6 md:flex-row md:items-center md:gap-6">
                 <div className="flex flex-1 shrink-0 flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-6">
                     {/* Theme preview image */}
-                    <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-popjoy-purple-bg shadow-lg self-start">
+                    <div className="flex h-[120px] w-[120px] shrink-0 items-center justify-center self-start overflow-hidden rounded-2xl border-4 border-white bg-popjoy-purple-bg shadow-lg">
                         <img
                             src={showcaseImageSrc}
                             alt="Royal Purple and Sunny Lemon theme preview"

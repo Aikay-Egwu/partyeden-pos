@@ -169,7 +169,8 @@ function normalizeProduct(
         imageSrc: product.primary_image,
         imageAlt: product.name,
         tileBg: pastelBackgrounds[index % pastelBackgrounds.length],
-        badgeLabel: index === 0 ? 'Bestseller' : index === 1 ? 'Trending' : undefined,
+        badgeLabel:
+            index === 0 ? 'Bestseller' : index === 1 ? 'Trending' : undefined,
         badgeVariant: defaultBadges[index % defaultBadges.length],
         rating: 5,
         ratingMeta: '4.9 · Handcrafted',
@@ -236,12 +237,14 @@ export function FigmaBestsellersRow({
                 {/* 4-column product card grid */}
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
                     {items.map((item, index) => {
-                        const targetHref = item.href ?? (item.id ? `/products/${item.id}` : '/products');
+                        const targetHref =
+                            item.href ??
+                            (item.id ? `/products/${item.id}` : '/products');
 
                         return (
                             <article
                                 key={`${item.title}-${index}`}
-                                className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-popjoy-divider/50 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg focus-within:ring-2 focus-within:ring-popjoy-purple"
+                                className="group flex flex-col justify-between overflow-hidden rounded-3xl border border-popjoy-divider/50 bg-white p-4 shadow-sm transition-all duration-300 focus-within:ring-2 focus-within:ring-popjoy-purple hover:-translate-y-1 hover:shadow-lg"
                             >
                                 <div className="flex flex-col gap-3">
                                     {/* Visual preview tile */}
@@ -257,7 +260,9 @@ export function FigmaBestsellersRow({
                                             <div
                                                 className={cn(
                                                     'absolute top-3 left-3 z-10 rounded-full px-2.5 py-1 font-sans text-[10px] leading-tight font-bold tracking-wide uppercase',
-                                                    badgeClasses(item.badgeVariant),
+                                                    badgeClasses(
+                                                        item.badgeVariant,
+                                                    ),
                                                 )}
                                             >
                                                 {item.badgeLabel}
@@ -267,7 +272,9 @@ export function FigmaBestsellersRow({
                                         {item.imageSrc ? (
                                             <img
                                                 src={item.imageSrc}
-                                                alt={item.imageAlt ?? item.title}
+                                                alt={
+                                                    item.imageAlt ?? item.title
+                                                }
                                                 className="h-full w-full object-cover p-3 transition-transform duration-500 ease-out group-hover:scale-105"
                                             />
                                         ) : (
@@ -283,13 +290,15 @@ export function FigmaBestsellersRow({
                                     {/* Star rating */}
                                     <div className="flex items-center gap-1.5 pt-1">
                                         <div className="flex items-center gap-0.5">
-                                            {[...Array(5)].map((_, starIndex) => (
-                                                <Star
-                                                    key={starIndex}
-                                                    className="h-3.5 w-3.5 fill-popjoy-gold text-popjoy-gold"
-                                                    aria-hidden="true"
-                                                />
-                                            ))}
+                                            {[...Array(5)].map(
+                                                (_, starIndex) => (
+                                                    <Star
+                                                        key={starIndex}
+                                                        className="h-3.5 w-3.5 fill-popjoy-gold text-popjoy-gold"
+                                                        aria-hidden="true"
+                                                    />
+                                                ),
+                                            )}
                                         </div>
                                         <span className="font-sans text-xs font-medium text-popjoy-muted">
                                             {item.ratingMeta}
@@ -298,7 +307,10 @@ export function FigmaBestsellersRow({
 
                                     {/* Product title */}
                                     <h3 className="font-plus-jakarta text-base font-bold text-popjoy-ink transition-colors group-hover:text-popjoy-purple">
-                                        <Link href={targetHref} className="focus:outline-none">
+                                        <Link
+                                            href={targetHref}
+                                            className="focus:outline-none"
+                                        >
                                             {item.title}
                                         </Link>
                                     </h3>
@@ -314,7 +326,11 @@ export function FigmaBestsellersRow({
                                     <div className="flex items-center justify-between rounded-2xl border border-popjoy-divider/40 bg-popjoy-bg px-3.5 py-2.5">
                                         <div className="flex flex-col">
                                             <span className="font-plus-jakarta text-base font-extrabold text-popjoy-ink">
-                                                {typeof item.price === 'number' || !item.price.toString().startsWith('£')
+                                                {typeof item.price ===
+                                                    'number' ||
+                                                !item.price
+                                                    .toString()
+                                                    .startsWith('£')
                                                     ? formatCurrency(item.price)
                                                     : item.price}
                                             </span>
@@ -326,9 +342,12 @@ export function FigmaBestsellersRow({
                                         <Link
                                             href={targetHref}
                                             aria-label={`View ${item.title}`}
-                                            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-popjoy-purple text-white shadow-md transition-transform hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple"
+                                            className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-popjoy-purple text-white shadow-md transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple active:scale-95"
                                         >
-                                            <ShoppingBag className="h-4 w-4" aria-hidden="true" />
+                                            <ShoppingBag
+                                                className="h-4 w-4"
+                                                aria-hidden="true"
+                                            />
                                         </Link>
                                     </div>
                                 </div>

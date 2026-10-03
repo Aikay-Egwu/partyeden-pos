@@ -40,8 +40,8 @@ export function FigmaAnnouncementBar({
                 🎈
             </span>
             <p className="font-sans text-[11px] leading-4 font-semibold tracking-[0.3px] text-white sm:text-xs">
-                GUARANTEED PARTY ARRIVAL: Choose your delivery date at
-                checkout · 7 Days A Week Named-Day UK Delivery
+                GUARANTEED PARTY ARRIVAL: Choose your delivery date at checkout
+                · 7 Days A Week Named-Day UK Delivery
             </p>
             <p className="hidden font-sans text-[11px] leading-4 font-semibold tracking-[0.3px] text-white sm:block sm:text-xs">
                 · Free luxury ribbon &amp; weight included on orders over £50

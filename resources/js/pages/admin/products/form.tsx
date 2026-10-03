@@ -99,10 +99,10 @@ export default function ProductForm({
             !isEditing && sharedPrefill?.product_type
                 ? String(sharedPrefill.product_type)
                 : (product?.product_type ?? 'standard'),
-        category_id:
-            !isEditing && sharedPrefill?.category_id
-                ? String(sharedPrefill.category_id)
-                : (product?.category?.id ?? ''),
+        category_ids:
+            !isEditing && Array.isArray(sharedPrefill?.category_ids)
+                ? (sharedPrefill.category_ids as string[])
+                : (product?.categories?.map((c) => c.id) ?? []),
         tax_category_id:
             !isEditing && sharedPrefill?.tax_category_id
                 ? String(sharedPrefill.tax_category_id)
@@ -398,23 +398,46 @@ export default function ProductForm({
                     {/* Category and Tax Category dropdowns */}
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
-                            <Label>Category</Label>
-                            <Select
-                                value={data.category_id}
-                                onValueChange={(v) => setData('category_id', v)}
-                            >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((c) => (
-                                        <SelectItem key={c.id} value={c.id}>
+                            <Label>Categories</Label>
+                            {/* Multi-select checkbox list */}
+                            <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-3">
+                                {categories.map((c) => (
+                                    <label
+                                        key={c.id}
+                                        className="flex cursor-pointer items-center gap-2"
+                                    >
+                                        <Checkbox
+                                            checked={data.category_ids.includes(
+                                                c.id,
+                                            )}
+                                            onCheckedChange={(checked) => {
+                                                if (checked) {
+                                                    setData('category_ids', [
+                                                        ...data.category_ids,
+                                                        c.id,
+                                                    ]);
+                                                } else {
+                                                    setData(
+                                                        'category_ids',
+                                                        data.category_ids.filter(
+                                                            (id) => id !== c.id,
+                                                        ),
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                        <span className="text-sm">
                                             {c.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <InputError message={errors.category_id} />
+                                        </span>
+                                    </label>
+                                ))}
+                                {categories.length === 0 && (
+                                    <p className="text-xs text-muted-foreground">
+                                        No categories found.
+                                    </p>
+                                )}
+                            </div>
+                            <InputError message={errors.category_ids} />
                         </div>
                         <div className="space-y-2">
                             <Label>Tax Category</Label>

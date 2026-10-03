@@ -58,6 +58,7 @@ Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->group(fun
     Route::delete('products/{product}/variants/{variant}', [AdminVariantController::class, 'destroy'])->name('products.variants.destroy');
     Route::resource('components', AdminComponentController::class);
     Route::resource('categories', AdminCategoryController::class);
+    Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
     Route::resource('occasions', AdminOccasionController::class);
     Route::resource('attributes', AdminAttributeController::class);
     Route::post('attributes/{attribute}/values', [AdminAttributeValueController::class, 'store'])->name('attributes.values.store');

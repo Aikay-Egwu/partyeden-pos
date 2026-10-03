@@ -80,18 +80,18 @@ test('homepage uses dynamic occasion, bestseller, testimonial, gallery, and blog
     Category::factory()->create(['parent_id' => $category->id]);
 
     $manualProduct = Product::factory()->create([
-        'category_id' => $category->id,
         'is_active' => true,
         'is_online_visible' => true,
         'best_seller_enabled' => true,
         'best_seller_rank' => 1,
     ]);
+    $manualProduct->categories()->attach($category->id);
 
     $salesProduct = Product::factory()->create([
-        'category_id' => $category->id,
         'is_active' => true,
         'is_online_visible' => true,
     ]);
+    $salesProduct->categories()->attach($category->id);
 
     createSoldOrder($salesProduct);
 
@@ -251,16 +251,16 @@ test('occasion pages only show linked online-visible products', function (): voi
     ]);
 
     $visibleProduct = Product::factory()->create([
-        'category_id' => $category->id,
         'is_active' => true,
         'is_online_visible' => true,
     ]);
+    $visibleProduct->categories()->attach($category->id);
 
     $hiddenProduct = Product::factory()->create([
-        'category_id' => $category->id,
         'is_active' => false,
         'is_online_visible' => true,
     ]);
+    $hiddenProduct->categories()->attach($category->id);
 
     $occasion->products()->attach($visibleProduct->id, [
         'id' => (string) Str::uuid(),

@@ -19,9 +19,9 @@ beforeEach(function () {
 test('store product listing uses the default product image url', function () {
     $category = Category::factory()->create();
     $product = Product::factory()->create([
-        'category_id' => $category->id,
         'is_active' => true,
     ]);
+    $product->categories()->attach($category->id);
     $variant = Variant::factory()->create([
         'product_id' => $product->id,
         'is_active' => true,
@@ -78,26 +78,26 @@ test('store product listing filters by search, category slug, and occasion slug'
     $matchingProduct = Product::factory()->create([
         'name' => 'Birthday Number Balloon',
         'sku' => 'BIRTHDAY-01',
-        'category_id' => $category->id,
         'is_active' => true,
         'is_online_visible' => true,
     ]);
+    $matchingProduct->categories()->attach($category->id);
     $matchingProduct->occasions()->attach($occasion->id, [
         'id' => (string) Str::uuid(),
         'sort_order' => 0,
     ]);
-    Product::factory()->create([
+    $otherProduct = Product::factory()->create([
         'name' => 'Birthday Wedding Balloon',
-        'category_id' => $otherCategory->id,
         'is_active' => true,
         'is_online_visible' => true,
     ]);
-    Product::factory()->create([
+    $otherProduct->categories()->attach($otherCategory->id);
+    $hiddenProduct = Product::factory()->create([
         'name' => 'Hidden Birthday Number Balloon',
-        'category_id' => $category->id,
         'is_active' => true,
         'is_online_visible' => false,
     ]);
+    $hiddenProduct->categories()->attach($category->id);
 
     $this->get(route('store.products', [
         'search' => 'Birthday',
@@ -124,10 +124,10 @@ test('store product search also matches the active product category name', funct
     ]);
     $product = Product::factory()->create([
         'name' => 'Pastel Balloon Bundle',
-        'category_id' => $category->id,
         'is_active' => true,
         'is_online_visible' => true,
     ]);
+    $product->categories()->attach($category->id);
     Product::factory()->create([
         'name' => 'Pastel Table Runner',
         'is_active' => true,
@@ -172,10 +172,10 @@ test('store product listing accepts correctly spelled occasion query parameter',
 test('store product detail returns active variants and bound image metadata', function () {
     $category = Category::factory()->create();
     $product = Product::factory()->create([
-        'category_id' => $category->id,
         'is_active' => true,
         'customise_color' => true,
     ]);
+    $product->categories()->attach($category->id);
     $activeVariant = Variant::factory()->create([
         'product_id' => $product->id,
         'name' => 'Pink Heart',

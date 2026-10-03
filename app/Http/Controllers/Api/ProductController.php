@@ -26,13 +26,13 @@ class ProductController extends ApiController
                     ->orWhere('sku', 'like', "%{$s}%")
                     ->orWhere('barcode', 'like', "%{$s}%");
             }))
-            ->when($request->category_id, fn ($q, $id) => $q->where('category_id', $id))
+            ->when($request->category_id, fn ($q, $id) => $q->whereHas('categories', fn ($cq) => $cq->where('categories.id', $id)))
             ->when($request->product_type, fn ($q, $type) => $q->where('product_type', $type))
             // Only apply boolean filters when the parameter is actually present —
             // $request->boolean() never returns null, so a !== null check always filtered
             ->when($request->has('is_active'), fn ($q) => $q->where('is_active', $request->boolean('is_active')))
             ->when($request->has('track_inventory'), fn ($q) => $q->where('track_inventory', $request->boolean('track_inventory')))
-            ->with(['category', 'taxCategory', 'variants'])
+            ->with(['categories', 'taxCategory', 'variants'])
             ->withCount('variants')
             ->orderBy('name')
             ->paginate($request->integer('per_page', 15));
@@ -44,7 +44,9 @@ class ProductController extends ApiController
     {
         $this->authorize('create', Product::class);
 
-        $product = Product::create($request->validated());
+        // Exclude category_ids from mass assignment — handled separately via sync
+        $product = Product::create($request->safe()->except(['category_ids']));
+        $product->categories()->sync($request->input('category_ids', []));
 
         AuditLog::create([
             'event' => 'created',
@@ -57,14 +59,14 @@ class ProductController extends ApiController
             'description' => 'Product created: '.$product->name,
         ]);
 
-        return new ProductResource($product->load(['category', 'taxCategory']));
+        return new ProductResource($product->load(['categories', 'taxCategory']));
     }
 
     public function show(Product $product): ProductResource
     {
         $this->authorize('view', $product);
 
-        $product->load(['category', 'taxCategory', 'variants', 'images', 'kitMappings']);
+        $product->load(['categories', 'taxCategory', 'variants', 'images', 'kitMappings']);
 
         return new ProductResource($product);
     }
@@ -73,9 +75,11 @@ class ProductController extends ApiController
     {
         $this->authorize('update', $product);
 
-        $product->update($request->validated());
+        // Exclude category_ids from mass assignment — sync via pivot
+        $product->update($request->safe()->except(['category_ids']));
+        $product->categories()->sync($request->input('category_ids', []));
 
-        return new ProductResource($product->refresh()->load(['category', 'taxCategory']));
+        return new ProductResource($product->refresh()->load(['categories', 'taxCategory']));
     }
 
     public function destroy(Product $product): JsonResponse
@@ -117,6 +121,6 @@ class ProductController extends ApiController
             'description' => 'Product duplicated from '.$product->name,
         ]);
 
-        return new ProductResource($newProduct->load(['category', 'taxCategory']));
+        return new ProductResource($newProduct->load(['categories', 'taxCategory']));
     }
 }

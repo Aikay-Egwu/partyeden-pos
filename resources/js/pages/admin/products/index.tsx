@@ -27,7 +27,7 @@ type Product = {
     is_online_visible: boolean;
     best_seller_enabled: boolean;
     best_seller_rank?: number | null;
-    category?: { id: string; name: string } | null;
+    categories?: { id: string; name: string }[] | null;
 };
 
 type Props = {
@@ -134,9 +134,12 @@ export default function ProductsIndex({ products, filters }: Props) {
             render: (p) => formatCurrency(p.selling_price),
         },
         {
-            key: 'category',
-            label: 'Category',
-            render: (p) => p.category?.name ?? '-',
+            key: 'categories',
+            label: 'Categories',
+            render: (p) =>
+                p.categories && p.categories.length > 0
+                    ? p.categories.map((c) => c.name).join(', ')
+                    : '-',
         },
         {
             key: 'is_active',

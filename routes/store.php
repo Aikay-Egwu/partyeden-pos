@@ -35,6 +35,12 @@ Route::middleware('throttle:60,1')->group(function (): void {
     Route::get('gallery', [StoreReviewController::class, 'gallery'])->name('store.gallery.index');
     Route::get('faq', [StoreFaqController::class, 'index'])->name('store.faqs.index');
 
+    // Legal pages (static content)
+    Route::inertia('privacy-policy', 'store/legal/privacy-policy')->name('store.privacy-policy');
+    Route::inertia('terms-of-service', 'store/legal/terms-of-service')->name('store.terms-of-service');
+    Route::inertia('cookie-policy', 'store/legal/cookie-policy')->name('store.cookie-policy');
+    Route::inertia('cookie-preferences', 'store/legal/cookie-preferences')->name('store.cookie-preferences');
+
     // Blog
     Route::get('blog', [StoreBlogController::class, 'index'])->name('store.blog.index');
     Route::get('blog/{blogPost:slug}', [StoreBlogController::class, 'show'])->name('store.blog.show');

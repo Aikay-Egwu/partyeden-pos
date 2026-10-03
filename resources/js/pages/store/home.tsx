@@ -1,6 +1,7 @@
 import { Head, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { CartSidebar } from '@/components/store/cart-sidebar';
+import { CookieConsent } from '@/components/store/cookie-consent';
 //import { FigmaAnnouncementBar } from '@/components/store/FigmaAnnouncementBar';
 //import { FigmaBespokeInstalls } from '@/components/store/FigmaBespokeInstalls';
 import { FigmaBestsellersRow } from '@/components/store/FigmaBestsellersRow';
@@ -128,6 +129,8 @@ export default function Home({
                 {/* Footer */}
                 <FigmaFooter />
             </div>
+
+            <CookieConsent />
 
             {/* Celebration basket drawer */}
             <CartSidebar

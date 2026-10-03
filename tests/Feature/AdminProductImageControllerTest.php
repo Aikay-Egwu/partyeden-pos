@@ -61,11 +61,51 @@ test('admin can delete product image', function () {
     $product = Product::factory()->create();
     $image = ProductImage::create(['product_id' => $product->id, 'file_path' => 'test/path.jpg', 'file_name' => 'path.jpg']);
 
+    // Actually materialise a fake file in the fake storage disk so we can
+    // assert the destroy call really removes it (not just the DB row).
+    Storage::disk(ProductImage::storageDisk())->put('test/path.jpg', 'fake-image-bytes');
+
     $this->delete(route('products.images.destroy', [$product, $image]))
         ->assertRedirect();
 
     $this->assertSoftDeleted('product_images', [
         'id' => $image->id,
+    ]);
+
+    // Confirm the physical file was removed from storage.
+    Storage::disk(ProductImage::storageDisk())->assertMissing('test/path.jpg');
+});
+
+test('deleting the primary default image promotes the next default image to primary', function () {
+    $user = User::factory()->create(['permissions' => ['admin']]);
+    $this->actingAs($user);
+
+    $product = Product::factory()->create();
+    $primaryImage = ProductImage::create([
+        'product_id' => $product->id,
+        'file_path' => 'products/primary.jpg',
+        'file_name' => 'primary.jpg',
+        'is_primary' => true,
+        'sort_order' => 0,
+    ]);
+    $fallbackImage = ProductImage::create([
+        'product_id' => $product->id,
+        'file_path' => 'products/fallback.jpg',
+        'file_name' => 'fallback.jpg',
+        'is_primary' => false,
+        'sort_order' => 1,
+    ]);
+
+    $this->delete(route('products.images.destroy', [$product, $primaryImage]))
+        ->assertRedirect();
+
+    // Original image is soft-deleted
+    $this->assertSoftDeleted('product_images', ['id' => $primaryImage->id]);
+
+    // Next default image has been promoted to primary
+    $this->assertDatabaseHas('product_images', [
+        'id' => $fallbackImage->id,
+        'is_primary' => true,
     ]);
 });
 

@@ -103,10 +103,15 @@ class Product extends Model
         return sprintf('SKU-%06d', $max + 1);
     }
 
-    /** @return BelongsTo<Category, $this> */
-    public function category(): BelongsTo
+    /**
+     * Categories this product belongs to (many-to-many via category_product pivot).
+     *
+     * @return BelongsToMany<Category, $this>
+     */
+    public function categories(): BelongsToMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class)
+            ->withTimestamps();
     }
 
     /** @return BelongsTo<TaxCategory, $this> */

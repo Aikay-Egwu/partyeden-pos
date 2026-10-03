@@ -53,7 +53,7 @@ class StoreCategoryController extends Controller
 
     public function show(Request $request, Category $category): Response
     {
-        $products = Product::onlineVisible()->where('category_id', $category->id)
+        $products = Product::onlineVisible()->whereHas('categories', fn ($q) => $q->where('categories.id', $category->id))
             ->where('is_active', true)
             ->when($request->search, fn ($q, $s) => $q->where(function ($q) use ($s) {
                 $q->where('name', 'like', "%{$s}%")
@@ -66,7 +66,7 @@ class StoreCategoryController extends Controller
                 fn ($q) => $q->latest(),
             )
             ->when($request->sort === 'name', fn ($q) => $q->orderBy('name', 'asc'))
-            ->with(['category', 'images' => fn ($q) => $q
+            ->with(['categories', 'images' => fn ($q) => $q
                 ->whereNull('variant_id')
                 ->whereNull('primary_color_id')
                 ->whereNull('addon_product_id')
@@ -81,7 +81,7 @@ class StoreCategoryController extends Controller
                 'selling_price' => $p->selling_price,
                 'product_type' => $p->product_type,
                 'is_active' => $p->is_active,
-                'category' => $p->category?->only(['id', 'name']),
+                'categories' => $p->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
                 'primary_image' => $p->images->first()?->url,
             ]);
 

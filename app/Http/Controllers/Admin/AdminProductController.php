@@ -41,9 +41,9 @@ class AdminProductController extends Controller
                     ->orWhere('sku', 'like', "%{$s}%")
                     ->orWhere('barcode', 'like', "%{$s}%");
             }))
-            ->when($request->category_id, fn ($q, $id) => $q->where('category_id', $id))
+            ->when($request->category_id, fn ($q, $id) => $q->whereHas('categories', fn ($cq) => $cq->where('categories.id', $id)))
             ->when($request->filled('is_active'), fn ($q) => $q->where('is_active', $request->boolean('is_active')))
-            ->with(['category', 'taxCategory'])
+            ->with(['categories', 'taxCategory'])
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
@@ -72,9 +72,13 @@ class AdminProductController extends Controller
     // Store new product using existing validation
     public function store(StoreProductRequest $request)
     {
+        // Exclude category_ids from mass assignment — handled separately via sync
         $product = Product::create($request->safe()->except([
-            'initial_stock_quantity', 'initial_stock_location_id',
+            'initial_stock_quantity', 'initial_stock_location_id', 'category_ids',
         ]));
+
+        // Sync many-to-many categories
+        $product->categories()->sync($request->input('category_ids', []));
 
         AuditLog::create([
             'event' => 'created',
@@ -127,7 +131,7 @@ class AdminProductController extends Controller
                 'name' => 'Copy of '.$product->name,
                 'sku' => $newSku,
                 'description' => $product->description,
-                'category_id' => $product->category_id,
+                'category_ids' => $product->categories->pluck('id')->all(),
                 'tax_category_id' => $product->tax_category_id,
                 'cost_price' => $product->cost_price,
                 'selling_price' => $product->selling_price,
@@ -149,7 +153,7 @@ class AdminProductController extends Controller
     public function edit(Product $product): Response
     {
         $product->load([
-            'category',
+            'categories',
             'taxCategory',
             'mainColors.color',
             'secondaryColors.color',
@@ -179,7 +183,9 @@ class AdminProductController extends Controller
     // Update using existing validation
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        // Exclude category_ids from mass assignment — sync it via the pivot
+        $product->update($request->safe()->except(['category_ids']));
+        $product->categories()->sync($request->input('category_ids', []));
 
         return redirect()->route('products.index')
             ->with('success', 'Product updated successfully.');
@@ -384,7 +390,7 @@ class AdminProductController extends Controller
             'is_online_visible' => $product->is_online_visible,
             'best_seller_enabled' => $product->best_seller_enabled,
             'best_seller_rank' => $product->best_seller_rank,
-            'category' => $product->category?->only(['id', 'name']),
+            'categories' => $product->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
             'taxCategory' => $product->taxCategory?->only(['id', 'name']),
             'main_colors' => $product->mainColors
                 ->sortBy(fn ($link) => $link->color?->name)

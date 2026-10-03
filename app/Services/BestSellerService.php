@@ -56,7 +56,7 @@ class BestSellerService
 
         $products = Product::query()
             ->with([
-                'category',
+                'categories',
                 'images' => fn ($query) => $query
                     ->whereNull('variant_id')
                     ->whereNull('primary_color_id')

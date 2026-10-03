@@ -11,7 +11,9 @@ use App\Models\ProductImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class ProductImageController extends ApiController
 {
@@ -81,8 +83,39 @@ class ProductImageController extends ApiController
     {
         $this->authorize('delete', $productImage);
 
-        Storage::disk('public')->delete($productImage->file_path);
-        $productImage->delete();
+        // Same ownership guard as the admin endpoint: the image must actually
+        // belong to the product identified in the URL path.
+        abort_if($productImage->product_id !== $product->id, Response::HTTP_NOT_FOUND);
+
+        // Capture file metadata before the DB transaction, so we still have
+        // access to the path even after the model is soft-deleted.
+        $disk = ProductImage::storageDisk();
+        $filePath = (string) $productImage->file_path;
+        $wasDefaultImage = $productImage->isDefaultImage();
+
+        DB::transaction(function () use ($product, $productImage, $wasDefaultImage): void {
+            $productImage->delete();
+
+            // When a default-image record is removed, make sure another
+            // default image inherits the primary flag so the DB stays consistent
+            // (mirrors AdminProductImageController::syncPrimaryDefaultImage).
+            if ($wasDefaultImage) {
+                $product->defaultImages()->update(['is_primary' => false]);
+
+                /** @var ProductImage|null $replacementImage */
+                $replacementImage = $product->defaultImages()
+                    ->orderByDesc('is_primary')
+                    ->orderBy('sort_order')
+                    ->orderBy('created_at')
+                    ->first();
+
+                $replacementImage?->update(['is_primary' => true]);
+            }
+        });
+
+        // Delete the physical file only after the DB transaction commits so we
+        // never end up with a live record pointing at a deleted file.
+        Storage::disk($disk)->delete($filePath);
 
         return $this->respondDeleted('Product image');
     }

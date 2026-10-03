@@ -21,7 +21,6 @@ class ProductResource extends JsonResource
             'barcode' => $this->barcode,
             'name' => $this->name,
             'description' => $this->description,
-            'category_id' => $this->category_id,
             'tax_category_id' => $this->tax_category_id,
             'cost_price' => $this->cost_price,
             'selling_price' => $this->selling_price,
@@ -31,7 +30,8 @@ class ProductResource extends JsonResource
             'track_inventory' => $this->track_inventory,
             'reorder_level' => $this->reorder_level,
             'unit' => $this->unit,
-            'category' => CategoryResource::make($this->whenLoaded('category')),
+            // Categories is now many-to-many \u2014 exposed as a collection
+            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'tax_category' => TaxCategoryResource::make($this->whenLoaded('taxCategory')),
             'variants' => VariantResource::collection($this->whenLoaded('variants')),
             'images' => ProductImageResource::collection($this->whenLoaded('images')),

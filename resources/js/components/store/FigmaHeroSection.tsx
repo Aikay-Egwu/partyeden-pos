@@ -170,7 +170,7 @@ export function FigmaHeroSection({
                                     letterSpacing: '-1px',
                                 }}
                             >
-                                Float ✨
+                                Float
                             </span>
                         </span>
                     </h1>
@@ -178,10 +178,10 @@ export function FigmaHeroSection({
                     {/* Description */}
                     <div className="flex w-full max-w-2xl flex-col items-start">
                         <p className="w-full font-sans text-[15px] leading-6 text-popjoy-muted sm:text-lg sm:leading-7">
-                            Luxury inflated balloon bouquets, bespoke ceiling
-                            installs, and personalised crystal bubble balloons
-                            delivered directly to your door anywhere in the UK.
-                            Unbox pure magic!
+                            Luxury inflated balloon bouquets, number stacks, and
+                            personalised crystal bubble balloons delivered
+                            directly to your door or pick up at our shop in
+                            Sunderland
                         </p>
                     </div>
 

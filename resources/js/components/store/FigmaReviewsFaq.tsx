@@ -259,14 +259,16 @@ export function FigmaReviewsFaq({
                                 {/* Purchased items divider + labels */}
                                 <div className="flex shrink-0 items-start self-stretch">
                                     <div className="flex flex-col items-start gap-1 self-stretch border-t border-popjoy-divider/40 pt-4">
-                                        {review.purchased.map((item, pIndex) => (
-                                            <span
-                                                key={`${review.initials}-p-${pIndex}`}
-                                                className="font-sans text-xs leading-4 font-bold text-popjoy-purple"
-                                            >
-                                                {item}
-                                            </span>
-                                        ))}
+                                        {review.purchased.map(
+                                            (item, pIndex) => (
+                                                <span
+                                                    key={`${review.initials}-p-${pIndex}`}
+                                                    className="font-sans text-xs leading-4 font-bold text-popjoy-purple"
+                                                >
+                                                    {item}
+                                                </span>
+                                            ),
+                                        )}
                                     </div>
                                 </div>
                             </article>

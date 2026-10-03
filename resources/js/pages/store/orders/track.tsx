@@ -85,7 +85,10 @@ export default function OrderTracking({ searchedOrder, filters }: Props) {
                             defaultValue={filters.email ?? ''}
                         />
                     </div>
-                    <Button type="submit" className="w-full gap-2 bg-purple-600 text-white">
+                    <Button
+                        type="submit"
+                        className="w-full gap-2 bg-purple-600 text-white"
+                    >
                         <Search className="size-4" />
                         Track Order
                     </Button>
@@ -99,7 +102,10 @@ export default function OrderTracking({ searchedOrder, filters }: Props) {
                                 <h2 className="text-lg font-medium text-popjoy-ink">
                                     {searchedOrder.order_number}
                                 </h2>
-                                <StatusBadge value={searchedOrder.status} bgColor="purple-300" />
+                                <StatusBadge
+                                    value={searchedOrder.status}
+                                    bgColor="purple-300"
+                                />
                             </div>
                             <div className="mt-3 space-y-1 text-sm">
                                 <div className="flex justify-between">

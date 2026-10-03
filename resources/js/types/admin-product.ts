@@ -129,7 +129,7 @@ export type AdminProduct = {
     customise_text: boolean;
     preorder: boolean;
     slug?: string | null;
-    category?: SelectOption | null;
+    categories?: SelectOption[];
     taxCategory?: SelectOption | null;
     main_colors?: ProductColorEntry[];
     secondary_colors?: ProductColorEntry[];

@@ -82,7 +82,6 @@ const defaultColumns: FigmaFooterColumn[] = [
             { label: 'Milestone Numbers', href: '#' },
             { label: 'Birthday Clusters', href: '#' },
             { label: 'Organic Garlands', href: '#' },
-            { label: 'Kids Party Themes', href: '#' },
         ],
     },
     {
@@ -91,32 +90,31 @@ const defaultColumns: FigmaFooterColumn[] = [
             { label: 'Check Delivery Dates', href: '#' },
             { label: 'Helium Float Care Guide', href: '/faq' },
             { label: 'Track Order (DPD)', href: '#' },
-            { label: 'Returns & Replacements', href: '#' },
+            /* { label: 'Returns & Replacements', href: '#' }, */
             { label: 'Contact Studio Support', href: '#' },
         ],
     },
     {
         heading: 'EVENT SERVICES',
         links: [
-            { label: 'Ceiling Installs London', href: '#' },
             { label: 'Corporate PR Launches', href: '#' },
             { label: 'Wedding Moongates', href: '#' },
-            { label: 'Download Lookbook', href: '#' },
-            { label: 'Wholesale & Trade', href: '#' },
+            { label: 'Kids Party Themes', href: '#' },
         ],
     },
 ];
 
 const defaultLegalLinks: FigmaFooterLink[] = [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Service', href: '#' },
-    { label: 'Cookie Preferences', href: '#' },
+    { label: 'Privacy Policy', href: '/privacy-policy' },
+    { label: 'Terms of Service', href: '/terms-of-service' },
+    { label: 'Cookies', href: '/cookie-policy' },
+    { label: 'Cookie Preferences', href: '/cookie-preferences' },
 ];
 
 /**
  * Store footer matching the Figma `.container93` + `.container91` spec.
  * Light purple/cream background with a 4-column top section:
- * - Col 1: balloon icon, "Party Eden Boutique" brand name, description, 3 social SVGs.
+ * - Col 1: balloon icon, "Party Eden" brand name, description, 3 social SVGs.
  * - Col 2: SHOP COLLECTIONS — 5 product category links.
  * - Col 3: CUSTOMER CARE — 5 support/tracking links.
  * - Col 4: EVENT SERVICES — 5 installations/lookbook links.
@@ -129,7 +127,7 @@ const defaultLegalLinks: FigmaFooterLink[] = [
  * <FigmaFooter />
  */
 export function FigmaFooter({
-    brandName = 'Party Eden Boutique',
+    brandName = 'Party Eden',
     brandDescription = "The UK's premier destination for luxury pre-inflated balloon gifts, event styling, and personalized party decor. Handcrafted in our bespoke London studio.",
     socialIcons = defaultSocialIcons,
     columns = defaultColumns,
@@ -152,7 +150,7 @@ export function FigmaFooter({
             {/* Top: 4-column content — grid with responsive breakdown */}
             <div className="mx-auto grid w-full max-w-[1280px] grid-cols-1 gap-10 px-4 pt-12 pb-8 sm:grid-cols-2 sm:px-6 sm:pt-16 sm:pb-10 lg:grid-cols-4 lg:px-8">
                 {/* Col 1: Brand + socials — spans all cols on mobile */}
-                <div className="sm:col-span-2 flex max-w-[360px] flex-col items-start gap-5">
+                <div className="flex max-w-[360px] flex-col items-start gap-5 sm:col-span-2">
                     <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-popjoy-purple-surface">
                             <span

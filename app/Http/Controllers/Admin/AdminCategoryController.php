@@ -106,6 +106,17 @@ class AdminCategoryController extends Controller
             ->with('success', 'Category updated successfully.');
     }
 
+    public function toggleStatus(Request $request, Category $category): \Illuminate\Http\RedirectResponse
+    {
+        $data = $request->validate([
+            'is_active' => ['required', 'boolean'],
+        ]);
+
+        $category->update($data);
+
+        return back();
+    }
+
     public function destroy(Category $category)
     {
         $category->delete();

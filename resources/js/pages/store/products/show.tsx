@@ -3,6 +3,7 @@ import { Check, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { CartSidebar } from '@/components/store/cart-sidebar';
+import { CookieConsent } from '@/components/store/cookie-consent';
 //import { FigmaAnnouncementBar } from '@/components/store/FigmaAnnouncementBar';
 import { FigmaFooter } from '@/components/store/FigmaFooter';
 import { FigmaHeader } from '@/components/store/FigmaHeader';
@@ -690,6 +691,8 @@ export default function ProductShow({ product }: Props) {
 
                 <FigmaFooter />
             </div>
+
+            <CookieConsent />
 
             {/* Celebration basket drawer */}
             <CartSidebar

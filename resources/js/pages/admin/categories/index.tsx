@@ -1,5 +1,6 @@
 import { Head, router } from '@inertiajs/react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
 import type {
     Column,
     PaginationLinks,
@@ -43,6 +44,7 @@ type Props = {
 
 export default function CategoriesIndex({ categories, filters }: Props) {
     const deleteDialog = useDeleteDialog<Category>();
+    const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set());
 
     const meta: PaginationMeta = {
         current_page: categories.current_page,
@@ -68,6 +70,45 @@ export default function CategoriesIndex({ categories, filters }: Props) {
         );
     }, []);
 
+    const handleToggleStatus = useCallback(
+        (category: Category) => {
+            if (togglingIds.has(category.id)) {
+                return;
+            }
+
+            const newStatus = !category.is_active;
+            setTogglingIds((prev) => new Set(prev).add(category.id));
+
+            router.patch(
+                `/admin/categories/${category.id}/toggle-status`,
+                { is_active: newStatus },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        toast.success(
+                            newStatus
+                                ? 'Category activated'
+                                : 'Category deactivated',
+                        );
+                    },
+                    onError: () => {
+                        toast.error('Failed to update status');
+                    },
+                    onFinish: () => {
+                        setTogglingIds((prev) => {
+                            const next = new Set(prev);
+                            next.delete(category.id);
+
+                            return next;
+                        });
+                    },
+                },
+            );
+        },
+        [togglingIds],
+    );
+
     const columns: Column<Category>[] = [
         { key: 'name', label: 'Name' },
         { key: 'slug', label: 'Slug' },
@@ -81,7 +122,17 @@ export default function CategoriesIndex({ categories, filters }: Props) {
         {
             key: 'is_active',
             label: 'Status',
-            render: (c) => <ActiveBadge active={c.is_active} />,
+            render: (c) => (
+                <button
+                    type="button"
+                    onClick={() => handleToggleStatus(c)}
+                    disabled={togglingIds.has(c.id)}
+                    className={`cursor-pointer rounded transition-opacity hover:opacity-80 ${togglingIds.has(c.id) ? 'animate-pulse opacity-50' : ''}`}
+                    aria-label={`Toggle status for ${c.name}`}
+                >
+                    <ActiveBadge active={c.is_active} />
+                </button>
+            ),
         },
     ];
 
