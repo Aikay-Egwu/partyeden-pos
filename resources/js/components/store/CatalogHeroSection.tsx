@@ -88,13 +88,13 @@ const defaultTrustPillars: CatalogTrustPillar[] = [
  * TRUST RIBBON: 4 icon tiles below the card with top divider border.
  *
  * @example
- * <CatalogHeroSection partyDate="06/14/2025" postcode="SW1A 1AA" />
+ * <CatalogHeroSection partyDate="06/14/2026" postcode="SW1A 1AA" />
  */
 export function CatalogHeroSection({
     studioLabel = 'Bristol Balloon Artistry • Shipped Nationwide',
     headline = 'Luxury Inflated Balloons Delivered To Their Door',
     description = 'Handcrafted in our Bristol studio, inflated with 100% pure helium, and packaged in giant surprise boxes with 10–14 days guaranteed float. Select your celebration date for morning courier delivery.',
-    partyDate = '06/14/2025',
+    partyDate = '06/14/2026',
     postcode = 'SW1A 1AA',
     countdownDuration = '2 hrs 42 mins',
     arrivalEstimate = 'for tomorrow 10:30am arrival.',

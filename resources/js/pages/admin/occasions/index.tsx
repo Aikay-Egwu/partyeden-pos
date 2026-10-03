@@ -99,6 +99,7 @@ export default function OccasionsIndex({ occasions, filters }: Props) {
                         setTogglingFeaturedIds((prev) => {
                             const next = new Set(prev);
                             next.delete(occasion.id);
+
                             return next;
                         });
                     },

@@ -125,7 +125,7 @@ const defaultLegalLinks: CatalogFooterLink[] = [
  *      purple "London Studio & White Glove Courier Hub" text.
  *
  * 3) COPYRIGHT BAR — horizontal popjoy-divider border above:
- *    - LEFT: © 2025 Pop & Joy Balloons Boutique Ltd text.
+ *    - LEFT: © 2026 Pop & Joy Balloons Boutique Ltd text.
  *    - RIGHT: 3 legal links (Privacy / Terms / Eco Promise).
  *
  * @example

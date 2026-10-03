@@ -140,6 +140,7 @@ export default function CategoriesIndex({ categories, filters }: Props) {
                         setTogglingFeaturedIds((prev) => {
                             const next = new Set(prev);
                             next.delete(category.id);
+
                             return next;
                         });
                     },

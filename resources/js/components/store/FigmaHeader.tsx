@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Menu, ShoppingCart, X } from 'lucide-react';
+import { ChevronRight, Menu, ShoppingCart, X } from 'lucide-react';
 import { useState } from 'react';
 import { CatalogSearch } from '@/components/store/catalog-search';
 
@@ -73,7 +73,7 @@ export function FigmaHeader({
                 className,
             )}
         >
-            <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 px-4 py-3 sm:px-6 lg:h-20 lg:flex-nowrap lg:px-8 lg:py-0">
+            <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-2 px-4 py-3 sm:gap-x-4 sm:px-6 lg:h-20 lg:flex-nowrap lg:gap-x-6 lg:px-8 lg:py-0">
                 <Link
                     href="/"
                     className="inline-flex shrink-0 items-center gap-3 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-popjoy-purple"
@@ -102,28 +102,25 @@ export function FigmaHeader({
 
                 <nav
                     aria-label="Main store navigation"
-                    className="hidden items-center gap-4 xl:flex"
+                    className="hidden items-center gap-1 lg:flex xl:gap-4"
                 >
                     {navLinks.map((link) => (
                         <Link
                             key={`${link.labelPrimary}-${link.href}`}
                             href={link.href}
-                            className="inline-flex shrink-0 flex-col items-start rounded-sm py-1 transition-colors hover:text-popjoy-purple focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-popjoy-purple"
+                            className="inline-flex shrink-0 items-center justify-center rounded-xl px-2.5 py-1.5 text-sm font-semibold text-popjoy-ink transition-colors hover:bg-popjoy-purple-bg hover:text-popjoy-purple focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-popjoy-purple sm:px-3"
                         >
-                            <span className="font-sans text-sm leading-5 font-semibold text-popjoy-ink">
-                                {link.labelPrimary}
-                                {link.labelSecondary && (
-                                    <>
-                                        <br />
-                                        {link.labelSecondary}
-                                    </>
-                                )}
-                            </span>
+                            <span>{link.labelPrimary}</span>
+                            {link.labelSecondary ? (
+                                <span className="ml-1">
+                                    {link.labelSecondary}
+                                </span>
+                            ) : null}
                         </Link>
                     ))}
                 </nav>
 
-                <div className="ml-auto inline-flex shrink-0 items-center gap-3">
+                <div className="inline-flex shrink-0 items-center gap-2 sm:gap-3">
                     <div className="hidden w-72 xl:block">
                         <CatalogSearch placeholder="Search themes, ages..." />
                     </div>
@@ -138,6 +135,7 @@ export function FigmaHeader({
                             <ShoppingCart
                                 aria-hidden="true"
                                 className="h-4.25 w-4.25 shrink-0"
+                                color="#000000"
                             />
                             {itemCount > 0 && (
                                 <span
@@ -159,6 +157,7 @@ export function FigmaHeader({
                             <ShoppingCart
                                 aria-hidden="true"
                                 className="h-4.25 w-4.25 shrink-0"
+                                color="#000000"
                             />
                             {itemCount > 0 && (
                                 <span
@@ -178,7 +177,7 @@ export function FigmaHeader({
                         aria-expanded={mobileMenuOpen}
                         aria-controls="store-mobile-navigation"
                         onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}
-                        className="inline-flex items-center justify-center rounded-full bg-popjoy-purple-bg p-2.5 text-popjoy-ink transition-colors hover:bg-popjoy-purple-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple xl:hidden"
+                        className="inline-flex items-center justify-center rounded-full bg-popjoy-purple-bg p-2.5 text-popjoy-ink transition-colors hover:bg-popjoy-purple-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple lg:hidden"
                     >
                         {mobileMenuOpen ? (
                             <X aria-hidden="true" className="size-5" />
@@ -188,26 +187,37 @@ export function FigmaHeader({
                     </button>
                 </div>
 
-                <div className="order-3 w-full pt-3 sm:pt-0 xl:hidden">
+                {/* Search bar: full-width below logo on small screens; inline-flex slot at lg; swapped to the compact inline w-72 variant at xl */}
+                <div className="order-3 mt-1 w-full sm:mt-2 lg:order-none lg:mt-0 lg:max-w-sm lg:flex-1 lg:px-4 xl:hidden">
                     <CatalogSearch placeholder="Search themes, ages..." />
                 </div>
                 {mobileMenuOpen && (
                     <nav
                         id="store-mobile-navigation"
                         aria-label="Mobile store navigation"
-                        className="order-4 grid w-full grid-cols-2 gap-1 border-t border-popjoy-divider/40 pt-3 xl:hidden"
+                        className="order-4 w-full overflow-hidden rounded-2xl border border-popjoy-divider/50 bg-white shadow-inner sm:mt-2 lg:hidden"
                     >
-                        {navLinks.map((link) => (
+                        {navLinks.map((link, idx) => (
                             <Link
                                 key={`${link.labelPrimary}-${link.href}`}
                                 href={link.href}
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="rounded-xl px-3 py-2.5 text-sm font-semibold text-popjoy-ink transition-colors hover:bg-popjoy-purple-bg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple"
+                                className={cn(
+                                    'flex items-center justify-between px-5 py-4 text-base font-semibold text-popjoy-ink transition-colors hover:bg-popjoy-purple-bg hover:text-popjoy-purple focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple',
+                                    idx !== navLinks.length - 1 &&
+                                        'border-b border-popjoy-divider/30',
+                                )}
                             >
-                                {link.labelPrimary}
-                                {link.labelSecondary
-                                    ? ` ${link.labelSecondary}`
-                                    : ''}
+                                <span>
+                                    {link.labelPrimary}
+                                    {link.labelSecondary
+                                        ? ` ${link.labelSecondary}`
+                                        : ''}
+                                </span>
+                                <ChevronRight
+                                    aria-hidden="true"
+                                    className="h-5 w-5 text-popjoy-muted"
+                                />
                             </Link>
                         ))}
                     </nav>

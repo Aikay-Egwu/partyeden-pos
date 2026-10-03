@@ -120,7 +120,7 @@ const defaultLegalLinks: FigmaFooterLink[] = [
  * - Col 4: EVENT SERVICES — 5 installations/lookbook links.
  *
  * Bottom copyright bar with a horizontal divider,
- * © 2025 Party Eden Balloon Boutique Ltd text + biodegradable promise on the left,
+ * © {new Date().getFullYear()} Party Eden text + biodegradable promise on the left,
  * Privacy / Terms / Cookies links on the right.
  *
  * @example
@@ -131,7 +131,7 @@ export function FigmaFooter({
     brandDescription = "The UK's premier destination for luxury pre-inflated balloon gifts, event styling, and personalized party decor. Handcrafted in our bespoke London studio.",
     socialIcons = defaultSocialIcons,
     columns = defaultColumns,
-    copyrightText = '© 2025 Party Eden Balloon Boutique Ltd. All rights reserved. 100% Biodegradable Latex Promise.',
+    copyrightText = `© ${new Date().getFullYear()} Party Eden. All rights reserved. 100% Biodegradable Latex Promise.`,
     legalLinks = defaultLegalLinks,
     className,
     id,

@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
  * full-width section with decorative accent circles,
  * blurred/overlayed background photo of a suspended balloon install,
  * eyebrow pill, headline, 3-line description,
- * purple "Book Design Consultation" solid CTA and "Download 2025 Lookbook" link CTA.
+ * purple "Book Design Consultation" solid CTA and "Download 2026 Lookbook" link CTA.
  */
 export type FigmaBespokeInstallsProps = {
     /** Eyebrow pill label */
@@ -141,7 +141,7 @@ export function FigmaBespokeInstalls({
                                     className="h-[18px] w-[18px] shrink-0"
                                 />
                                 <span className="font-plus-jakarta text-sm leading-5 font-bold tracking-[0.35px] text-popjoy-ink">
-                                    Download 2025 Lookbook
+                                    Download 2026 Lookbook
                                 </span>
                             </button>
                         </div>

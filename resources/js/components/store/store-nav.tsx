@@ -133,7 +133,7 @@ export function StoreNav({ cartCount, onCartClick }: StoreNavProps) {
                             >
                                 <ShoppingCart className="size-5" />
                                 {itemCount > 0 && (
-                                    <span className="absolute -top-0.5 -right-0.5 flex size-[18px] items-center justify-center rounded-full bg-popjoy-gold text-[10px] font-bold text-popjoy-gold-ink ring-2 ring-white">
+                                    <span className="absolute -top-0.5 -right-0.5 flex size-4.5 items-center justify-center rounded-full bg-popjoy-gold text-[10px] font-bold text-popjoy-gold-ink ring-2 ring-white">
                                         {itemCount > 99 ? '99+' : itemCount}
                                     </span>
                                 )}
@@ -146,7 +146,7 @@ export function StoreNav({ cartCount, onCartClick }: StoreNavProps) {
                             >
                                 <ShoppingCart className="size-5" />
                                 {itemCount > 0 && (
-                                    <span className="absolute -top-0.5 -right-0.5 flex size-[18px] items-center justify-center rounded-full bg-popjoy-gold text-[10px] font-bold text-popjoy-gold-ink ring-2 ring-white">
+                                    <span className="absolute -top-0.5 -right-0.5 flex size-4.5 items-center justify-center rounded-full bg-popjoy-gold text-[10px] font-bold text-popjoy-gold-ink ring-2 ring-white">
                                         {itemCount > 99 ? '99+' : itemCount}
                                     </span>
                                 )}

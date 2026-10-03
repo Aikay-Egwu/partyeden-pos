@@ -211,7 +211,7 @@ export function FigmaHeroSection({
                     </Link>
 
                     {/* Dual CTA buttons — stack on mobile, inline on md+ */}
-                    <div className="flex w-full flex-col items-stretch gap-3 pt-1 sm:flex-row sm:items-center sm:gap-4 sm:pt-2">
+                    <div className="hidden w-full flex-col items-stretch gap-3 pt-1 sm:flex-row sm:items-center sm:gap-4 sm:pt-2">
                         {/* Primary purple CTA — outer a + inner div (reliable height pattern) */}
                         <a
                             href="#"
@@ -283,7 +283,7 @@ export function FigmaHeroSection({
                     {/* Main hero image carousel — fills available right-side space on desktop, full-width on mobile */}
                     <div className="relative w-full self-center lg:h-full lg:w-full">
                         <div
-                            className="relative aspect-square w-full shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-popjoy-purple-bg sm:aspect-4/5 md:max-w-[550px] md:mx-auto lg:h-full lg:max-w-none lg:aspect-auto lg:w-full lg:mx-0"
+                            className="relative aspect-square w-full shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-popjoy-purple-bg sm:aspect-4/5 md:max-w-137.5 md:mx-auto lg:h-full lg:max-w-none lg:aspect-auto lg:w-full lg:mx-0"
                             style={{
                                 transform: 'rotate(1deg)',
                                 boxShadow:
