@@ -188,7 +188,7 @@ export function FigmaHeader({
                 </div>
 
                 {/* Search bar: full-width below logo on small screens; inline-flex slot at lg; swapped to the compact inline w-72 variant at xl */}
-                <div className="order-3 mt-1 w-full sm:mt-2 lg:order-none lg:mt-0 lg:max-w-sm lg:flex-1 lg:px-4 xl:hidden">
+                <div className="order-3 mt-1 w-full sm:mt-2 lg:order-0 lg:mt-0 lg:max-w-sm lg:flex-1 lg:px-4 xl:hidden">
                     <CatalogSearch placeholder="Search themes, ages..." />
                 </div>
                 {mobileMenuOpen && (
