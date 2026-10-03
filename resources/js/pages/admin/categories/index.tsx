@@ -19,6 +19,7 @@ type Category = {
     name: string;
     slug: string;
     is_active: boolean;
+    featured: boolean;
     children_count: number;
     products_count: number;
     parent?: { id: string; name: string } | null;
@@ -45,6 +46,7 @@ type Props = {
 export default function CategoriesIndex({ categories, filters }: Props) {
     const deleteDialog = useDeleteDialog<Category>();
     const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set());
+    const [togglingFeaturedIds, setTogglingFeaturedIds] = useState<Set<string>>(new Set());
 
     const meta: PaginationMeta = {
         current_page: categories.current_page,
@@ -109,9 +111,46 @@ export default function CategoriesIndex({ categories, filters }: Props) {
         [togglingIds],
     );
 
+    const handleToggleFeatured = useCallback(
+        (category: Category) => {
+            if (togglingFeaturedIds.has(category.id)) {
+                return;
+            }
+
+            const newFeatured = !category.featured;
+            setTogglingFeaturedIds((prev) => new Set(prev).add(category.id));
+
+            router.patch(
+                `/admin/categories/${category.id}/toggle-featured`,
+                { featured: newFeatured },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        toast.success(
+                            newFeatured
+                                ? 'Category marked as featured'
+                                : 'Category removed from featured',
+                        );
+                    },
+                    onError: () => {
+                        toast.error('Failed to update featured status');
+                    },
+                    onFinish: () => {
+                        setTogglingFeaturedIds((prev) => {
+                            const next = new Set(prev);
+                            next.delete(category.id);
+                            return next;
+                        });
+                    },
+                },
+            );
+        },
+        [togglingFeaturedIds],
+    );
+
     const columns: Column<Category>[] = [
         { key: 'name', label: 'Name' },
-        { key: 'slug', label: 'Slug' },
         {
             key: 'parent',
             label: 'Parent',
@@ -119,6 +158,21 @@ export default function CategoriesIndex({ categories, filters }: Props) {
         },
         { key: 'products_count', label: 'Products' },
         { key: 'children_count', label: 'Subcategories' },
+        {
+            key: 'featured',
+            label: 'Featured',
+            render: (c) => (
+                <button
+                    type="button"
+                    onClick={() => handleToggleFeatured(c)}
+                    disabled={togglingFeaturedIds.has(c.id)}
+                    className={`cursor-pointer rounded transition-opacity hover:opacity-80 ${togglingFeaturedIds.has(c.id) ? 'animate-pulse opacity-50' : ''}`}
+                    aria-label={`Toggle featured for ${c.name}`}
+                >
+                    <ActiveBadge active={c.featured} />
+                </button>
+            ),
+        },
         {
             key: 'is_active',
             label: 'Status',

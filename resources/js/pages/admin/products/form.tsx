@@ -155,6 +155,8 @@ export default function ProductForm({
         // Create-mode stock
         initial_stock_quantity: '',
         initial_stock_location_id: '',
+        // Submit-mode flag: true = stay on edit page after save; false = return to list
+        continue_editing: false,
     };
 
     const {
@@ -223,9 +225,18 @@ export default function ProductForm({
             .replace(/(^-|-$)+/g, '');
     }, [data.name]);
 
-    // Submit to create or update endpoint
-    const handleSubmit = (e: React.FormEvent) => {
+    // Submit to create or update endpoint.
+    // continueEditing: when true, save and stay on the edit page;
+    //                  when false, save and return to the products list.
+    const handleSubmit = (
+        e: React.FormEvent | React.MouseEvent,
+        continueEditing: boolean = false,
+    ) => {
         e.preventDefault();
+
+        // Sync the submit-mode flag into the form payload so the backend
+        // can decide which redirect to send back.
+        setData('continue_editing', isEditing ? continueEditing : false);
 
         // Allow the Inertia redirect to proceed without triggering the
         // unsaved-changes confirmation dialog (which is meant for external
@@ -234,12 +245,24 @@ export default function ProductForm({
 
         const handleSuccess = () => {
             allowNextLeaveRef.current = false;
+            // Reset the dirty-state baseline so the freshly-saved values
+            // are treated as the "no unsaved changes" reference. This
+            // prevents false positive warnings after an "Update and Continue"
+            // save that re-renders the same page with updated data.
             setDefaults();
-            toast.success(isEditing ? 'Product updated.' : 'Product created.');
+            setData('continue_editing', false);
+            toast.success(
+                isEditing
+                    ? continueEditing
+                        ? 'Product updated — you can keep editing.'
+                        : 'Product updated.'
+                    : 'Product created.',
+            );
         };
 
         const handleError = () => {
             allowNextLeaveRef.current = false;
+            setData('continue_editing', false);
         };
 
         if (isEditing) {
@@ -713,12 +736,22 @@ export default function ProductForm({
                     {isEditing && <ImagesPanel product={product} />}
 
                     {/* Submit */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                         <Button type="submit" disabled={processing}>
                             {isEditing
                                 ? 'Update Product Details'
                                 : 'Create Product'}
                         </Button>
+                        {isEditing && (
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                disabled={processing}
+                                onClick={(e) => handleSubmit(e, true)}
+                            >
+                                Update and Continue
+                            </Button>
+                        )}
                         {data.name && (
                             <p className="text-xs text-muted-foreground">
                                 Current slug:{' '}

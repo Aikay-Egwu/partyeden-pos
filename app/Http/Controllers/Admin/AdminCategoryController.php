@@ -118,6 +118,17 @@ class AdminCategoryController extends Controller
         return back();
     }
 
+    public function toggleFeatured(Request $request, Category $category): RedirectResponse
+    {
+        $data = $request->validate([
+            'featured' => ['required', 'boolean'],
+        ]);
+
+        $category->update($data);
+
+        return back();
+    }
+
     public function destroy(Category $category)
     {
         $category->delete();

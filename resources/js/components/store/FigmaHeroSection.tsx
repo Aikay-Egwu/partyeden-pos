@@ -132,7 +132,7 @@ export function FigmaHeroSection({
 
             {/* Main content */}
             <div
-                className="relative flex w-full flex-col items-center justify-between gap-10 px-4 py-10 sm:px-6 sm:py-15 lg:h-173.5 lg:flex-row lg:px-8 lg:py-20.5"
+                className="relative flex w-full flex-col items-center justify-between gap-10 px-4 py-10 sm:px-6 sm:py-15 lg:h-173.5 lg:flex-row lg:items-stretch lg:px-8 lg:py-20.5"
                 style={{
                     backgroundImage:
                         'linear-gradient(180deg, #fef7ff 0%, #f9f1ff 50%, #fef7ff 100%)',
@@ -185,32 +185,40 @@ export function FigmaHeroSection({
                         </p>
                     </div>
 
-                    {/* Shop CTA */}
+                    {/* Shop CTA — uses outer <Link> + inner <div> for reliable height application (same pattern as the purple CTA below) */}
                     <Link
                         href="/products"
-                        className="inline-flex h-16 w-full max-w-xl items-center justify-center gap-3 rounded-2xl bg-popjoy-gold px-6 shadow-[0px_10px_15px_-3px_rgba(0,0,0,0.1),0px_4px_6px_-4px_rgba(0,0,0,0.1)] transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-popjoy-purple focus-visible:ring-offset-2 sm:h-19.25 sm:px-8"
+                        className="flex w-full max-w-xl rounded-2xl bg-popjoy-gold transition-opacity hover:opacity-90 focus-visible:ring-2 focus-visible:ring-popjoy-purple focus-visible:ring-offset-2"
                     >
-                        <span
-                            className="font-plus-jakarta text-base leading-6 font-bold tracking-[0.35px] text-popjoy-gold-ink sm:text-lg"
-                            style={{ letterSpacing: '0.35px' }}
+                        <div
+                            className="flex h-12 w-full items-center justify-center gap-3 rounded-2xl px-6 sm:h-13 sm:px-8"
+                            style={{
+                                boxShadow:
+                                    '0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -4px rgba(0,0,0,0.1)',
+                            }}
                         >
-                            Shop now
-                        </span>
-                        <ArrowRight
-                            aria-hidden="true"
-                            className="h-5 w-5 shrink-0 text-popjoy-gold-ink"
-                        />
+                            <span
+                                className="font-plus-jakarta text-sm leading-5 font-bold tracking-[0.35px] text-popjoy-gold-ink sm:text-base"
+                                style={{ letterSpacing: '0.35px' }}
+                            >
+                                Shop now
+                            </span>
+                            <ArrowRight
+                                aria-hidden="true"
+                                className="h-4 w-4 shrink-0 text-popjoy-gold-ink sm:h-5 sm:w-5"
+                            />
+                        </div>
                     </Link>
 
                     {/* Dual CTA buttons — stack on mobile, inline on md+ */}
                     <div className="flex w-full flex-col items-stretch gap-3 pt-1 sm:flex-row sm:items-center sm:gap-4 sm:pt-2">
-                        {/* Primary purple CTA */}
+                        {/* Primary purple CTA — outer a + inner div (reliable height pattern) */}
                         <a
                             href="#"
                             className="flex w-full items-center rounded-full bg-popjoy-purple transition-opacity hover:opacity-90 sm:w-67.75 sm:shrink-0"
                         >
                             <div
-                                className="flex h-12 w-full min-w-0 flex-1 items-center justify-between rounded-full px-6 sm:px-7"
+                                className="flex h-12 w-full min-w-0 flex-1 items-center justify-between rounded-full px-6 sm:h-13 sm:px-7"
                                 style={{
                                     boxShadow:
                                         '0px 10px 15px -3px rgba(99,14,212,0.25), 0px 4px 6px -4px rgba(99,14,212,0.25)',
@@ -226,22 +234,26 @@ export function FigmaHeroSection({
                             </div>
                         </a>
 
-                        {/* Secondary gold CTA */}
+                        {/* Secondary gold CTA — border moved to inner div so outer height matches the other CTAs exactly */}
                         <a
                             href="/products?category=birthday"
-                            className="inline-flex w-full items-center justify-between gap-2 rounded-full border border-popjoy-gold/30 bg-popjoy-gold px-5 py-3.25 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] transition-opacity hover:opacity-90 sm:w-auto sm:justify-center"
-                            style={{ borderColor: 'rgba(120,90,0,0.2)' }}
+                            className="flex w-full items-center rounded-full transition-opacity hover:opacity-90 sm:w-auto"
                         >
-                            <span
-                                className="font-plus-jakarta text-xs leading-5 font-bold tracking-[0.35px] text-popjoy-gold-ink sm:text-sm"
-                                style={{ letterSpacing: '0.35px' }}
+                            <div
+                                className="flex h-12 w-full items-center justify-between gap-2 rounded-full border bg-popjoy-gold px-5 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] sm:h-13 sm:justify-center"
+                                style={{ borderColor: 'rgba(120,90,0,0.2)' }}
                             >
-                                Explore Birthday Stacks
-                            </span>
-                            <ArrowRight
-                                aria-hidden="true"
-                                className="h-4 w-4 shrink-0 text-popjoy-gold-ink sm:ml-0"
-                            />
+                                <span
+                                    className="font-plus-jakarta text-xs leading-5 font-bold tracking-[0.35px] text-popjoy-gold-ink sm:text-sm"
+                                    style={{ letterSpacing: '0.35px' }}
+                                >
+                                    Explore Birthday Stacks
+                                </span>
+                                <ArrowRight
+                                    aria-hidden="true"
+                                    className="h-4 w-4 shrink-0 text-popjoy-gold-ink sm:ml-0"
+                                />
+                            </div>
                         </a>
                     </div>
 
@@ -267,11 +279,11 @@ export function FigmaHeroSection({
                 </div>
 
                 {/* Right: hero visual collage — stacked below text on mobile */}
-                <div className="relative flex w-full max-w-135 flex-col items-start">
-                    {/* Main hero image carousel — fluid height via aspect */}
-                    <div className="relative w-full max-w-121.75 self-center">
+                <div className="relative flex w-full flex-col items-start justify-center lg:flex-1 lg:justify-end">
+                    {/* Main hero image carousel — fills available right-side space on desktop, full-width on mobile */}
+                    <div className="relative w-full self-center lg:h-full lg:w-full">
                         <div
-                            className="relative aspect-479/488 w-full shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-popjoy-purple-bg sm:h-122 sm:w-119.75"
+                            className="relative aspect-square w-full shrink-0 overflow-hidden rounded-3xl border-4 border-white bg-popjoy-purple-bg sm:aspect-4/5 md:max-w-[550px] md:mx-auto lg:h-full lg:max-w-none lg:aspect-auto lg:w-full lg:mx-0"
                             style={{
                                 transform: 'rotate(1deg)',
                                 boxShadow:

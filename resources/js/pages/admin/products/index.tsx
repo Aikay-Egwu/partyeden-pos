@@ -15,6 +15,7 @@ import {
 import { PageHeader } from '@/components/admin/page-header';
 import { ActiveBadge } from '@/components/admin/status-badge';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { formatCurrency } from '@/lib/currency';
 
 // Shape of a product record from the API
@@ -124,6 +125,36 @@ export default function ProductsIndex({ products, filters }: Props) {
         }
     }, []);
 
+    // Tracks which row/field is mid-toggle so the checkbox can be disabled
+    const [pendingToggle, setPendingToggle] = useState<{
+        id: string;
+        field: 'status' | 'online';
+    } | null>(null);
+
+    const handleToggle = useCallback(
+        (product: Product, field: 'status' | 'online') => {
+            const url =
+                field === 'status'
+                    ? `/admin/products/${product.id}/status`
+                    : `/admin/products/${product.id}/online-visibility`;
+
+            setPendingToggle({ id: product.id, field });
+
+            router.patch(
+                url,
+                {},
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onError: () =>
+                        toast.error('Unable to update the product right now.'),
+                    onFinish: () => setPendingToggle(null),
+                },
+            );
+        },
+        [],
+    );
+
     // Table column definitions
     const columns: Column<Product>[] = [
         { key: 'name', label: 'Name' },
@@ -142,18 +173,44 @@ export default function ProductsIndex({ products, filters }: Props) {
                     : '-',
         },
         {
-            key: 'is_active',
+            key: 'is_online_visible',
             label: 'Online',
             render: (p) => (
-                <Badge variant={p.is_online_visible ? 'default' : 'secondary'}>
-                    {p.is_online_visible ? 'Visible' : 'Internal'}
-                </Badge>
+                <label className="inline-flex items-center gap-2">
+                    <Checkbox
+                        checked={p.is_online_visible}
+                        disabled={
+                            pendingToggle?.id === p.id &&
+                            pendingToggle.field === 'online'
+                        }
+                        onCheckedChange={() => handleToggle(p, 'online')}
+                        aria-label={`Toggle online visibility for ${p.name}`}
+                    />
+                    <Badge
+                        variant={p.is_online_visible ? 'default' : 'secondary'}
+                    >
+                        {p.is_online_visible ? 'Visible' : 'Internal'}
+                    </Badge>
+                </label>
             ),
         },
         {
             key: 'is_active',
             label: 'Status',
-            render: (p) => <ActiveBadge active={p.is_active} />,
+            render: (p) => (
+                <label className="inline-flex items-center gap-2">
+                    <Checkbox
+                        checked={p.is_active}
+                        disabled={
+                            pendingToggle?.id === p.id &&
+                            pendingToggle.field === 'status'
+                        }
+                        onCheckedChange={() => handleToggle(p, 'status')}
+                        aria-label={`Toggle active status for ${p.name}`}
+                    />
+                    <ActiveBadge active={p.is_active} />
+                </label>
+            ),
         },
         {
             key: 'best_seller_enabled',

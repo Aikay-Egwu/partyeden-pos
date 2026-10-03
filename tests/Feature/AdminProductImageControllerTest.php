@@ -73,7 +73,7 @@ test('admin can delete product image', function () {
     ]);
 
     // Confirm the physical file was removed from storage.
-    Storage::disk(ProductImage::storageDisk())->assertMissing('test/path.jpg');
+    $this->assertFalse(Storage::disk(ProductImage::storageDisk())->exists('test/path.jpg'));
 });
 
 test('deleting the primary default image promotes the next default image to primary', function () {

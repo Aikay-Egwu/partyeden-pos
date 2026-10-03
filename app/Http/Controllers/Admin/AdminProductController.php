@@ -19,6 +19,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\TaxCategory;
 use App\Models\Variant;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -183,9 +184,33 @@ class AdminProductController extends Controller
     // Update using existing validation
     public function update(UpdateProductRequest $request, Product $product)
     {
+        // Capture old values for audit log before applying changes
+        $oldValues = $product->getOriginal();
+
         // Exclude category_ids from mass assignment — sync it via the pivot
-        $product->update($request->safe()->except(['category_ids']));
+        // Also exclude continue_editing flag (used only for redirect behavior)
+        $product->update($request->safe()->except(['category_ids', 'continue_editing']));
         $product->categories()->sync($request->input('category_ids', []));
+
+        AuditLog::create([
+            'event' => 'updated',
+            'auditable_type' => Product::class,
+            'auditable_id' => $product->id,
+            'user_id' => $request->user()?->id,
+            'old_values' => $oldValues,
+            'new_values' => $product->fresh()->toArray(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'description' => 'Product updated: '.$product->name,
+        ]);
+
+        // Decide redirect based on submit intent:
+        // "Update and Continue" stays on the edit page (products.edit)
+        // "Update Product Details" returns to the list (products.index)
+        if ($request->boolean('continue_editing')) {
+            return redirect()->route('products.edit', $product)
+                ->with('success', 'Product updated. You can continue editing.');
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Product updated successfully.');
@@ -340,6 +365,32 @@ class AdminProductController extends Controller
         }
 
         return redirect()->back()->with('success', 'Stock levels updated.');
+    }
+
+    /**
+     * Quick-toggle a product's active status straight from the list page.
+     */
+    public function toggleStatus(Product $product): RedirectResponse
+    {
+        $product->update(['is_active' => ! $product->is_active]);
+
+        return redirect()->back()->with(
+            'success',
+            $product->is_active ? 'Product activated.' : 'Product deactivated.',
+        );
+    }
+
+    /**
+     * Quick-toggle a product's storefront visibility straight from the list page.
+     */
+    public function toggleOnlineVisibility(Product $product): RedirectResponse
+    {
+        $product->update(['is_online_visible' => ! $product->is_online_visible]);
+
+        return redirect()->back()->with(
+            'success',
+            $product->is_online_visible ? 'Product is now visible online.' : 'Product is now internal only.',
+        );
     }
 
     // Soft delete
