@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Variant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
@@ -99,11 +100,23 @@ class AdminProductImageController extends Controller
     {
         abort_if($productImage->product_id !== $product->id, Response::HTTP_NOT_FOUND);
 
-        Storage::disk(ProductImage::storageDisk())->delete($productImage->file_path);
+        // Capture file metadata before the DB transaction closes the model,
+        // so we can safely delete the physical file after DB consistency is confirmed.
+        $disk = ProductImage::storageDisk();
+        $filePath = (string) $productImage->file_path;
 
-        $productImage->delete();
+        // Perform all DB writes inside a transaction so that a failure on
+        // the primary re-promotion step rolls back the soft-delete.
+        DB::transaction(function () use ($product, $productImage): void {
+            $productImage->delete();
+            $this->syncPrimaryDefaultImage($product);
+        });
 
-        $this->syncPrimaryDefaultImage($product);
+        // Only delete the physical file AFTER the DB transaction has committed.
+        // File deletion is non-transactional, so keeping it last means we never
+        // end up with a deleted file + live DB record (broken image URL).
+        // If the file is already missing (orphaned record), delete() is a safe no-op.
+        Storage::disk($disk)->delete($filePath);
 
         return redirect()->back()->with('success', 'Image deleted.');
     }

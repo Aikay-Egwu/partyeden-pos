@@ -9,6 +9,7 @@ use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Models\AuditLog;
 use App\Models\Category;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -104,6 +105,28 @@ class AdminCategoryController extends Controller
 
         return redirect()->route('categories.index')
             ->with('success', 'Category updated successfully.');
+    }
+
+    public function toggleStatus(Request $request, Category $category): RedirectResponse
+    {
+        $data = $request->validate([
+            'is_active' => ['required', 'boolean'],
+        ]);
+
+        $category->update($data);
+
+        return back();
+    }
+
+    public function toggleFeatured(Request $request, Category $category): RedirectResponse
+    {
+        $data = $request->validate([
+            'featured' => ['required', 'boolean'],
+        ]);
+
+        $category->update($data);
+
+        return back();
     }
 
     public function destroy(Category $category)

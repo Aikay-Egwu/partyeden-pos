@@ -18,18 +18,29 @@ const navLinks = [
     { label: 'Blog', href: '/blog' },
 ];
 
-type CartSummary = {
-    count: number;
-    total: string;
+/**
+ * Props for the StoreNav component.
+ * Accepts an optional live cartCount override and onCartClick callback
+ * to open the celebration basket drawer from the parent layout.
+ */
+type StoreNavProps = {
+    /** Override cart count — falls back to Inertia page props */
+    cartCount?: number;
+    /** Optional click handler for the cart icon (opens basket drawer) */
+    onCartClick?: () => void;
 };
 
 /**
  * Full store navigation with logo, links, search, wishlist, account, and cart.
  * Sticky on scroll with backdrop blur. Includes mobile hamburger menu.
+ * Cart icon now opens the celebration basket drawer when onCartClick is provided,
+ * with a live gold badge showing item count that updates on add/remove.
  */
-export function StoreNav() {
-    const { cart } = usePage().props as { cart?: CartSummary };
-    const itemCount = cart?.count ?? 0;
+export function StoreNav({ cartCount, onCartClick }: StoreNavProps) {
+    const { cart } = usePage().props as {
+        cart?: { count: number; total: string };
+    };
+    const itemCount = cartCount ?? cart?.count ?? 0;
     const [mobileOpen, setMobileOpen] = useState(false);
 
     return (
@@ -111,34 +122,68 @@ export function StoreNav() {
                         >
                             <FileText className="size-5" />
                         </Link>
-                        <Link
-                            href="/cart"
-                            className="relative rounded-full p-1.5 text-foreground/70 transition-colors hover:text-foreground"
-                            aria-label="Cart"
-                        >
-                            <ShoppingCart className="size-5" />
-                            {itemCount > 0 && (
-                                <span className="absolute -top-0.5 -right-0.5 flex size-[18px] items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                                    {itemCount > 99 ? '99+' : itemCount}
-                                </span>
-                            )}
-                        </Link>
+
+                        {/* Cart icon with live item count badge */}
+                        {onCartClick ? (
+                            <button
+                                type="button"
+                                onClick={onCartClick}
+                                className="relative rounded-full p-1.5 text-foreground/70 transition-colors hover:text-foreground"
+                                aria-label={`Shopping cart, ${itemCount} items`}
+                            >
+                                <ShoppingCart className="size-5" />
+                                {itemCount > 0 && (
+                                    <span className="absolute -top-0.5 -right-0.5 flex size-4.5 items-center justify-center rounded-full bg-popjoy-gold text-[10px] font-bold text-popjoy-gold-ink ring-2 ring-white">
+                                        {itemCount > 99 ? '99+' : itemCount}
+                                    </span>
+                                )}
+                            </button>
+                        ) : (
+                            <Link
+                                href="/cart"
+                                className="relative rounded-full p-1.5 text-foreground/70 transition-colors hover:text-foreground"
+                                aria-label={`Shopping cart, ${itemCount} items`}
+                            >
+                                <ShoppingCart className="size-5" />
+                                {itemCount > 0 && (
+                                    <span className="absolute -top-0.5 -right-0.5 flex size-4.5 items-center justify-center rounded-full bg-popjoy-gold text-[10px] font-bold text-popjoy-gold-ink ring-2 ring-white">
+                                        {itemCount > 99 ? '99+' : itemCount}
+                                    </span>
+                                )}
+                            </Link>
+                        )}
                     </div>
                 </div>
 
                 {/* Mobile cart icon */}
-                <Link
-                    href="/cart"
-                    className="relative lg:hidden"
-                    aria-label="Cart"
-                >
-                    <ShoppingCart className="size-6" />
-                    {itemCount > 0 && (
-                        <span className="absolute -top-1 -right-1 flex size-[18px] items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                            {itemCount > 99 ? '99+' : itemCount}
-                        </span>
-                    )}
-                </Link>
+                {onCartClick ? (
+                    <button
+                        type="button"
+                        onClick={onCartClick}
+                        className="relative lg:hidden"
+                        aria-label={`Shopping cart, ${itemCount} items`}
+                    >
+                        <ShoppingCart className="size-6" />
+                        {itemCount > 0 && (
+                            <span className="absolute -top-1 -right-1 flex size-[18px] items-center justify-center rounded-full bg-popjoy-gold text-[10px] font-bold text-popjoy-gold-ink ring-2 ring-white">
+                                {itemCount > 99 ? '99+' : itemCount}
+                            </span>
+                        )}
+                    </button>
+                ) : (
+                    <Link
+                        href="/cart"
+                        className="relative lg:hidden"
+                        aria-label={`Shopping cart, ${itemCount} items`}
+                    >
+                        <ShoppingCart className="size-6" />
+                        {itemCount > 0 && (
+                            <span className="absolute -top-1 -right-1 flex size-[18px] items-center justify-center rounded-full bg-popjoy-gold text-[10px] font-bold text-popjoy-gold-ink ring-2 ring-white">
+                                {itemCount > 99 ? '99+' : itemCount}
+                            </span>
+                        )}
+                    </Link>
+                )}
             </div>
 
             {/* Mobile menu dropdown */}
@@ -160,12 +205,14 @@ export function StoreNav() {
                             <Link
                                 href="/reviews"
                                 className="rounded-full p-2 text-foreground/70 transition-colors hover:text-foreground"
+                                onClick={() => setMobileOpen(false)}
                             >
                                 <Star className="size-5" />
                             </Link>
                             <Link
                                 href="/blog"
                                 className="rounded-full p-2 text-foreground/70 transition-colors hover:text-foreground"
+                                onClick={() => setMobileOpen(false)}
                             >
                                 <FileText className="size-5" />
                             </Link>

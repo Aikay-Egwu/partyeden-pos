@@ -7,7 +7,9 @@ namespace App\Http\Controllers\Store;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -17,9 +19,41 @@ use Inertia\Response;
  */
 class StoreCategoryController extends Controller
 {
+    public function index(Request $request): Response
+    {
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'],
+        ]);
+        $search = trim($validated['search'] ?? '');
+
+        $categories = Category::query()
+            ->where('is_active', true)
+            ->when($search !== '', fn (Builder $query) => $query->where(
+                fn (Builder $query) => $query
+                    ->where('name', 'like', "%{$search}%")
+                    ->orWhere('slug', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%"),
+            ))
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get(['id', 'name', 'slug', 'description', 'image_path'])
+            ->map(fn (Category $category) => [
+                'id' => $category->id,
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'description' => $category->description,
+                'image' => $category->image_path ? Storage::url($category->image_path) : null,
+            ]);
+
+        return Inertia::render('store/categories/index', [
+            'categories' => $categories,
+            'filters' => ['search' => $search],
+        ]);
+    }
+
     public function show(Request $request, Category $category): Response
     {
-        $products = Product::onlineVisible()->where('category_id', $category->id)
+        $products = Product::onlineVisible()->whereHas('categories', fn ($q) => $q->where('categories.id', $category->id))
             ->where('is_active', true)
             ->when($request->search, fn ($q, $s) => $q->where(function ($q) use ($s) {
                 $q->where('name', 'like', "%{$s}%")
@@ -32,7 +66,7 @@ class StoreCategoryController extends Controller
                 fn ($q) => $q->latest(),
             )
             ->when($request->sort === 'name', fn ($q) => $q->orderBy('name', 'asc'))
-            ->with(['category', 'images' => fn ($q) => $q
+            ->with(['categories', 'images' => fn ($q) => $q
                 ->whereNull('variant_id')
                 ->whereNull('primary_color_id')
                 ->whereNull('addon_product_id')
@@ -47,7 +81,7 @@ class StoreCategoryController extends Controller
                 'selling_price' => $p->selling_price,
                 'product_type' => $p->product_type,
                 'is_active' => $p->is_active,
-                'category' => $p->category?->only(['id', 'name']),
+                'categories' => $p->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
                 'primary_image' => $p->images->first()?->url,
             ]);
 

@@ -14,7 +14,15 @@ use Illuminate\Support\Facades\URL;
 
 uses(RefreshDatabase::class);
 
+function storeOrderExpectedAt(): string
+{
+    // 17:00 sits inside both fulfillment windows (delivery 17:00–21:00,
+    // collection 12:00–17:30), so the shared helper works for either type.
+    return now('Europe/London')->addDay()->setTime(17, 0)->format('Y-m-d\TH:i');
+}
+
 test('it creates a delivery order with add-on child items', function () {
+    $expectedAt = storeOrderExpectedAt();
     $product = Product::factory()->create(['selling_price' => 20.00, 'is_active' => true]);
     $addOn = Product::factory()->create(['selling_price' => 5.00, 'is_active' => true]);
 
@@ -43,6 +51,7 @@ test('it creates a delivery order with add-on child items', function () {
         'phone' => '08000000000',
         'notes' => 'Leave at reception',
         'fulfillment_type' => 'delivery',
+        'expected_at' => $expectedAt,
         'delivery_postcode' => 'SW1A 1AA',
         'address_line1' => '10 Downing Street',
         'address_line2' => 'Flat 2',
@@ -62,6 +71,8 @@ test('it creates a delivery order with add-on child items', function () {
         'shipping_address_line2' => 'Flat 2',
         'shipping_city' => 'London',
     ]);
+    expect(Order::query()->firstOrFail()->expected_at?->timezone('Europe/London')->format('Y-m-d\TH:i'))
+        ->toBe($expectedAt);
 
     $parentItem = OrderItem::query()
         ->whereNull('parent_order_item_id')
@@ -88,6 +99,7 @@ test('it rejects delivery when the postcode does not match a zone', function () 
             'last_name' => 'Eden',
             'email' => 'chioma@example.com',
             'fulfillment_type' => 'delivery',
+            'expected_at' => storeOrderExpectedAt(),
             'delivery_postcode' => 'ZZ1 1ZZ',
             'address_line1' => '10 Downing Street',
             'city' => 'London',
@@ -107,6 +119,7 @@ test('it rejects a delivery order without a structured address', function () {
             'last_name' => 'Eden',
             'email' => 'chioma@example.com',
             'fulfillment_type' => 'delivery',
+            'expected_at' => storeOrderExpectedAt(),
             'delivery_postcode' => 'SW1A 1AA',
         ])
         ->assertRedirect(route('store.checkout'))
@@ -145,6 +158,7 @@ test('it rejects an order when a cart item exceeds available stock', function ()
             'last_name' => 'Eden',
             'email' => 'chioma@example.com',
             'fulfillment_type' => 'pickup',
+            'expected_at' => storeOrderExpectedAt(),
         ])
         ->assertRedirect(route('store.checkout'))
         ->assertSessionHas('error');
@@ -169,6 +183,7 @@ test('it persists the selected variant on the parent order item', function () {
         'email' => 'chioma@example.com',
         'phone' => '08000000000',
         'fulfillment_type' => 'pickup',
+        'expected_at' => storeOrderExpectedAt(),
     ]);
 
     $response->assertRedirect();
@@ -192,6 +207,7 @@ test('order confirmation requires a valid signed URL', function () {
         'last_name' => 'Eden',
         'email' => 'chioma@example.com',
         'fulfillment_type' => 'pickup',
+        'expected_at' => storeOrderExpectedAt(),
     ]);
 
     $order = Order::firstOrFail();

@@ -1,6 +1,8 @@
 import { useForm } from '@inertiajs/react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import InputError from '@/components/input-error';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -74,12 +76,29 @@ export function ColorsPanel({
         });
     };
 
+    // Sync native color picker with hex_code text input
+    const handleColorPickerChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
+        setCreateData('hex_code', e.target.value.toUpperCase());
+    };
+    useEffect(() => {
+        // Ensure hex_code always starts with '#' if the user types one
+        if (createData.hex_code && !createData.hex_code.startsWith('#')) {
+            setCreateData('hex_code', `#${createData.hex_code}`);
+        }
+    }, [createData.hex_code, setCreateData]);
+
     const selectedMainColors = colors.filter((color) =>
         data.main_colors.includes(color.id),
     );
     const selectedSecondaryColors = colors.filter((color) =>
         data.secondary_colors.includes(color.id),
     );
+    // Helper: check if a color is selected in both lists (overlap)
+    const isOverlapped = (colorId: number) =>
+        data.main_colors.includes(colorId) &&
+        data.secondary_colors.includes(colorId);
 
     return (
         <div className="space-y-6 rounded-lg border bg-muted/20 p-4">
@@ -95,7 +114,11 @@ export function ColorsPanel({
                 <form onSubmit={submit} className="space-y-4">
                     <div className="grid gap-6 sm:grid-cols-2">
                         <div className="space-y-2">
-                            <Label>Main Colors</Label>
+                            <Label>Primary Colors</Label>
+                            <p className="text-xs text-muted-foreground">
+                                Select any number of colors. Overlaps with
+                                secondary are allowed.
+                            </p>
                             <div className="max-h-60 space-y-1 overflow-y-auto rounded-md border bg-background p-2">
                                 {colors.map((color) => (
                                     <label
@@ -114,15 +137,23 @@ export function ColorsPanel({
                                             }
                                         />
                                         <div
-                                            className="size-4 rounded-full border"
+                                            className="size-4 shrink-0 rounded-full border"
                                             style={{
                                                 backgroundColor:
                                                     color.hex_code || '#fff',
                                             }}
                                         />
-                                        <span className="text-sm">
+                                        <span className="flex-1 truncate text-sm">
                                             {color.name}
                                         </span>
+                                        {isOverlapped(color.id) && (
+                                            <Badge
+                                                variant="outline"
+                                                className="h-4 px-1.5 py-0 text-[10px]"
+                                            >
+                                                Both
+                                            </Badge>
+                                        )}
                                     </label>
                                 ))}
                             </div>
@@ -131,6 +162,10 @@ export function ColorsPanel({
 
                         <div className="space-y-2">
                             <Label>Secondary Colors</Label>
+                            <p className="text-xs text-muted-foreground">
+                                Select any number of colors. A color can also be
+                                a primary color.
+                            </p>
                             <div className="max-h-60 space-y-1 overflow-y-auto rounded-md border bg-background p-2">
                                 {colors.map((color) => (
                                     <label
@@ -149,15 +184,23 @@ export function ColorsPanel({
                                             }
                                         />
                                         <div
-                                            className="size-4 rounded-full border"
+                                            className="size-4 shrink-0 rounded-full border"
                                             style={{
                                                 backgroundColor:
                                                     color.hex_code || '#fff',
                                             }}
                                         />
-                                        <span className="text-sm">
+                                        <span className="flex-1 truncate text-sm">
                                             {color.name}
                                         </span>
+                                        {isOverlapped(color.id) && (
+                                            <Badge
+                                                variant="outline"
+                                                className="h-4 px-1.5 py-0 text-[10px]"
+                                            >
+                                                Both
+                                            </Badge>
+                                        )}
                                     </label>
                                 ))}
                             </div>
@@ -168,7 +211,7 @@ export function ColorsPanel({
                     <div className="space-y-3 rounded-md border bg-background p-3">
                         <div>
                             <p className="text-xs font-medium text-muted-foreground">
-                                Selected main colors
+                                Selected Primary Colors
                             </p>
                             <div className="mt-2 flex flex-wrap gap-2">
                                 {selectedMainColors.length > 0 ? (
@@ -186,18 +229,26 @@ export function ColorsPanel({
                                                 }}
                                             />
                                             {color.name}
+                                            {isOverlapped(color.id) && (
+                                                <Badge
+                                                    variant="outline"
+                                                    className="h-3.5 px-1 py-0 text-[9px]"
+                                                >
+                                                    +Secondary
+                                                </Badge>
+                                            )}
                                         </span>
                                     ))
                                 ) : (
                                     <span className="text-xs text-muted-foreground">
-                                        No main colors selected yet.
+                                        No primary colors selected yet.
                                     </span>
                                 )}
                             </div>
                         </div>
                         <div>
                             <p className="text-xs font-medium text-muted-foreground">
-                                Selected secondary colors
+                                Selected Secondary Colors
                             </p>
                             <div className="mt-2 flex flex-wrap gap-2">
                                 {selectedSecondaryColors.length > 0 ? (
@@ -215,6 +266,14 @@ export function ColorsPanel({
                                                 }}
                                             />
                                             {color.name}
+                                            {isOverlapped(color.id) && (
+                                                <Badge
+                                                    variant="outline"
+                                                    className="h-3.5 px-1 py-0 text-[9px]"
+                                                >
+                                                    +Primary
+                                                </Badge>
+                                            )}
                                         </span>
                                     ))
                                 ) : (
@@ -262,13 +321,19 @@ export function ColorsPanel({
 
                     <div className="space-y-2">
                         <Label htmlFor="new-color-hex">Hex Code</Label>
-                        <div className="flex items-center gap-3">
-                            <span
-                                className="size-6 rounded-full border"
-                                style={{
-                                    backgroundColor:
-                                        createData.hex_code || '#fff',
-                                }}
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="color"
+                                value={
+                                    createData.hex_code?.startsWith('#') &&
+                                    (createData.hex_code.length === 4 ||
+                                        createData.hex_code.length === 7)
+                                        ? createData.hex_code
+                                        : '#000000'
+                                }
+                                onChange={handleColorPickerChange}
+                                className="h-9 w-12 shrink-0 cursor-pointer rounded-md border bg-background p-1"
+                                aria-label="Pick a color"
                             />
                             <Input
                                 id="new-color-hex"
@@ -277,6 +342,15 @@ export function ColorsPanel({
                                     setCreateData('hex_code', e.target.value)
                                 }
                                 placeholder="#C9A227"
+                                className="flex-1 uppercase"
+                            />
+                            <span
+                                className="size-9 shrink-0 rounded-full border"
+                                style={{
+                                    backgroundColor:
+                                        createData.hex_code || '#fff',
+                                }}
+                                aria-label="Color preview"
                             />
                         </div>
                         <InputError message={createErrors.hex_code} />

@@ -71,6 +71,7 @@ type Order = {
     billing_address: string | null;
     created_at: string;
     fulfillment_type?: string | null;
+    expected_at?: string | null;
     delivery_postcode?: string | null;
     customer?: {
         id: string;
@@ -88,12 +89,17 @@ type Order = {
 type Props = {
     order: Order;
     statusTransitions: string[];
+    checkoutTimezone: string;
 };
 
 /**
  * Order detail page with items, shipments, and summary.
  */
-export default function OrderShow({ order, statusTransitions }: Props) {
+export default function OrderShow({
+    order,
+    statusTransitions,
+    checkoutTimezone,
+}: Props) {
     const handleStatusUpdate = (status: string) => {
         if (!confirm(`Change order status to ${status}?`)) {
             return;
@@ -186,6 +192,19 @@ export default function OrderShow({ order, statusTransitions }: Props) {
                         <p className="text-sm font-medium capitalize">
                             {order.fulfillment_type ?? '-'}
                         </p>
+                        {order.expected_at && (
+                            <p className="mt-1 text-xs font-medium">
+                                Expected:{' '}
+                                {new Date(order.expected_at).toLocaleString(
+                                    'en-GB',
+                                    {
+                                        dateStyle: 'medium',
+                                        timeStyle: 'short',
+                                        timeZone: checkoutTimezone,
+                                    },
+                                )}
+                            </p>
+                        )}
                         {order.fulfillment_type === 'delivery' && (
                             <p className="mt-1 text-xs text-muted-foreground">
                                 Postcode: {order.delivery_postcode ?? '-'}

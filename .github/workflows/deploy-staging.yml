@@ -10,7 +10,6 @@ on:
 permissions:
   contents: read
 
-# This workflow file lives inside backend/ — steps run from the backend folder root
 defaults:
   run:
     working-directory: .
@@ -23,19 +22,30 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+        uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.4'
           tools: composer:v2
           coverage: none
 
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
       - name: Setup Node
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
@@ -52,53 +62,116 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      - name: Generate Wayfinder type-safe route/action files
+        # Explicitly run wayfinder:generate on the CI runner (where the
+        # filesystem is writable by PHP) BEFORE the frontend build, so the
+        # generated resources/js/{actions,routes,wayfinder} directories are
+        # part of the deployment artifact. This avoids needing to run
+        # `php artisan wayfinder:generate` on the production server, where
+        # the deployed code files are read-only for the PHP CLI user and
+        # cause "Permission denied" when writing to resources/js/.
+        # Note: The Vite wayfinder plugin ALSO regenerates these during
+        # `npm run build`, but running the artisan command first guarantees
+        # the artifacts exist regardless of Vite plugin behavior.
+        run: |
+          mkdir -p resources/js/actions resources/js/routes resources/js/wayfinder
+          chmod -R u+w resources/js/actions resources/js/routes resources/js/wayfinder
+          php artisan wayfinder:generate --no-ansi
+
       - name: Build frontend assets
         run: npm run build
 
       - name: Prepare deployment package (clean dev-only files)
         run: |
-          # Remove dev-only files and directories not needed on server
           rm -f .env
           rm -rf tests
           rm -rf database/database.sqlite
-          # Keep .env.example as template reference
-          # Keep storage framework structure intact
 
-      # Deploy files to Plesk server via SSH + rsync
-      # Plesk deploy path typically looks like:
-      #   /var/www/vhosts/<your-domain>/staging.<your-domain>/httpdocs
-      #   or
-      #   /var/www/vhosts/<your-domain>/httpdocs
       - name: Deploy via SSH rsync
-        uses: easingthemes/ssh-deploy@d07b20976719503360f4b5c41c79c439e0e3e2c3 # v4.1.10
+        uses: easingthemes/ssh-deploy@v5.1.0
         with:
-          SSH_PRIVATE_KEY: ${{ secrets.PLESK_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.PLESK_HOST }}
-          REMOTE_USER: ${{ secrets.PLESK_USER }}
-          REMOTE_PORT: ${{ secrets.PLESK_PORT || 22 }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.SSH_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
           SOURCE: "./"
-          TARGET: ${{ secrets.PLESK_DEPLOY_PATH }}
-          # Exclude server-specific files that should not be overwritten
-          EXCLUDE: ".env,.htaccess,storage/logs/*,storage/framework/cache/*,storage/framework/sessions/*,storage/framework/views/*,storage/app/*,storage/pail/*,public/storage,vendor/.htaccess,.git,.github"
-          # Set permissions suitable for Plesk (adjust if your Plesk user needs different umask)
+          TARGET: ${{ secrets.DEPLOY_PATH }}
+          ARGS: "-rlptzv --no-owner --no-group --omit-dir-times"
+          EXCLUDE: ".env, storage/logs/*, storage/framework/cache/*, storage/framework/sessions/*, storage/framework/views/*, storage/app/*, storage/pail/*, public/storage, .git, .github"
           SCRIPT_BEFORE: |
             whoami
-            ls -ld $TARGET || true
-          SCRIPT_AFTER: |
-            cd $TARGET
-            # Ensure Plesk web user can read/write storage & bootstrap cache
-            chmod -R 755 storage bootstrap/cache
-            # Run Laravel post-deployment commands via PHP on the server
-            # 1. Cache config, routes, views
-            php artisan config:cache --no-ansi
-            php artisan route:cache --no-ansi || true
-            php artisan view:cache --no-ansi || true
-            # 2. Run database migrations (safe for staging)
-            php artisan migrate --force --no-ansi
-            # 3. Fix storage symlink if missing
-            if [ ! -L public/storage ]; then
-              php artisan storage:link --no-ansi
+            mkdir -p ${{ secrets.DEPLOY_PATH }}
+            # If Plesk or server git hooks expect origin references, fetch them before deploying
+            if [ -d "${{ secrets.DEPLOY_PATH }}/.git" ]; then
+              cd ${{ secrets.DEPLOY_PATH }}
+              git fetch origin staging || git fetch --all || true
             fi
-            # 4. Restart queue workers if you have horizon/queue listener configured
-            # php artisan queue:restart --no-ansi || true
+          SCRIPT_AFTER: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # 0. Detect correct PHP CLI binary BEFORE any artisan commands.
+            #    Plesk default CLI is often an old PHP version; use Plesk PHP 8.x if available.
+            if [ -x "/opt/plesk/php/8.4/bin/php" ]; then
+              PHP_BIN="/opt/plesk/php/8.4/bin/php"
+            elif [ -x "/opt/plesk/php/8.3/bin/php" ]; then
+              PHP_BIN="/opt/plesk/php/8.3/bin/php"
+            elif [ -x "/opt/plesk/php/8.2/bin/php" ]; then
+              PHP_BIN="/opt/plesk/php/8.2/bin/php"
+            else
+              PHP_BIN="php"
+            fi
+            export PHP_BIN
+            
+            # 1. Ensure all Laravel storage and cache directories exist
+            mkdir -p storage/framework/cache/data
+            mkdir -p storage/framework/sessions
+            mkdir -p storage/framework/views
+            mkdir -p storage/logs
+            mkdir -p storage/app/public
+            mkdir -p bootstrap/cache
+            
+            # 1b. Ensure Wayfinder auto-generated directories exist and are
+            #     writable. Ideally `php artisan wayfinder:generate` should
+            #     NEVER be run on the server (the CI step above already ships
+            #     the generated files via rsync). But if anyone ever runs it
+            #     manually on the box (e.g. to debug routes/actions), these
+            #     directories need to be writable by the PHP CLI user otherwise
+            #     the command fails with:
+            #       "file_put_contents(.../resources/js/actions/Inertia/index.ts):
+            #        Failed to open stream: Permission denied"
+            mkdir -p resources/js/actions resources/js/routes resources/js/wayfinder
+            
+            # 2. Cleanly recreate storage symlink before ownership/permissions fix
+            rm -rf public/storage
+            $PHP_BIN artisan storage:link --no-ansi || true
+            
+            # 3. Fix general file and folder permissions
+            find . -type d -exec chmod 755 {} +
+            find . -type f -exec chmod 644 {} +
+            
+            # 4. Ensure storage / bootstrap / and Wayfinder dirs are fully
+            #    accessible to PHP-FPM / web server / cron / CLI users.
+            #    All of these paths may receive writes post-deploy.
+            chmod -R u+w storage bootstrap/cache resources/js/actions resources/js/routes resources/js/wayfinder
+            chmod -R 777 storage bootstrap/cache resources/js/actions resources/js/routes resources/js/wayfinder
+            
+            # 5. If deploying as root, restore ownership to Plesk subscription user (including symlink)
+            if [ "$(id -u)" -eq 0 ]; then
+              TARGET_OWNER=$(stat -c '%U:%G' .. 2>/dev/null || stat -f '%Su:%Sg' .. 2>/dev/null || true)
+              if [ -n "$TARGET_OWNER" ] && [ "$TARGET_OWNER" != "root:root" ]; then
+                chown -R "$TARGET_OWNER" .
+                chown -h "$TARGET_OWNER" public/storage 2>/dev/null || true
+                chmod -R 777 storage bootstrap/cache resources/js/actions resources/js/routes resources/js/wayfinder
+              fi
+            fi
+            
+            # 6. Run Laravel post-deployment commands
+            $PHP_BIN artisan config:clear --no-ansi || true
+            $PHP_BIN artisan cache:clear --no-ansi || true
+            $PHP_BIN artisan view:clear --no-ansi || true
+            $PHP_BIN artisan config:cache --no-ansi
+            $PHP_BIN artisan route:cache --no-ansi || true
+            $PHP_BIN artisan view:cache --no-ansi || true
+            $PHP_BIN artisan migrate --force --no-ansi
+            
             echo "Deployment complete."

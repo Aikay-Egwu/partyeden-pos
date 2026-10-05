@@ -70,6 +70,7 @@ class AdminOrderController extends Controller
         return Inertia::render('admin/orders/show', [
             'order' => $order,
             'statusTransitions' => self::STATUS_TRANSITIONS[$order->status] ?? [],
+            'checkoutTimezone' => config('checkout.timezone'),
         ]);
     }
 
@@ -91,6 +92,7 @@ class AdminOrderController extends Controller
 
         return Inertia::render('admin/orders/print', [
             'order' => $order,
+            'checkoutTimezone' => config('checkout.timezone'),
         ]);
     }
 
@@ -172,6 +174,7 @@ class AdminOrderController extends Controller
                 'Status',
                 'Payment Status',
                 'Fulfillment',
+                'Expected At',
                 'Delivery Postcode',
                 'Total',
                 'Notes',
@@ -186,6 +189,7 @@ class AdminOrderController extends Controller
                     $order->status,
                     $order->payment_status,
                     $order->fulfillment_type,
+                    $order->expected_at?->timezone(config('checkout.timezone'))->format('Y-m-d H:i'),
                     $order->delivery_postcode,
                     $order->total,
                     $order->notes,
@@ -198,6 +202,7 @@ class AdminOrderController extends Controller
         ]);
     }
 
+    /** @return Builder<Order> */
     private function filteredOrdersQuery(Request $request): Builder
     {
         /** @var string|null $search */

@@ -9,6 +9,7 @@ use App\Models\DeliveryZone;
 use App\Models\LoyaltyAccount;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -48,6 +49,7 @@ final class OrderService
         ?string $notes,
         ?LoyaltyAccount $loyaltyAccount,
         array $loyaltyRedemption,
+        CarbonImmutable $expectedAt,
         array $paymentAttributes = [],
         ?array $shippingAddress = null,
     ): Order {
@@ -61,6 +63,7 @@ final class OrderService
             $notes,
             $loyaltyAccount,
             $loyaltyRedemption,
+            $expectedAt,
             $paymentAttributes,
             $shippingAddress,
         ): Order {
@@ -101,6 +104,7 @@ final class OrderService
                 ),
                 'notes' => $notes,
                 'fulfillment_type' => $fulfillmentType,
+                'expected_at' => $expectedAt,
                 'delivery_zone_id' => $deliveryZone?->id,
                 'delivery_postcode' => $deliveryPostcode,
                 'shipping_address_line1' => $shippingAddress['line1'] ?? null,

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/** @mixin Product */
 class ProductResource extends JsonResource
 {
     public static $collects = BaseCollection::class;
@@ -19,16 +21,17 @@ class ProductResource extends JsonResource
             'barcode' => $this->barcode,
             'name' => $this->name,
             'description' => $this->description,
-            'category_id' => $this->category_id,
             'tax_category_id' => $this->tax_category_id,
             'cost_price' => $this->cost_price,
             'selling_price' => $this->selling_price,
+            'turnover_time_hours' => $this->turnover_time_hours,
             'product_type' => $this->product_type,
             'is_active' => $this->is_active,
             'track_inventory' => $this->track_inventory,
             'reorder_level' => $this->reorder_level,
             'unit' => $this->unit,
-            'category' => CategoryResource::make($this->whenLoaded('category')),
+            // Categories is now many-to-many \u2014 exposed as a collection
+            'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'tax_category' => TaxCategoryResource::make($this->whenLoaded('taxCategory')),
             'variants' => VariantResource::collection($this->whenLoaded('variants')),
             'images' => ProductImageResource::collection($this->whenLoaded('images')),

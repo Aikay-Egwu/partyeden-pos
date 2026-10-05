@@ -44,7 +44,7 @@ class StoreOccasionController extends Controller
             ->whereHas('occasions', fn ($query) => $query->where('occasions.id', $occasion->id))
             ->when($request->search, fn ($query, $search) => $query->where('name', 'like', "%{$search}%"))
             ->with([
-                'category',
+                'categories',
                 'images' => fn ($query) => $query
                     ->whereNull('variant_id')
                     ->whereNull('primary_color_id')
@@ -61,7 +61,7 @@ class StoreOccasionController extends Controller
                 'selling_price' => $product->selling_price,
                 'product_type' => $product->product_type,
                 'is_active' => $product->is_active,
-                'category' => $product->category?->only(['id', 'name']),
+                'categories' => $product->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
                 'primary_image' => $product->images->first()?->url,
             ]);
 

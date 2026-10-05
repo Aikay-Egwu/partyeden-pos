@@ -21,6 +21,7 @@ type Category = {
     description?: string;
     sort_order: number;
     is_active: boolean;
+    featured?: boolean;
     image_path?: string | null;
     parent?: { id: string; name: string } | null;
 } | null;
@@ -40,6 +41,7 @@ export default function CategoryForm({ category, parents }: Props) {
         parent_id: category?.parent?.id ?? '',
         sort_order: String(category?.sort_order ?? 0),
         is_active: category?.is_active ?? true,
+        featured: category?.featured ?? false,
         image_path: category?.image_path ?? null,
         image: null as File | null,
     });
@@ -174,7 +176,7 @@ export default function CategoryForm({ category, parents }: Props) {
                                 }
                             />
                         </div>
-                        <div className="flex items-end">
+                        <div className="flex flex-col justify-end gap-3">
                             <label className="flex items-center gap-2">
                                 <Checkbox
                                     checked={data.is_active}
@@ -183,6 +185,17 @@ export default function CategoryForm({ category, parents }: Props) {
                                     }
                                 />
                                 <span className="text-sm">Active</span>
+                            </label>
+                            <label className="flex items-center gap-2">
+                                <Checkbox
+                                    checked={data.featured}
+                                    onCheckedChange={(v) =>
+                                        setData('featured', !!v)
+                                    }
+                                />
+                                <span className="text-sm">
+                                    Featured on home page
+                                </span>
                             </label>
                         </div>
                     </div>

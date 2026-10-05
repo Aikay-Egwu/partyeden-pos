@@ -92,3 +92,22 @@ test('it includes add-ons in the line total', function () {
     expect($contents['items'][0]['line_total'])->toBe('50');
     expect($contents['total'])->toBe('50');
 });
+
+test('it reports the longest product or add-on turnover without multiplying by quantity', function () {
+    $product = Product::factory()->create([
+        'selling_price' => 20.00,
+        'is_active' => true,
+        'turnover_time_hours' => 2.5,
+    ]);
+    $addOn = Product::factory()->create([
+        'selling_price' => 5.00,
+        'is_active' => true,
+        'turnover_time_hours' => 4,
+    ]);
+
+    app(CartService::class)->add($product->id, null, 3, [
+        'add_on_ids' => [$addOn->id],
+    ]);
+
+    expect(app(CartService::class)->contents()['turnover_time_hours'])->toBe('4');
+});

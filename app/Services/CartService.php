@@ -30,15 +30,22 @@ class CartService
         $cart = $this->session->get('cart', []);
         $items = [];
         $total = '0';
+        $turnoverTimeHours = 0.0;
 
         foreach ($cart as $key => $item) {
-            $product = Product::find($item['product_id']);
+            $productId = $item['product_id'] ?? null;
+            if (! is_string($productId)) {
+                continue;
+            }
+
+            $product = Product::query()->whereKey($productId)->first();
             if (! $product || ! $product->is_active) {
                 continue; // Product no longer available, skip
             }
 
-            $variant = $item['variant_id']
-                ? Variant::find($item['variant_id'])
+            $variantId = $item['variant_id'] ?? null;
+            $variant = is_string($variantId)
+                ? Variant::query()->whereKey($variantId)->first()
                 : null;
 
             $price = $variant
@@ -48,6 +55,11 @@ class CartService
             $productLineTotal = (string) ((float) $price * $item['quantity']);
             $selectedAddOnIds = $this->normalizedAddOnIds($item['add_on_ids'] ?? []);
             $resolvedAddOns = $this->resolveAddOns($selectedAddOnIds, $item['quantity']);
+            $itemTurnoverHours = (float) $product->turnover_time_hours;
+            foreach ($resolvedAddOns as $addOn) {
+                $itemTurnoverHours = max($itemTurnoverHours, (float) $addOn['turnover_time_hours']);
+            }
+            $turnoverTimeHours = max($turnoverTimeHours, $itemTurnoverHours);
             $addOnTotal = (string) array_reduce(
                 $resolvedAddOns,
                 fn (float $carry, array $addOn): float => $carry + (float) $addOn['line_total'],
@@ -75,6 +87,7 @@ class CartService
                 'image' => $primaryImage?->url,
                 'product_type' => $product->product_type,
                 'preorder' => $product->preorder,
+                'turnover_time_hours' => (string) $product->turnover_time_hours,
                 // Customization fields from add-to-cart
                 'customization_text' => $item['customization_text'] ?? null,
                 'customization_font' => $item['customization_font'] ?? null,
@@ -99,6 +112,7 @@ class CartService
             'items' => $items,
             'count' => array_sum(array_column($items, 'quantity')),
             'total' => $total,
+            'turnover_time_hours' => (string) $turnoverTimeHours,
         ];
     }
 
@@ -287,6 +301,7 @@ class CartService
                     'quantity' => $quantity,
                     'line_total' => $lineTotal,
                     'image' => $primaryImage?->url,
+                    'turnover_time_hours' => (string) $product->turnover_time_hours,
                 ];
             })
             ->values()

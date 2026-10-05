@@ -49,7 +49,8 @@ class StoreCartController extends Controller
 
         $product = Product::query()
             ->with(['variants', 'mainColors', 'secondaryColors', 'addOns'])
-            ->findOrFail($validated['product_id']);
+            ->whereKey($validated['product_id'])
+            ->firstOrFail();
 
         $this->validateCartSelections($product, $validated);
 

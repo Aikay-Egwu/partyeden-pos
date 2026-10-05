@@ -1,5 +1,6 @@
 import { Head, router } from '@inertiajs/react';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import { toast } from 'sonner';
 import type {
     Column,
     PaginationLinks,
@@ -18,6 +19,7 @@ type Occasion = {
     name: string;
     slug: string;
     is_active: boolean;
+    featured: boolean;
     products_count: number;
 };
 
@@ -41,6 +43,7 @@ type Props = {
 
 export default function OccasionsIndex({ occasions, filters }: Props) {
     const deleteDialog = useDeleteDialog<Occasion>();
+    const [togglingFeaturedIds, setTogglingFeaturedIds] = useState<Set<string>>(new Set());
 
     const meta: PaginationMeta = {
         current_page: occasions.current_page,
@@ -67,10 +70,63 @@ export default function OccasionsIndex({ occasions, filters }: Props) {
         );
     }, []);
 
+    const handleToggleFeatured = useCallback(
+        (occasion: Occasion) => {
+            if (togglingFeaturedIds.has(occasion.id)) {
+                return;
+            }
+
+            const newFeatured = !occasion.featured;
+            setTogglingFeaturedIds((prev) => new Set(prev).add(occasion.id));
+
+            router.patch(
+                `/admin/occasions/${occasion.id}/toggle-featured`,
+                { featured: newFeatured },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        toast.success(
+                            newFeatured
+                                ? 'Occasion marked as featured'
+                                : 'Occasion removed from featured',
+                        );
+                    },
+                    onError: () => {
+                        toast.error('Failed to update featured status');
+                    },
+                    onFinish: () => {
+                        setTogglingFeaturedIds((prev) => {
+                            const next = new Set(prev);
+                            next.delete(occasion.id);
+
+                            return next;
+                        });
+                    },
+                },
+            );
+        },
+        [togglingFeaturedIds],
+    );
+
     const columns: Column<Occasion>[] = [
         { key: 'name', label: 'Name' },
-        { key: 'slug', label: 'Slug' },
         { key: 'products_count', label: 'Products' },
+        {
+            key: 'featured',
+            label: 'Featured',
+            render: (occasion) => (
+                <button
+                    type="button"
+                    onClick={() => handleToggleFeatured(occasion)}
+                    disabled={togglingFeaturedIds.has(occasion.id)}
+                    className={`cursor-pointer rounded transition-opacity hover:opacity-80 ${togglingFeaturedIds.has(occasion.id) ? 'animate-pulse opacity-50' : ''}`}
+                    aria-label={`Toggle featured for ${occasion.name}`}
+                >
+                    <ActiveBadge active={occasion.featured} />
+                </button>
+            ),
+        },
         {
             key: 'is_active',
             label: 'Status',

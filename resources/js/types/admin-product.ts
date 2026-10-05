@@ -115,6 +115,7 @@ export type AdminProduct = {
     description?: string;
     cost_price: string;
     selling_price: string;
+    turnover_time_hours: string;
     product_type: string;
     is_active: boolean;
     is_kit: boolean;
@@ -128,7 +129,7 @@ export type AdminProduct = {
     customise_text: boolean;
     preorder: boolean;
     slug?: string | null;
-    category?: SelectOption | null;
+    categories?: SelectOption[];
     taxCategory?: SelectOption | null;
     main_colors?: ProductColorEntry[];
     secondary_colors?: ProductColorEntry[];

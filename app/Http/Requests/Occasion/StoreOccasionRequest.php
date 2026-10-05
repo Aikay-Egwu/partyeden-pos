@@ -24,6 +24,7 @@ class StoreOccasionRequest extends FormRequest
             'hero_text' => ['nullable', 'string', 'max:3000'],
             'sort_order' => ['sometimes', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
+            'featured' => ['sometimes', 'boolean'],
             'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:2048'],
             'image_path' => ['nullable', 'string', 'max:500'],
             'product_ids' => ['array'],

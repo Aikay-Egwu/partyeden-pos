@@ -29,7 +29,6 @@ test('admin can duplicate a product and receive prefilled create-form data', fun
         'name' => 'Original Product',
         'sku' => 'SKU-000020',
         'description' => 'Original description',
-        'category_id' => null,
         'tax_category_id' => null,
         'cost_price' => 15.50,
         'selling_price' => 20.00,

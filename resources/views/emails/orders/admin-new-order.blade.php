@@ -39,6 +39,12 @@
                 Guest checkout
             @endif
         </p>
+        @if($order->expected_at)
+            <p style="font-size:14px;margin:8px 0 0;">
+                <strong>{{ $order->fulfillment_type === 'delivery' ? 'Delivery' : 'Collection' }} due:</strong>
+                {{ $order->expected_at->timezone(config('checkout.timezone'))->format('d M Y, H:i') }}
+            </p>
+        @endif
 
         {{-- Fulfillment --}}
         <div class="section-title">Fulfillment</div>

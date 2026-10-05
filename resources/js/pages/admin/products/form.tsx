@@ -91,14 +91,18 @@ export default function ProductForm({
             !isEditing && sharedPrefill?.selling_price
                 ? String(sharedPrefill.selling_price)
                 : (product?.selling_price ?? '0'),
+        turnover_time_hours:
+            !isEditing && sharedPrefill?.turnover_time_hours !== undefined
+                ? String(sharedPrefill.turnover_time_hours)
+                : (product?.turnover_time_hours ?? '0'),
         product_type:
             !isEditing && sharedPrefill?.product_type
                 ? String(sharedPrefill.product_type)
                 : (product?.product_type ?? 'standard'),
-        category_id:
-            !isEditing && sharedPrefill?.category_id
-                ? String(sharedPrefill.category_id)
-                : (product?.category?.id ?? ''),
+        category_ids:
+            !isEditing && Array.isArray(sharedPrefill?.category_ids)
+                ? (sharedPrefill.category_ids as string[])
+                : (product?.categories?.map((c) => c.id) ?? []),
         tax_category_id:
             !isEditing && sharedPrefill?.tax_category_id
                 ? String(sharedPrefill.tax_category_id)
@@ -151,6 +155,8 @@ export default function ProductForm({
         // Create-mode stock
         initial_stock_quantity: '',
         initial_stock_location_id: '',
+        // Submit-mode flag: true = stay on edit page after save; false = return to list
+        continue_editing: false,
     };
 
     const {
@@ -219,9 +225,18 @@ export default function ProductForm({
             .replace(/(^-|-$)+/g, '');
     }, [data.name]);
 
-    // Submit to create or update endpoint
-    const handleSubmit = (e: React.FormEvent) => {
+    // Submit to create or update endpoint.
+    // continueEditing: when true, save and stay on the edit page;
+    //                  when false, save and return to the products list.
+    const handleSubmit = (
+        e: React.FormEvent | React.MouseEvent,
+        continueEditing: boolean = false,
+    ) => {
         e.preventDefault();
+
+        // Sync the submit-mode flag into the form payload so the backend
+        // can decide which redirect to send back.
+        setData('continue_editing', isEditing ? continueEditing : false);
 
         // Allow the Inertia redirect to proceed without triggering the
         // unsaved-changes confirmation dialog (which is meant for external
@@ -230,12 +245,24 @@ export default function ProductForm({
 
         const handleSuccess = () => {
             allowNextLeaveRef.current = false;
+            // Reset the dirty-state baseline so the freshly-saved values
+            // are treated as the "no unsaved changes" reference. This
+            // prevents false positive warnings after an "Update and Continue"
+            // save that re-renders the same page with updated data.
             setDefaults();
-            toast.success(isEditing ? 'Product updated.' : 'Product created.');
+            setData('continue_editing', false);
+            toast.success(
+                isEditing
+                    ? continueEditing
+                        ? 'Product updated — you can keep editing.'
+                        : 'Product updated.'
+                    : 'Product created.',
+            );
         };
 
         const handleError = () => {
             allowNextLeaveRef.current = false;
+            setData('continue_editing', false);
         };
 
         if (isEditing) {
@@ -370,26 +397,70 @@ export default function ProductForm({
                         </div>
                     </div>
 
+                    <div className="max-w-sm space-y-2">
+                        <Label htmlFor="turnover_time_hours">
+                            Turnover Time (hours)
+                        </Label>
+                        <Input
+                            id="turnover_time_hours"
+                            type="number"
+                            min="0"
+                            step="0.25"
+                            value={data.turnover_time_hours}
+                            onChange={(e) =>
+                                setData('turnover_time_hours', e.target.value)
+                            }
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            Preparation time needed to source materials and make
+                            this product.
+                        </p>
+                        <InputError message={errors.turnover_time_hours} />
+                    </div>
+
                     {/* Category and Tax Category dropdowns */}
                     <div className="grid gap-4 sm:grid-cols-2">
                         <div className="space-y-2">
-                            <Label>Category</Label>
-                            <Select
-                                value={data.category_id}
-                                onValueChange={(v) => setData('category_id', v)}
-                            >
-                                <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Select category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((c) => (
-                                        <SelectItem key={c.id} value={c.id}>
+                            <Label>Categories</Label>
+                            {/* Multi-select checkbox list */}
+                            <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-3">
+                                {categories.map((c) => (
+                                    <label
+                                        key={c.id}
+                                        className="flex cursor-pointer items-center gap-2"
+                                    >
+                                        <Checkbox
+                                            checked={data.category_ids.includes(
+                                                c.id,
+                                            )}
+                                            onCheckedChange={(checked) => {
+                                                if (checked) {
+                                                    setData('category_ids', [
+                                                        ...data.category_ids,
+                                                        c.id,
+                                                    ]);
+                                                } else {
+                                                    setData(
+                                                        'category_ids',
+                                                        data.category_ids.filter(
+                                                            (id) => id !== c.id,
+                                                        ),
+                                                    );
+                                                }
+                                            }}
+                                        />
+                                        <span className="text-sm">
                                             {c.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                            <InputError message={errors.category_id} />
+                                        </span>
+                                    </label>
+                                ))}
+                                {categories.length === 0 && (
+                                    <p className="text-xs text-muted-foreground">
+                                        No categories found.
+                                    </p>
+                                )}
+                            </div>
+                            <InputError message={errors.category_ids} />
                         </div>
                         <div className="space-y-2">
                             <Label>Tax Category</Label>
@@ -665,12 +736,22 @@ export default function ProductForm({
                     {isEditing && <ImagesPanel product={product} />}
 
                     {/* Submit */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                         <Button type="submit" disabled={processing}>
                             {isEditing
                                 ? 'Update Product Details'
                                 : 'Create Product'}
                         </Button>
+                        {isEditing && (
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                disabled={processing}
+                                onClick={(e) => handleSubmit(e, true)}
+                            >
+                                Update and Continue
+                            </Button>
+                        )}
                         {data.name && (
                             <p className="text-xs text-muted-foreground">
                                 Current slug:{' '}

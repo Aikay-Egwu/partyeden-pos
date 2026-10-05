@@ -48,6 +48,8 @@ class HandleInertiaRequests extends Middleware
             'cart' => app(CartService::class)->summary(),
             // PayPal client ID for frontend SDK (sandbox or live based on env)
             'paypalClientId' => config('paypal.client_id'),
+            // Stripe publishable key for Elements SDK (test or live based on env)
+            'stripePublicKey' => config('services.stripe.key'),
         ];
     }
 }

@@ -25,6 +25,7 @@ class StoreCategoryRequest extends FormRequest
             'image_path' => ['nullable', 'string', 'max:500'],
             'sort_order' => ['sometimes', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
+            'featured' => ['sometimes', 'boolean'],
         ];
     }
 

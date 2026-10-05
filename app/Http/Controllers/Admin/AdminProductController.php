@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\StoreProductRequest;
 use App\Http\Requests\Product\UpdateProductRequest;
 use App\Models\Attribute;
+use App\Models\AttributeValue;
 use App\Models\AuditLog;
 use App\Models\Category;
 use App\Models\Color;
@@ -17,6 +18,8 @@ use App\Models\Location;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\TaxCategory;
+use App\Models\Variant;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -39,9 +42,9 @@ class AdminProductController extends Controller
                     ->orWhere('sku', 'like', "%{$s}%")
                     ->orWhere('barcode', 'like', "%{$s}%");
             }))
-            ->when($request->category_id, fn ($q, $id) => $q->where('category_id', $id))
+            ->when($request->category_id, fn ($q, $id) => $q->whereHas('categories', fn ($cq) => $cq->where('categories.id', $id)))
             ->when($request->filled('is_active'), fn ($q) => $q->where('is_active', $request->boolean('is_active')))
-            ->with(['category', 'taxCategory'])
+            ->with(['categories', 'taxCategory'])
             ->orderBy('name')
             ->paginate(15)
             ->withQueryString();
@@ -70,9 +73,13 @@ class AdminProductController extends Controller
     // Store new product using existing validation
     public function store(StoreProductRequest $request)
     {
+        // Exclude category_ids from mass assignment — handled separately via sync
         $product = Product::create($request->safe()->except([
-            'initial_stock_quantity', 'initial_stock_location_id',
+            'initial_stock_quantity', 'initial_stock_location_id', 'category_ids',
         ]));
+
+        // Sync many-to-many categories
+        $product->categories()->sync($request->input('category_ids', []));
 
         AuditLog::create([
             'event' => 'created',
@@ -125,10 +132,11 @@ class AdminProductController extends Controller
                 'name' => 'Copy of '.$product->name,
                 'sku' => $newSku,
                 'description' => $product->description,
-                'category_id' => $product->category_id,
+                'category_ids' => $product->categories->pluck('id')->all(),
                 'tax_category_id' => $product->tax_category_id,
                 'cost_price' => $product->cost_price,
                 'selling_price' => $product->selling_price,
+                'turnover_time_hours' => $product->turnover_time_hours,
                 'product_type' => $product->product_type,
                 'customise_color' => $product->customise_color,
                 'customise_text' => $product->customise_text,
@@ -146,7 +154,7 @@ class AdminProductController extends Controller
     public function edit(Product $product): Response
     {
         $product->load([
-            'category',
+            'categories',
             'taxCategory',
             'mainColors.color',
             'secondaryColors.color',
@@ -176,7 +184,33 @@ class AdminProductController extends Controller
     // Update using existing validation
     public function update(UpdateProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+        // Capture old values for audit log before applying changes
+        $oldValues = $product->getOriginal();
+
+        // Exclude category_ids from mass assignment — sync it via the pivot
+        // Also exclude continue_editing flag (used only for redirect behavior)
+        $product->update($request->safe()->except(['category_ids', 'continue_editing']));
+        $product->categories()->sync($request->input('category_ids', []));
+
+        AuditLog::create([
+            'event' => 'updated',
+            'auditable_type' => Product::class,
+            'auditable_id' => $product->id,
+            'user_id' => $request->user()?->id,
+            'old_values' => $oldValues,
+            'new_values' => $product->fresh()->toArray(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'description' => 'Product updated: '.$product->name,
+        ]);
+
+        // Decide redirect based on submit intent:
+        // "Update and Continue" stays on the edit page (products.edit)
+        // "Update Product Details" returns to the list (products.index)
+        if ($request->boolean('continue_editing')) {
+            return redirect()->route('products.edit', $product)
+                ->with('success', 'Product updated. You can continue editing.');
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Product updated successfully.');
@@ -227,7 +261,7 @@ class AdminProductController extends Controller
         $validated = $request->validate([
             'main_colors' => ['array'],
             'main_colors.*' => ['exists:colors,id'],
-            'secondary_colors' => ['array', 'max:2'],
+            'secondary_colors' => ['array'],
             'secondary_colors.*' => ['exists:colors,id'],
         ]);
 
@@ -238,14 +272,6 @@ class AdminProductController extends Controller
         if ($product->customise_color && $mainColorIds === []) {
             return redirect()->back()->withErrors([
                 'main_colors' => 'Products with color customization enabled require at least one main color.',
-            ]);
-        }
-
-        // Validate that main and secondary colors do not overlap
-        $overlap = array_intersect($mainColorIds, $secondaryColorIds);
-        if ($overlap !== []) {
-            return redirect()->back()->withErrors([
-                'secondary_colors' => 'Secondary colors must not overlap with main colors.',
             ]);
         }
 
@@ -341,6 +367,32 @@ class AdminProductController extends Controller
         return redirect()->back()->with('success', 'Stock levels updated.');
     }
 
+    /**
+     * Quick-toggle a product's active status straight from the list page.
+     */
+    public function toggleStatus(Product $product): RedirectResponse
+    {
+        $product->update(['is_active' => ! $product->is_active]);
+
+        return redirect()->back()->with(
+            'success',
+            $product->is_active ? 'Product activated.' : 'Product deactivated.',
+        );
+    }
+
+    /**
+     * Quick-toggle a product's storefront visibility straight from the list page.
+     */
+    public function toggleOnlineVisibility(Product $product): RedirectResponse
+    {
+        $product->update(['is_online_visible' => ! $product->is_online_visible]);
+
+        return redirect()->back()->with(
+            'success',
+            $product->is_online_visible ? 'Product is now visible online.' : 'Product is now internal only.',
+        );
+    }
+
     // Soft delete
     public function destroy(Product $product)
     {
@@ -376,6 +428,7 @@ class AdminProductController extends Controller
             'description' => $product->description,
             'cost_price' => $product->cost_price,
             'selling_price' => $product->selling_price,
+            'turnover_time_hours' => $product->turnover_time_hours,
             'product_type' => $product->product_type,
             'is_active' => $product->is_active,
             'is_kit' => $product->is_kit,
@@ -388,7 +441,7 @@ class AdminProductController extends Controller
             'is_online_visible' => $product->is_online_visible,
             'best_seller_enabled' => $product->best_seller_enabled,
             'best_seller_rank' => $product->best_seller_rank,
-            'category' => $product->category?->only(['id', 'name']),
+            'categories' => $product->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
             'taxCategory' => $product->taxCategory?->only(['id', 'name']),
             'main_colors' => $product->mainColors
                 ->sortBy(fn ($link) => $link->color?->name)
@@ -448,7 +501,7 @@ class AdminProductController extends Controller
             'variants' => $product->variants
                 ->sortBy('name')
                 ->values()
-                ->map(function ($variant) {
+                ->map(function (Variant $variant): array {
                     return [
                         'id' => $variant->id,
                         'sku' => $variant->sku,
@@ -458,7 +511,7 @@ class AdminProductController extends Controller
                         'cost_price_adjustment' => $variant->cost_price_adjustment,
                         'is_active' => $variant->is_active,
                         'attribute_values' => $variant->attributeValues
-                            ->map(fn ($attributeValue) => [
+                            ->map(fn (AttributeValue $attributeValue): array => [
                                 'id' => $attributeValue->id,
                                 'value' => $attributeValue->value,
                                 'attribute' => $attributeValue->attribute?->only(['id', 'name']),

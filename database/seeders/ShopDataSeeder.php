@@ -38,8 +38,8 @@ class ShopDataSeeder extends Seeder
     {
         $this->seedUsers();
         $this->seedCategories();
-        // $this->seedProducts();
-        // $this->seedProductImages();
+        $this->seedProducts();
+        $this->seedProductImages();
 
         $this->command->info('Shop data seeded successfully.');
     }

@@ -20,6 +20,7 @@ class Occasion extends Model
 
     protected $casts = [
         'is_active' => 'boolean',
+        'featured' => 'boolean',
     ];
 
     /** @return BelongsToMany<Product, $this> */

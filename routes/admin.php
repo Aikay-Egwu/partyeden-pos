@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminCustomerController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminDeliveryZoneController;
 use App\Http\Controllers\Admin\AdminDiscountController;
+use App\Http\Controllers\Admin\AdminFaqController;
 use App\Http\Controllers\Admin\AdminGiftCardController;
 use App\Http\Controllers\Admin\AdminInventoryController;
 use App\Http\Controllers\Admin\AdminLocationController;
@@ -31,13 +32,14 @@ use App\Http\Controllers\Admin\AdminTaxCategoryController;
 use App\Http\Controllers\Admin\AdminTillSessionController;
 use App\Http\Controllers\Admin\AdminTransactionController;
 use App\Http\Controllers\Admin\AdminVariantController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 // All admin routes behind auth + admin gate
 Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->group(function () {
     // Admin dashboard home - shows overview stats
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-
+    Route::get('analytics', [AnalyticsController::class, 'index'])->name('admin.analytics.index');
     // ── Catalog ─────────────────────────────────────────────────────
     Route::get('skus/generate', [AdminSkuController::class, 'generate'])->name('skus.generate');
     Route::resource('products', AdminProductController::class);
@@ -48,6 +50,8 @@ Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->group(fun
     Route::post('products/{product}/colors/create', [AdminProductController::class, 'storeColor'])->name('products.colors.store');
     Route::post('products/{product}/setup-instruction', [AdminProductController::class, 'updateSetupInstruction'])->name('products.setup-instruction.update');
     Route::post('products/{product}/stock', [AdminProductController::class, 'updateStock'])->name('products.stock.update');
+    Route::patch('products/{product}/status', [AdminProductController::class, 'toggleStatus'])->name('products.status.toggle');
+    Route::patch('products/{product}/online-visibility', [AdminProductController::class, 'toggleOnlineVisibility'])->name('products.online-visibility.toggle');
     Route::post('products/{product}/images', [AdminProductImageController::class, 'store'])->name('products.images.store');
     Route::patch('products/{product}/images/{productImage}', [AdminProductImageController::class, 'update'])->name('products.images.update');
     Route::patch('products/{product}/images/{productImage}/primary', [AdminProductImageController::class, 'setPrimary'])->name('products.images.primary');
@@ -57,7 +61,10 @@ Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->group(fun
     Route::delete('products/{product}/variants/{variant}', [AdminVariantController::class, 'destroy'])->name('products.variants.destroy');
     Route::resource('components', AdminComponentController::class);
     Route::resource('categories', AdminCategoryController::class);
+    Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus'])->name('categories.toggle-status');
+    Route::patch('categories/{category}/toggle-featured', [AdminCategoryController::class, 'toggleFeatured'])->name('categories.toggle-featured');
     Route::resource('occasions', AdminOccasionController::class);
+    Route::patch('occasions/{occasion}/toggle-featured', [AdminOccasionController::class, 'toggleFeatured'])->name('occasions.toggle-featured');
     Route::resource('attributes', AdminAttributeController::class);
     Route::post('attributes/{attribute}/values', [AdminAttributeValueController::class, 'store'])->name('attributes.values.store');
     Route::put('attributes/{attribute}/values/{attribute_value}', [AdminAttributeValueController::class, 'update'])->name('attributes.values.update');
@@ -67,6 +74,8 @@ Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->group(fun
     Route::resource('blog-posts', AdminBlogPostController::class)->parameters([
         'blog-posts' => 'blog_post',
     ]);
+    Route::patch('faqs/{faq}/visibility', [AdminFaqController::class, 'updateVisibility'])->name('faqs.visibility.update');
+    Route::resource('faqs', AdminFaqController::class)->except(['show']);
 
     // ── Inventory ───────────────────────────────────────────────────
     Route::resource('locations', AdminLocationController::class);

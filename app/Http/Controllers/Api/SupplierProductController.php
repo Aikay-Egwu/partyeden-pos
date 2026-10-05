@@ -20,7 +20,7 @@ class SupplierProductController extends ApiController
         $this->authorize('viewAny', SupplierProduct::class);
 
         $supplierProducts = $supplier->supplierProducts()
-            ->with('product.category')
+            ->with('product.categories')
             ->paginate($request->integer('per_page', 15));
 
         return SupplierProductResource::collection($supplierProducts);

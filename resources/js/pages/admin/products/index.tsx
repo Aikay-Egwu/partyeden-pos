@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { Copy, Loader2 } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import type {
     Column,
@@ -15,6 +15,7 @@ import {
 import { PageHeader } from '@/components/admin/page-header';
 import { ActiveBadge } from '@/components/admin/status-badge';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { formatCurrency } from '@/lib/currency';
 
 // Shape of a product record from the API
@@ -27,7 +28,7 @@ type Product = {
     is_online_visible: boolean;
     best_seller_enabled: boolean;
     best_seller_rank?: number | null;
-    category?: { id: string; name: string } | null;
+    categories?: { id: string; name: string }[] | null;
 };
 
 type Props = {
@@ -56,6 +57,9 @@ export default function ProductsIndex({ products, filters }: Props) {
     const deleteDialog = useDeleteDialog<Product>();
     const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
 
+    // Debounce timer to avoid hammering the server on every keystroke
+    const searchTimer = useRef<number | null>(null);
+
     // Derive pagination meta and links from the Inertia paginator shape
     const meta: PaginationMeta = {
         current_page: products.current_page,
@@ -74,20 +78,40 @@ export default function ProductsIndex({ products, filters }: Props) {
         next: products.next_page_url,
     };
 
-    // Handle search with page reload
+    // Debounced search handler — fires 300ms after typing stops.
+    // Resets to page 1 so the user actually sees results on a narrowed search.
     const handleSearch = useCallback(
         (value: string) => {
-            router.get(
-                '/admin/products',
-                { search: value, ...filters },
-                {
-                    preserveState: true,
-                    preserveScroll: true,
-                },
-            );
+            if (searchTimer.current) {
+                window.clearTimeout(searchTimer.current);
+            }
+
+            searchTimer.current = window.setTimeout(() => {
+                router.get(
+                    '/admin/products',
+                    {
+                        ...filters,
+                        search: value || undefined,
+                        page: value ? 1 : undefined,
+                    },
+                    {
+                        preserveState: true,
+                        preserveScroll: true,
+                    },
+                );
+            }, 300);
         },
         [filters],
     );
+
+    // Clean up pending debounce on unmount
+    useEffect(() => {
+        return () => {
+            if (searchTimer.current) {
+                window.clearTimeout(searchTimer.current);
+            }
+        };
+    }, []);
 
     const handleDuplicate = useCallback(async (product: Product) => {
         setDuplicatingId(product.id);
@@ -101,6 +125,36 @@ export default function ProductsIndex({ products, filters }: Props) {
         }
     }, []);
 
+    // Tracks which row/field is mid-toggle so the checkbox can be disabled
+    const [pendingToggle, setPendingToggle] = useState<{
+        id: string;
+        field: 'status' | 'online';
+    } | null>(null);
+
+    const handleToggle = useCallback(
+        (product: Product, field: 'status' | 'online') => {
+            const url =
+                field === 'status'
+                    ? `/admin/products/${product.id}/status`
+                    : `/admin/products/${product.id}/online-visibility`;
+
+            setPendingToggle({ id: product.id, field });
+
+            router.patch(
+                url,
+                {},
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                    onError: () =>
+                        toast.error('Unable to update the product right now.'),
+                    onFinish: () => setPendingToggle(null),
+                },
+            );
+        },
+        [],
+    );
+
     // Table column definitions
     const columns: Column<Product>[] = [
         { key: 'name', label: 'Name' },
@@ -111,23 +165,52 @@ export default function ProductsIndex({ products, filters }: Props) {
             render: (p) => formatCurrency(p.selling_price),
         },
         {
-            key: 'category',
-            label: 'Category',
-            render: (p) => p.category?.name ?? '-',
+            key: 'categories',
+            label: 'Categories',
+            render: (p) =>
+                p.categories && p.categories.length > 0
+                    ? p.categories.map((c) => c.name).join(', ')
+                    : '-',
         },
         {
-            key: 'is_active',
+            key: 'is_online_visible',
             label: 'Online',
             render: (p) => (
-                <Badge variant={p.is_online_visible ? 'default' : 'secondary'}>
-                    {p.is_online_visible ? 'Visible' : 'Internal'}
-                </Badge>
+                <label className="inline-flex items-center gap-2">
+                    <Checkbox
+                        checked={p.is_online_visible}
+                        disabled={
+                            pendingToggle?.id === p.id &&
+                            pendingToggle.field === 'online'
+                        }
+                        onCheckedChange={() => handleToggle(p, 'online')}
+                        aria-label={`Toggle online visibility for ${p.name}`}
+                    />
+                    <Badge
+                        variant={p.is_online_visible ? 'default' : 'secondary'}
+                    >
+                        {p.is_online_visible ? 'Visible' : 'Internal'}
+                    </Badge>
+                </label>
             ),
         },
         {
             key: 'is_active',
             label: 'Status',
-            render: (p) => <ActiveBadge active={p.is_active} />,
+            render: (p) => (
+                <label className="inline-flex items-center gap-2">
+                    <Checkbox
+                        checked={p.is_active}
+                        disabled={
+                            pendingToggle?.id === p.id &&
+                            pendingToggle.field === 'status'
+                        }
+                        onCheckedChange={() => handleToggle(p, 'status')}
+                        aria-label={`Toggle active status for ${p.name}`}
+                    />
+                    <ActiveBadge active={p.is_active} />
+                </label>
+            ),
         },
         {
             key: 'best_seller_enabled',

@@ -48,7 +48,7 @@ class AdminDashboardController extends Controller
             // SQLite rejects HAVING on a non-aggregate query. The subquery
             // computes total stock and compares it directly to reorder_level.
             ->whereRaw(
-                '(SELECT SUM("inventory_balances"."quantity") FROM "inventory_balances" WHERE "inventory_balances"."product_id" = "products"."id" AND "inventory_balances"."deleted_at" IS NULL) <= "products"."reorder_level"'
+                '(SELECT SUM(inventory_balances.quantity) FROM inventory_balances WHERE inventory_balances.product_id = products.id AND inventory_balances.deleted_at IS NULL) <= products.reorder_level'
             )
             ->count();
 

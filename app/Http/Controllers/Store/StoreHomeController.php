@@ -11,9 +11,11 @@ use App\Models\CustomerReview;
 use App\Models\Occasion;
 use App\Models\Product;
 use App\Services\BestSellerService;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use SplFileInfo;
 
 /**
  * Storefront home page controller.
@@ -25,7 +27,7 @@ class StoreHomeController extends Controller
     {
         // Shared product query builder for active products with images
         $baseProductQuery = fn () => Product::onlineVisible()->where('is_active', true)
-            ->with(['category', 'images' => fn ($q) => $q
+            ->with(['categories', 'images' => fn ($q) => $q
                 ->whereNull('variant_id')
                 ->whereNull('primary_color_id')
                 ->whereNull('addon_product_id')
@@ -40,13 +42,32 @@ class StoreHomeController extends Controller
             'selling_price' => $p->selling_price,
             'product_type' => $p->product_type,
             'is_active' => $p->is_active,
-            'category' => $p->category?->only(['id', 'name']),
+            'categories' => $p->categories->map(fn ($c) => $c->only(['id', 'name']))->all(),
             'primary_image' => $p->images->first()?->url,
         ];
 
         return Inertia::render('store/home', [
+            // Hero carousel images: every image file dropped into public/carousel,
+            // sorted by name. Empty list => the hero falls back to its default image.
+            'heroCarousel' => collect(
+                File::isDirectory(public_path('carousel'))
+                    ? File::files(public_path('carousel'))
+                    : []
+            )
+                ->filter(fn (SplFileInfo $file) => in_array(
+                    strtolower($file->getExtension()),
+                    ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'],
+                    true,
+                ))
+                ->sortBy(fn (SplFileInfo $file) => $file->getFilename())
+                ->map(fn (SplFileInfo $file) => [
+                    'src' => '/carousel/'.$file->getFilename(),
+                    'alt' => 'Party Eden balloon display',
+                ])
+                ->values(),
             'occasions' => Occasion::query()
                 ->where('is_active', true)
+                ->where('featured', true)
                 ->orderBy('sort_order')
                 ->orderBy('name')
                 ->take(8)
@@ -55,13 +76,25 @@ class StoreHomeController extends Controller
                     'id' => $occasion->id,
                     'name' => $occasion->name,
                     'slug' => $occasion->slug,
+                    'description' => $occasion->description,
                     'image' => $occasion->image_path ? Storage::url($occasion->image_path) : null,
                 ]),
-            // Top-level active categories for the featured grid
+            // Featured top-level categories for the home page grid
             'categories' => Category::whereNull('parent_id')
                 ->where('is_active', true)
+                ->where('featured', true)
                 ->orderBy('sort_order')
-                ->get(['id', 'name', 'slug', 'image_path']),
+                ->orderBy('name')
+                ->take(5)
+                ->get(['id', 'name', 'slug', 'description', 'image_path'])
+                ->map(fn (Category $category) => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'slug' => $category->slug,
+                    'description' => $category->description,
+                    'image' => $category->image_path ? Storage::url($category->image_path) : null,
+                ]),
+            'categoryCount' => Category::where('is_active', true)->count(),
             // Best sellers carousel (same query for now; replace with sales-sorted later)
             'bestSellers' => $bestSellerService
                 ->topProducts(10)

@@ -22,6 +22,7 @@ type Occasion = {
     hero_text?: string | null;
     sort_order: number;
     is_active: boolean;
+    featured?: boolean;
     image_path?: string | null;
     products?: ProductOption[];
 } | null;
@@ -41,6 +42,7 @@ export default function OccasionForm({ occasion, products }: Props) {
         hero_text: occasion?.hero_text ?? '',
         sort_order: String(occasion?.sort_order ?? 0),
         is_active: occasion?.is_active ?? true,
+        featured: occasion?.featured ?? false,
         image_path: occasion?.image_path ?? null,
         image: null as File | null,
         product_ids: occasion?.products?.map((product) => product.id) ?? [],
@@ -216,15 +218,29 @@ export default function OccasionForm({ occasion, products }: Props) {
                         <InputError message={errors.product_ids} />
                     </div>
 
-                    <label className="flex items-center gap-2">
-                        <Checkbox
-                            checked={data.is_active}
-                            onCheckedChange={(value) =>
-                                setData('is_active', !!value)
-                            }
-                        />
-                        <span className="text-sm">Active</span>
-                    </label>
+                    <div className="flex flex-wrap items-center gap-6">
+                        <label className="flex items-center gap-2">
+                            <Checkbox
+                                checked={data.is_active}
+                                onCheckedChange={(value) =>
+                                    setData('is_active', !!value)
+                                }
+                            />
+                            <span className="text-sm">Active</span>
+                        </label>
+
+                        <label className="flex items-center gap-2">
+                            <Checkbox
+                                checked={data.featured}
+                                onCheckedChange={(value) =>
+                                    setData('featured', !!value)
+                                }
+                            />
+                            <span className="text-sm">
+                                Featured on home page
+                            </span>
+                        </label>
+                    </div>
 
                     <Button type="submit" disabled={processing}>
                         {isEditing ? 'Update Occasion' : 'Create Occasion'}

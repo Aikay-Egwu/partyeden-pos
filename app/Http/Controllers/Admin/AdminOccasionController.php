@@ -9,6 +9,7 @@ use App\Http\Requests\Occasion\StoreOccasionRequest;
 use App\Http\Requests\Occasion\UpdateOccasionRequest;
 use App\Models\Occasion;
 use App\Models\Product;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -102,6 +103,17 @@ class AdminOccasionController extends Controller
 
         return redirect()->route('occasions.index')
             ->with('success', 'Occasion updated successfully.');
+    }
+
+    public function toggleFeatured(Request $request, Occasion $occasion): RedirectResponse
+    {
+        $data = $request->validate([
+            'featured' => ['required', 'boolean'],
+        ]);
+
+        $occasion->update($data);
+
+        return back();
     }
 
     public function destroy(Occasion $occasion)

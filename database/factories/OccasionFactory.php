@@ -26,6 +26,7 @@ class OccasionFactory extends Factory
             'description' => $this->faker->sentence(),
             'sort_order' => 0,
             'is_active' => true,
+            'featured' => false,
         ];
     }
 }

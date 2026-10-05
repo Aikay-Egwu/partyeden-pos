@@ -18,6 +18,16 @@ createInertiaApp({
                 return null;
             case name === 'admin/orders/print':
                 return null;
+            case name === 'store/home':
+                // Homepage renders its own store header and footer so it can
+                // use full-bleed edge-to-edge sections (hero, value strip, etc.)
+                return null;
+            case name === 'store/products/index':
+                // Shop All page renders its own full-bleed Figma header/footer.
+                return null;
+            case name === 'store/products/show':
+                // Product details page renders its own full-bleed Figma header/footer.
+                return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):

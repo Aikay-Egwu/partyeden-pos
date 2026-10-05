@@ -41,6 +41,12 @@
                 🏪 <strong>Collection / Pickup</strong>
             @endif
         </p>
+        @if($order->expected_at)
+            <p style="font-size:14px;">
+                <strong>{{ $order->fulfillment_type === 'delivery' ? 'Delivery' : 'Collection' }} date and time:</strong>
+                {{ $order->expected_at->timezone(config('checkout.timezone'))->format('d M Y, H:i') }}
+            </p>
+        @endif
 
         {{-- Order items --}}
         <div class="section-title">Items</div>
