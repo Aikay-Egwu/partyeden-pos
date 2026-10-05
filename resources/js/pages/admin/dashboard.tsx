@@ -14,6 +14,7 @@ import {
     TrendingUp,
     Clock,
     Award,
+    ChartLine,
 } from 'lucide-react';
 import { StatusBadge } from '@/components/admin/status-badge';
 import { Button } from '@/components/ui/button';
@@ -134,6 +135,13 @@ const dashboardCards: DashboardCard[] = [
         href: '/admin/gift-cards',
         icon: Receipt,
         color: 'text-pink-600',
+    },
+    {
+        title: 'Analytics',
+        description: 'Traffic, visitors and top pages',
+        href: '/admin/analytics',
+        icon: ChartLine,
+        color: 'text-emerald-600',
     },
 ];
 

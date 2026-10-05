@@ -54,7 +54,7 @@ export default function StoreLayout({
     const [cartOpen, setCartOpen] = useState(false);
 
     return (
-        <div className="min-h-screen w-full bg-popjoy-bg">
+        <div className="store-light min-h-screen w-full bg-popjoy-bg">
             {/* <FigmaAnnouncementBar /> */}
             <FigmaHeader
                 cartCount={cart?.count ?? 0}

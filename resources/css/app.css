@@ -5,9 +5,14 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
-@custom-variant dark (&:is(.dark *));
+/* The storefront is a light-only branded design (fixed popjoy palette), so
+   `.store-light` subtrees keep light tokens even when the app is in dark mode. */
+@custom-variant dark (&:is(.dark *):not(.store-light *));
 
-@theme {
+/* `inline` makes semantic utilities reference the runtime variables
+   (e.g. `var(--foreground)`) per element instead of pinning them on :root,
+   so subtrees like `.store-light` can override the theme tokens. */
+@theme inline {
     --font-sans:
         'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
         'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -84,7 +89,8 @@
     --color-sidebar-ring: var(--sidebar-ring);
 }
 
-:root {
+:root,
+.store-light {
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
@@ -163,6 +169,13 @@
     html,
     body {
         @apply bg-background font-sans text-foreground antialiased;
+    }
+
+    /* Re-apply the (light) foreground color at the storefront root, since
+       elements that inherit `color` would otherwise keep the dark-mode value
+       computed on <body>. */
+    .store-light {
+        @apply text-foreground;
     }
 
     h1,

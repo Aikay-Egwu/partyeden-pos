@@ -100,7 +100,7 @@ export default function Home({
             </a>
 
             {/* Page canvas — Pop &amp; Joy cream/lilac background */}
-            <div className="min-h-screen w-full bg-popjoy-bg">
+            <div className="store-light min-h-screen w-full bg-popjoy-bg">
                 {/* Header stack */}
                 {/* <FigmaAnnouncementBar /> */}
                 <FigmaHeader onCartClick={() => setCartOpen(true)} />

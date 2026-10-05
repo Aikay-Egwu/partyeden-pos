@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Events\OrderStatusChanged;
 use App\Jobs\SendOrderDeliveredEmail;
 use App\Jobs\SendOrderStatusEmail;
+use App\Services\Analytics\AnalyticsRecorder;
+use App\Services\Analytics\GeoLocator;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
@@ -22,6 +24,12 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         //
+        // The recorder holds the page view between handle() and terminate(). The
+        // HTTP kernel resolves terminable middleware through the container a
+        // second time at terminate() stage, so both resolutions must return the
+        // same instance or the buffer would be empty when it comes time to write.
+        $this->app->singleton(GeoLocator::class);
+        $this->app->singleton(AnalyticsRecorder::class);
     }
 
     /**

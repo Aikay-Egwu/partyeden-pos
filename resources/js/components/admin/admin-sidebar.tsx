@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import {
+    ChartLine,
     ClipboardList,
     FileText,
     LayoutGrid,
@@ -40,7 +41,10 @@ type AdminNavItem = {
 const adminNavSections: { label: string; items: AdminNavItem[] }[] = [
     {
         label: 'Overview',
-        items: [{ title: 'Dashboard', href: '/admin', icon: LayoutGrid }],
+        items: [
+            { title: 'Dashboard', href: '/admin', icon: LayoutGrid },
+            { title: 'Analytics', href: '/admin/analytics', icon: ChartLine },
+        ],
     },
     {
         label: 'Catalog',
@@ -136,6 +140,11 @@ const adminNavSections: { label: string; items: AdminNavItem[] }[] = [
             {
                 title: 'Audit Logs',
                 href: '/admin/audit-logs',
+                icon: ClipboardList,
+            },
+            {
+                title: 'Analytics',
+                href: '/admin/analytics',
                 icon: ClipboardList,
             },
         ],

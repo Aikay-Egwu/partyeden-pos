@@ -32,13 +32,14 @@ use App\Http\Controllers\Admin\AdminTaxCategoryController;
 use App\Http\Controllers\Admin\AdminTillSessionController;
 use App\Http\Controllers\Admin\AdminTransactionController;
 use App\Http\Controllers\Admin\AdminVariantController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 // All admin routes behind auth + admin gate
 Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->group(function () {
     // Admin dashboard home - shows overview stats
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-
+    Route::get('analytics', [AnalyticsController::class, 'index'])->name('admin.analytics.index');
     // ── Catalog ─────────────────────────────────────────────────────
     Route::get('skus/generate', [AdminSkuController::class, 'generate'])->name('skus.generate');
     Route::resource('products', AdminProductController::class);

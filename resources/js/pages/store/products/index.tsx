@@ -112,7 +112,7 @@ export default function ProductListing({
             <FigmaHeader onCartClick={() => setCartOpen(true)} />
             <main
                 id="catalog-main"
-                className="min-h-screen w-full bg-popjoy-bg text-popjoy-ink"
+                className="store-light min-h-screen w-full bg-popjoy-bg text-popjoy-ink"
             >
                 <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10">
                     <nav

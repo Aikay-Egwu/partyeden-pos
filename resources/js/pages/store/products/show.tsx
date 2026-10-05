@@ -211,7 +211,7 @@ export default function ProductShow({ product }: Props) {
                 Skip to product details
             </a>
 
-            <div className="min-h-screen w-full bg-popjoy-bg">
+            <div className="store-light min-h-screen w-full bg-popjoy-bg">
                 {/* <FigmaAnnouncementBar /> */}
                 <FigmaHeader onCartClick={() => setCartOpen(true)} />
 

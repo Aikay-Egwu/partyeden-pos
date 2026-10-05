@@ -1,0 +1,80 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production   # <-- pauses here for manual approval
+
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            set -e
+            cd ${{ secrets.DEPLOY_PATH }}
+
+            echo "==> Safety net: no matter what fails below, always try to bring the site back up on exit"
+            trap 'php artisan up || true' EXIT
+
+            echo "==> Trusting this directory for Git (avoids 'dubious ownership' errors)"
+            git config --global --get-all safe.directory 2>/dev/null | grep -qxF "$(pwd)" || git config --global --add safe.directory "$(pwd)"
+
+            echo "==> Backing up the database before touching anything"
+            mkdir -p storage/backups
+            DB_USER=$(grep -oP '(?<=^DB_USERNAME=).*' .env || true)
+            DB_PASS=$(grep -oP '(?<=^DB_PASSWORD=).*' .env || true)
+            DB_NAME=$(grep -oP '(?<=^DB_DATABASE=).*' .env || true)
+            MYSQL_PWD="$DB_PASS" mysqldump --single-transaction -u "$DB_USER" "$DB_NAME" > storage/backups/pre-deploy-$(date +%Y%m%d%H%M%S).sql || true
+
+            echo "==> Putting the site into maintenance mode"
+            php artisan down --retry=15 || true
+
+            echo "==> Pulling latest production code"
+            export GIT_SSH_COMMAND="ssh -i /var/www/vhosts/acme.com/.ssh/github_deploy_key -o IdentitiesOnly=yes"
+            git fetch --all
+            git reset --hard origin/main
+
+            echo "==> Installing PHP dependencies"
+            composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "==> Installing frontend dependencies"
+            npm ci
+
+            echo "==> Building assets (client + SSR), mirroring Plesk's own build step"
+            export INERTIA_SSR_PORT=$(grep -oP '(?<=^INERTIA_SSR_PORT=).*' .env || true)
+            rm -rf public/hot
+            npm run build:ssr
+
+            echo "==> Running database migrations"
+            php artisan migrate --force
+
+            echo "==> Refreshing caches"
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            php artisan storage:link || true
+
+            echo "==> Restarting the Inertia SSR process (Supervisor auto-restarts it)"
+            php artisan inertia:stop-ssr || true
+
+            echo "==> Restarting queue workers"
+            php artisan queue:restart || true
+
+            echo "==> Bringing the site back up"
+            php artisan up
+
+      - name: Smoke test
+        run: |
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.APP_URL }})
+          if [ "$STATUS" -ge 500 ]; then
+            echo "Production returned HTTP $STATUS after deploy!" && exit 1
+          fi
+          echo "Production responded with HTTP $STATUS"

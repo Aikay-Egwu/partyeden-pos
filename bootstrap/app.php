@@ -3,6 +3,8 @@
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\RecordPageView;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -23,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+            RecordPageView::class,
         ]);
 
         // Exempt PayPal + Stripe webhooks from CSRF — called by payment servers directly
@@ -36,6 +39,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth' => Authenticate::class,
         ]);
+    })
+    ->withSchedule(function (Schedule $schedule): void {
+        $schedule->command('analytics:prune')->dailyAt('03:10')->withoutOverlapping(30);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
