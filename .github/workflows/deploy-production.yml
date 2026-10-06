@@ -3,77 +3,225 @@ name: Deploy to Production
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+# A production deploy may be halfway through migrations, so never cancel one
+# that is already running — queue the new run behind it instead.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
 
 jobs:
-  deploy:
+  build:
+    name: Build release
     runs-on: ubuntu-latest
     environment: production   # <-- pauses here for manual approval
 
     steps:
-      - name: Deploy over SSH
-        uses: appleboy/ssh-action@v1
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            set -e
-            cd ${{ secrets.DEPLOY_PATH }}
+          persist-credentials: false
 
-            echo "==> Safety net: no matter what fails below, always try to bring the site back up on exit"
-            trap 'php artisan up || true' EXIT
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: mbstring, dom, fileinfo, mysql, sqlite3, pcntl, intl
+          coverage: none
 
-            echo "==> Trusting this directory for Git (avoids 'dubious ownership' errors)"
-            git config --global --get-all safe.directory 2>/dev/null | grep -qxF "$(pwd)" || git config --global --add safe.directory "$(pwd)"
+      - name: Install Composer dependencies (production)
+        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
-            echo "==> Backing up the database before touching anything"
-            mkdir -p storage/backups
-            DB_USER=$(grep -oP '(?<=^DB_USERNAME=).*' .env || true)
-            DB_PASS=$(grep -oP '(?<=^DB_PASSWORD=).*' .env || true)
-            DB_NAME=$(grep -oP '(?<=^DB_DATABASE=).*' .env || true)
-            MYSQL_PWD="$DB_PASS" mysqldump --single-transaction -u "$DB_USER" "$DB_NAME" > storage/backups/pre-deploy-$(date +%Y%m%d%H%M%S).sql || true
+      - name: Run post-install Composer scripts
+        run: |
+          composer run-script post-autoload-dump
+          composer run-script post-update-cmd || true
 
-            echo "==> Putting the site into maintenance mode"
-            php artisan down --retry=15 || true
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
 
-            echo "==> Pulling latest production code"
-            export GIT_SSH_COMMAND="ssh -i /var/www/vhosts/acme.com/.ssh/github_deploy_key -o IdentitiesOnly=yes"
-            git fetch --all
-            git reset --hard origin/main
+      - name: Install Node dependencies
+        run: npm ci
 
-            echo "==> Installing PHP dependencies"
-            composer install --no-dev --optimize-autoloader --no-interaction
+      - name: Generate Wayfinder type-safe route/action files
+        # Mirrors the staging workflow: generate these on the runner, where the
+        # filesystem is writable, and ship them in the artifact. Running
+        # `artisan wayfinder:generate` on the server fails with "Permission
+        # denied" because deployed code files are read-only for the PHP CLI user.
+        run: |
+          mkdir -p resources/js/actions resources/js/routes resources/js/wayfinder
+          php artisan wayfinder:generate --no-ansi
 
-            echo "==> Installing frontend dependencies"
-            npm ci
+      - name: Build assets (client + SSR)
+        run: npm run build:ssr
 
-            echo "==> Building assets (client + SSR), mirroring Plesk's own build step"
-            export INERTIA_SSR_PORT=$(grep -oP '(?<=^INERTIA_SSR_PORT=).*' .env || true)
-            rm -rf public/hot
-            npm run build:ssr
+      - name: Strip files that must not reach production
+        run: |
+          rm -rf .git .github node_modules tests
+          rm -f .env database/database.sqlite
+          rm -f phpunit.xml phpstan.neon phpstan-baseline.neon phpstan-no-baseline.neon
+          rm -f pint.json eslint.config.js .prettierrc
 
-            echo "==> Running database migrations"
-            php artisan migrate --force
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-release
+          path: ./
+          retention-days: 1
+          if-no-files-found: error
 
-            echo "==> Refreshing caches"
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan storage:link || true
+  deploy:
+    name: Deploy to server
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
 
-            echo "==> Restarting the Inertia SSR process (Supervisor auto-restarts it)"
-            php artisan inertia:stop-ssr || true
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: production-release
+          path: release
 
-            echo "==> Restarting queue workers"
-            php artisan queue:restart || true
+      - name: Install SSH key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts 2>/dev/null
 
-            echo "==> Bringing the site back up"
-            php artisan up
+      - name: Back up the database and enable maintenance mode
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" bash -s -- "$DEPLOY_PATH" <<'REMOTE'
+          set -eu
+          cd "$1"
+
+          echo "==> Backing up the database before touching anything"
+          DB_USER=$(grep -oP '(?<=^DB_USERNAME=).*' .env || true)
+          DB_PASS=$(grep -oP '(?<=^DB_PASSWORD=).*' .env || true)
+          DB_NAME=$(grep -oP '(?<=^DB_DATABASE=).*' .env || true)
+
+          if [ -z "$DB_NAME" ]; then
+            echo "!! Could not read DB_DATABASE from .env — refusing to deploy without a backup" >&2
+            exit 1
+          fi
+
+          DUMP_BIN=$(command -v mariadb-dump || command -v mysqldump || true)
+          if [ -z "$DUMP_BIN" ]; then
+            echo "!! Neither mariadb-dump nor mysqldump is available — refusing to deploy without a backup" >&2
+            exit 1
+          fi
+
+          mkdir -p storage/backups
+          BACKUP="storage/backups/pre-deploy-$(date +%Y%m%d%H%M%S).sql"
+          MYSQL_PWD="$DB_PASS" "$DUMP_BIN" --single-transaction -u "$DB_USER" "$DB_NAME" > "$BACKUP"
+
+          # An empty dump means the credentials or database name are wrong, and
+          # silently continuing would leave us with no rollback point.
+          if [ ! -s "$BACKUP" ]; then
+            echo "!! Backup $BACKUP is empty — refusing to deploy without a backup" >&2
+            exit 1
+          fi
+          echo "    wrote $BACKUP ($(du -h "$BACKUP" | cut -f1))"
+
+          echo "==> Putting the site into maintenance mode"
+          php artisan down --retry=60
+          REMOTE
+
+      - name: Upload files with rsync
+        # No --delete: the target is a live docroot that also holds server-side
+        # state we must not remove. Runtime paths are excluded so rsync can
+        # never overwrite them, and the build artifact ships vendor/, public/build
+        # and bootstrap/ssr so nothing is compiled on the server.
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          rsync -rlptz --no-owner --no-group --omit-dir-times \
+            --exclude '.env' \
+            --exclude 'storage/' \
+            --exclude 'public/storage' \
+            --exclude 'public/hot' \
+            -e "ssh -i ~/.ssh/deploy_key -p $SSH_PORT" \
+            release/ \
+            "$SSH_USER@$SSH_HOST:$DEPLOY_PATH/"
+
+      - name: Migrate, refresh caches and bring the site back up
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" bash -s -- "$DEPLOY_PATH" <<'REMOTE'
+          set -eu
+          cd "$1"
+
+          # Safety net: whatever fails below, do not leave the site in maintenance mode.
+          trap 'php artisan up || true' EXIT
+
+          echo "==> Ensuring runtime directories exist"
+          mkdir -p storage/framework/cache/data storage/framework/sessions \
+                   storage/framework/views storage/logs storage/app/public bootstrap/cache
+
+          echo "==> Recreating the storage symlink"
+          rm -rf public/storage
+          php artisan storage:link
+
+          echo "==> Running database migrations"
+          php artisan migrate --force
+
+          echo "==> Refreshing caches"
+          php artisan config:cache
+          php artisan route:cache
+          php artisan view:cache
+
+          echo "==> Restarting the Inertia SSR process (Supervisor auto-restarts it)"
+          php artisan inertia:stop-ssr || true
+
+          echo "==> Restarting queue workers"
+          php artisan queue:restart || true
+
+          echo "==> Bringing the site back up"
+          php artisan up
+          REMOTE
+
+      - name: Ensure the site is back up (deploy failed)
+        if: failure()
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" bash -s -- "$DEPLOY_PATH" <<'REMOTE' || true
+          cd "$1" && php artisan up
+          REMOTE
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
 
       - name: Smoke test
+        env:
+          APP_URL: ${{ secrets.APP_URL }}
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.APP_URL }})
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL")
           if [ "$STATUS" -ge 500 ]; then
             echo "Production returned HTTP $STATUS after deploy!" && exit 1
           fi
