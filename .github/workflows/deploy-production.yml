@@ -213,16 +213,64 @@ jobs:
           cd "$1" && php artisan up
           REMOTE
 
-      - name: Remove SSH key
-        if: always()
-        run: rm -f ~/.ssh/deploy_key
-
       - name: Smoke test
         env:
           APP_URL: ${{ secrets.APP_URL }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL")
-          if [ "$STATUS" -ge 500 ]; then
-            echo "Production returned HTTP $STATUS after deploy!" && exit 1
-          fi
+          BODY=$(mktemp)
+          STATUS=$(curl -s -o "$BODY" -w "%{http_code}" "$APP_URL")
           echo "Production responded with HTTP $STATUS"
+
+          if [ "$STATUS" -lt 500 ]; then
+            rm -f "$BODY"
+            exit 0
+          fi
+
+          echo "::error::Production returned HTTP $STATUS after deploy"
+          echo "----- response body (first 3000 bytes) -----"
+          head -c 3000 "$BODY"
+          echo
+          rm -f "$BODY"
+
+          # A bare status code is not actionable, so pull the server-side reason
+          # out of the box before failing the run.
+          echo "----- server diagnostics -----"
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" bash -s -- "$DEPLOY_PATH" <<'REMOTE' || true
+          cd "$1" || exit 0
+          echo "whoami: $(whoami)"
+          echo
+          echo "--- PHP versions (CLI vs FPM must both be >= 8.4.1 for Symfony/Laravel 13) ---"
+          echo "CLI default: $(command -v php) -> $(php -v 2>&1 | head -1)"
+          for p in /opt/plesk/php/*/bin/php; do
+            [ -x "$p" ] && echo "plesk:       $p -> $($p -v 2>&1 | head -1)"
+          done
+          echo
+          echo "--- storage/logs/laravel.log (last 60 lines) ---"
+          tail -n 60 storage/logs/laravel.log 2>/dev/null || echo "(no laravel.log)"
+          echo
+          echo "--- web server / FPM error logs (a pre-boot fatal never reaches laravel.log) ---"
+          for log in /var/www/vhosts/system/*/logs/*error*log /var/log/apache2/error.log /var/log/nginx/error.log; do
+            [ -r "$log" ] && { echo "### $log"; tail -n 25 "$log"; echo; }
+          done
+          echo
+          echo "--- file ownership and permissions ---"
+          ls -ld . .env storage bootstrap/cache public/build vendor 2>&1
+          ls -l bootstrap/cache 2>&1 | head -12
+          echo
+          echo "--- critical artifacts present? ---"
+          for f in vendor/autoload.php public/build/manifest.json bootstrap/ssr/ssr.js; do
+            if [ -e "$f" ]; then echo "ok       $f"; else echo "MISSING  $f"; fi
+          done
+          echo
+          echo "--- can PHP boot the app from the CLI? ---"
+          php artisan about --only=environment 2>&1 | head -20
+          REMOTE
+          exit 1
+
+      - name: Remove SSH key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
