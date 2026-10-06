@@ -48,11 +48,10 @@ class CheckAnalyticsGeo extends Command
 
         $this->line('');
         $this->check('ANALYTICS_ENABLED', config('analytics.enabled') ? 'on' : 'off - nothing at all is being recorded');
-        $this->check('ANALYTICS_SAMPLE_RATE', config('analytics.sample_rate').'% of visitors');
+        $this->check('ANALYTICS_SAMPLE_RATE', ((string) config('analytics.sample_rate')).'% of visitors');
         $this->check('ANALYTICS_RAW', config('analytics.raw') ? 'on - referrer, device, browser and language breakdowns available' : 'off - counters only, breakdowns disabled');
         $this->check('ANALYTICS_SALT', config('analytics.salt') ? 'set' : 'falling back to APP_KEY (works, but rotating the app key resets every visitor pseudonym silently)');
-        $proxies = config('app.trusted_proxies');
-        $this->check('TRUSTED_PROXIES', $proxies ? (string) $proxies : 'unset - if nginx fronts PHP, $request->ip() returns the proxy and every visitor shares one pseudonym');
+        $this->check('TRUSTED_PROXIES', $this->trustedProxiesStatus());
         $this->check('EXCLUDED ADDRESSES', $this->excludedAddresses());
         $this->check('ANALYTICS_QUEUE_CONNECTION', (string) config('analytics.connection').($this->workerRunning() ? '' : ' (no worker assumed: "deferred" runs post-response, which is correct here)'));
         $this->check('ANALYTICS_TRACK_RETURNING', config('analytics.track_returning') ? 'on - stores a longer-lived pseudonym in the cache' : 'off');
@@ -65,16 +64,38 @@ class CheckAnalyticsGeo extends Command
      */
     private function probes(): array
     {
+        /** @var mixed $option */
         $option = $this->option('ip');
-        $userIps = array_filter(
-            array_map(fn ($v) => (string) $v, $option),
-            fn ($v) => $v !== ''
-        );
+        $values = is_array($option) ? $option : (is_string($option) && $option !== '' ? [$option] : []);
+        $userIps = [];
+        foreach ($values as $v) {
+            if (is_string($v) && $v !== '') {
+                $userIps[] = $v;
+            }
+        }
 
         return array_values(array_unique(array_merge(
             ['127.0.0.1', '10.0.0.5', '8.8.8.8'],
             $userIps,
         )));
+    }
+
+    /**
+     * Human-readable status for the framework's trusted proxy configuration.
+     *
+     * Reads the underlying $_ENV directly so the diagnostic keeps working after
+     * `config:cache` (TRUSTED_PROXIES is consumed by bootstrap and never placed
+     * in a config entry).
+     */
+    private function trustedProxiesStatus(): string
+    {
+        $value = $_ENV['TRUSTED_PROXIES'] ?? $_SERVER['TRUSTED_PROXIES'] ?? null;
+
+        if (is_string($value) && $value !== '') {
+            return $value;
+        }
+
+        return 'unset - if nginx fronts PHP, $request->ip() returns the proxy and every visitor shares one pseudonym';
     }
 
     /**

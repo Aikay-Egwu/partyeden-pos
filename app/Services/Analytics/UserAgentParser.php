@@ -13,7 +13,7 @@ namespace App\Services\Analytics;
 class UserAgentParser
 {
     /**
-     * @return array{browser: string|null, os: string|null, device_type: string|null}
+     * @return array{browser: string|null, os: string|null, device_type: string}
      */
     public function parse(string $agent): array
     {

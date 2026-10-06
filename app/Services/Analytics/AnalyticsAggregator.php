@@ -126,7 +126,7 @@ class AnalyticsAggregator
     }
 
     /**
-     * @param  array<string, int>  $increments
+     * @param  non-empty-array<string, int>  $increments
      * @param  array<string, mixed>  $key
      */
     private function bump(string $table, array $key, array $increments): void
@@ -141,8 +141,13 @@ class AnalyticsAggregator
         $set = [];
 
         foreach ($increments as $column => $amount) {
-            /** @phpstan-ignore argument.type (column names are controlled, amount is int-cast) */
-            $set[$column] = DB::raw($column.' + '.(int) $amount);
+            $amount = (int) $amount;
+            if ($column === 'views') {
+                // Increments are column names hardcoded at call sites above.
+                $set[$column] = DB::raw("`views` + {$amount}");
+            } elseif ($column === 'new_visitors') {
+                $set[$column] = DB::raw("`new_visitors` + {$amount}");
+            }
         }
 
         DB::table($table)->where($key)->update($set);
