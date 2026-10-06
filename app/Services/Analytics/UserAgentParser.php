@@ -52,7 +52,7 @@ class UserAgentParser
         };
     }
 
-    private function device(string $agent): ?string
+    private function device(string $agent): string
     {
         // iPads report as Macintosh on iPadOS 13+, hence the desktop-mode check.
         if ((bool) preg_match('/iPad|iPhone|iPod/i', $agent)) {

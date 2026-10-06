@@ -26,6 +26,7 @@ class ProductSeeder extends Seeder
         $products = collect();
 
         for ($i = 0; $i < 10; $i++) {
+            /** @var Product $product */
             $product = Product::factory()->create();
             $product->categories()->attach($categories->random()->id);
             $products->push($product);

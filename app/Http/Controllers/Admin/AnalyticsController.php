@@ -97,7 +97,7 @@ class AnalyticsController extends Controller
                 // when in fact the feature is switched off.
                 'new_visitors' => config('analytics.track_returning') ? $new : null,
                 'views_per_visitor' => $visitors > 0 ? round($views / $visitors, 2) : 0.0,
-                'countries' => DB::table('analytics_daily_visitors')
+                'countries' => array_values(DB::table('analytics_daily_visitors')
                     ->select('country as label', DB::raw('COUNT(*) as visitors'))
                     ->whereBetween('date', [$from, $to])
                     ->whereNotNull('country')
@@ -109,7 +109,7 @@ class AnalyticsController extends Controller
                     ->limit(12)
                     ->get()
                     ->map(fn ($row) => ['label' => (string) $row->label, 'visitors' => (int) $row->visitors])
-                    ->all(),
+                    ->all()),
             ];
         });
     }
@@ -135,7 +135,7 @@ class AnalyticsController extends Controller
                 ->groupBy('date')
                 ->pluck('visitors', 'date');
 
-            return collect(range(0, (int) round($from->diffInDays($to))))
+            return array_values(collect(range(0, (int) round($from->diffInDays($to))))
                 ->map(function (int $offset) use ($from, $views, $visitors) {
                     $day = $from->copy()->addDays($offset);
                     $date = $day->toDateString();
@@ -150,7 +150,7 @@ class AnalyticsController extends Controller
                         'visitors' => (int) ($visitors[$date] ?? 0),
                     ];
                 })
-                ->all();
+                ->all());
         });
     }
 
@@ -180,13 +180,13 @@ class AnalyticsController extends Controller
                 ->groupBy('path')
                 ->pluck('visitors', 'path');
 
-            return $views
+            return array_values($views
                 ->map(fn ($row) => [
                     'path' => (string) $row->path,
                     'views' => (int) $row->views,
                     'visitors' => (int) ($visitors[$row->path] ?? 0),
                 ])
-                ->all();
+                ->all());
         });
     }
 
@@ -246,12 +246,12 @@ class AnalyticsController extends Controller
                 ->limit(8)
                 ->get();
 
-            return $rows
+            return array_values($rows
                 ->map(fn ($row) => [
                     'label' => $column === 'referrer_host' ? (string) $row->label : ucfirst((string) $row->label),
                     'views' => (int) $row->views,
                 ])
-                ->all();
+                ->all());
         });
     }
 }

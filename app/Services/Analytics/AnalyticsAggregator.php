@@ -141,6 +141,7 @@ class AnalyticsAggregator
         $set = [];
 
         foreach ($increments as $column => $amount) {
+            /** @phpstan-ignore argument.type (column names are controlled, amount is int-cast) */
             $set[$column] = DB::raw($column.' + '.(int) $amount);
         }
 

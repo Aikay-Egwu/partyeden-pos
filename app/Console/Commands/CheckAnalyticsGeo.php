@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 
 class CheckAnalyticsGeo extends Command
 {
-    protected $signature = 'analytics:geo-check {--ip= : Additional address to probe (repeatable)}';
+    protected $signature = 'analytics:geo-check {--ip=* : Additional address to probe (repeatable)}';
 
     protected $description = 'Verify the analytics geolocation database and privacy-critical settings';
 
@@ -51,7 +51,8 @@ class CheckAnalyticsGeo extends Command
         $this->check('ANALYTICS_SAMPLE_RATE', config('analytics.sample_rate').'% of visitors');
         $this->check('ANALYTICS_RAW', config('analytics.raw') ? 'on - referrer, device, browser and language breakdowns available' : 'off - counters only, breakdowns disabled');
         $this->check('ANALYTICS_SALT', config('analytics.salt') ? 'set' : 'falling back to APP_KEY (works, but rotating the app key resets every visitor pseudonym silently)');
-        $this->check('TRUSTED_PROXIES', env('TRUSTED_PROXIES') ?: 'unset - if nginx fronts PHP, $request->ip() returns the proxy and every visitor shares one pseudonym');
+        $proxies = config('app.trusted_proxies');
+        $this->check('TRUSTED_PROXIES', $proxies ? (string) $proxies : 'unset - if nginx fronts PHP, $request->ip() returns the proxy and every visitor shares one pseudonym');
         $this->check('EXCLUDED ADDRESSES', $this->excludedAddresses());
         $this->check('ANALYTICS_QUEUE_CONNECTION', (string) config('analytics.connection').($this->workerRunning() ? '' : ' (no worker assumed: "deferred" runs post-response, which is correct here)'));
         $this->check('ANALYTICS_TRACK_RETURNING', config('analytics.track_returning') ? 'on - stores a longer-lived pseudonym in the cache' : 'off');
@@ -65,10 +66,14 @@ class CheckAnalyticsGeo extends Command
     private function probes(): array
     {
         $option = $this->option('ip');
+        $userIps = array_filter(
+            array_map(fn ($v) => (string) $v, $option),
+            fn ($v) => $v !== ''
+        );
 
         return array_values(array_unique(array_merge(
             ['127.0.0.1', '10.0.0.5', '8.8.8.8'],
-            is_array($option) ? $option : (is_string($option) && $option !== '' ? [$option] : []),
+            $userIps,
         )));
     }
 
