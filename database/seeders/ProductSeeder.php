@@ -22,13 +22,13 @@ class ProductSeeder extends Seeder
         // Create 3 categories
         $categories = Category::factory()->count(3)->create();
 
-        // Create 10 products assigned to random categories
+        // Create 10 products assigned to random categories (many-to-many via pivot)
         $products = collect();
 
         for ($i = 0; $i < 10; $i++) {
-            $products->push(Product::factory()->create([
-                'category_id' => $categories->random()->id,
-            ]));
+            $product = Product::factory()->create();
+            $product->categories()->attach($categories->random()->id);
+            $products->push($product);
         }
 
         // Select 4 random products to have variants

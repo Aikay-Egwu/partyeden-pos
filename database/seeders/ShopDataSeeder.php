@@ -162,14 +162,13 @@ class ShopDataSeeder extends Seeder
                 $categoryId = null;
             }
 
-            Product::create([
+            $product = Product::create([
                 'id' => $prodData['id'],
                 'sku' => $prodData['sku'],
                 'barcode' => $prodData['barcode'] ?? null,
                 'name' => $prodData['name'],
                 'slug' => $prodData['slug'],
                 'description' => $prodData['description'],
-                'category_id' => $categoryId,
                 'tax_category_id' => $prodData['tax_category_id'] ?? null,
                 'cost_price' => $prodData['cost_price'] ?? 0,
                 'selling_price' => $prodData['selling_price'] ?? 0,
@@ -184,6 +183,11 @@ class ShopDataSeeder extends Seeder
                 'created_at' => $prodData['created_at'],
                 'updated_at' => $prodData['updated_at'],
             ]);
+
+            // Attach category via the many-to-many pivot (category_product table)
+            if ($categoryId !== null) {
+                $product->categories()->attach($categoryId);
+            }
         }
 
         $this->command->info('Products seeded: '.count($products));
