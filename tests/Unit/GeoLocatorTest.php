@@ -4,11 +4,10 @@ use App\Services\Analytics\GeoLocator;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
 use GeoIp2\Model\Country;
-use Tests\TestCase;
 
 // The service reads config() and logs, so this needs a booted container even
-// though no database or HTTP layer is involved.
-uses(TestCase::class);
+// though no database or HTTP layer is involved. Tests\TestCase is bound to the
+// Unit folder in tests/Pest.php; re-declaring it here makes Pest fail to load.
 
 test('a two letter code from the database is passed through', function () {
     config(['analytics.geo' => 'country']);
