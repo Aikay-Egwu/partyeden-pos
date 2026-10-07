@@ -110,9 +110,11 @@ jobs:
           cd "$1"
 
           echo "==> Backing up the database before touching anything"
-          DB_USER=$(grep -oP '(?<=^DB_USERNAME=).*' .env || true)
-          DB_PASS=$(grep -oP '(?<=^DB_PASSWORD=).*' .env || true)
-          DB_NAME=$(grep -oP '(?<=^DB_DATABASE=).*' .env || true)
+          # In .github/workflows/deploy-production.yml, lines 113-115
+          DB_USER=$(grep -oP '(?<=^DB_USERNAME=).*' .env | sed "s/['\"]//g" | xargs || true)
+          DB_PASS=$(grep -oP '(?<=^DB_PASSWORD=).*' .env | sed "s/['\"]//g" | xargs || true)
+          DB_NAME=$(grep -oP '(?<=^DB_DATABASE=).*' .env | sed "s/['\"]//g" | xargs || true)
+
 
           if [ -z "$DB_NAME" ]; then
             echo "!! Could not read DB_DATABASE from .env — refusing to deploy without a backup" >&2
