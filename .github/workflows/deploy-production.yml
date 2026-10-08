@@ -81,10 +81,12 @@ jobs:
             chown -R ${{ secrets.WEB_USER }}:${{ secrets.WEB_GROUP }} .
 
             echo "==> Setting correct permissions"
-            # Directories: 755 (owner rwx, group/world rx) for general files
-            find . -not -path './.git/*' -type d -exec chmod 755 {} \;
-            # Files: 644 for general files
-            find . -not -path './.git/*' -type f -exec chmod 644 {} \;
+            # Directories: 755 for general files (excluding .git and node_modules)
+            find . -not -path './.git/*' -not -path './node_modules/*' -type d -exec chmod 755 {} \;
+            # Files: 644 for general files (excluding .git and node_modules)
+            find . -not -path './.git/*' -not -path './node_modules/*' -type f -exec chmod 644 {} \;
+            # Ensure binaries in node_modules/.bin remain executable
+            chmod -R +x node_modules/.bin || true
             # Writable directories needed by Laravel at runtime
             chmod -R 775 storage bootstrap/cache
             # artisan must be executable
