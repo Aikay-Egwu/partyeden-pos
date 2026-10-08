@@ -21,6 +21,13 @@ jobs:
             set -e
             cd ${{ secrets.DEPLOY_PATH }}
 
+            echo "==> Loading Node/npm into PATH (non-login SSH shells don't source ~/.bashrc)"
+            # Source NVM if installed per-user (most common on Plesk)
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            # Also add common system-wide Node install locations as a fallback
+            export PATH="$PATH:/usr/local/bin:/usr/bin"
+
             echo "==> Safety net: no matter what fails below, always try to bring the site back up on exit"
             trap 'php artisan up || true' EXIT
 
