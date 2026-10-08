@@ -52,9 +52,6 @@ jobs:
             echo "==> Installing PHP dependencies"
             composer install --no-dev --optimize-autoloader --no-interaction
 
-            echo "==> Ensuring SQLite database file exists (gitignored, must be created manually)"
-            touch database/database.sqlite
-
             echo "==> Installing frontend dependencies"
             npm ci
 
@@ -77,6 +74,21 @@ jobs:
 
             echo "==> Restarting queue workers"
             php artisan queue:restart || true
+
+            echo "==> Fixing file ownership so Apache/Plesk web user can read and write files"
+            # WEB_USER is the Plesk subscription username (e.g. partyedencom).
+            # Apache runs as this user, so root-owned files cause 403s and DB write failures.
+            chown -R ${{ secrets.WEB_USER }}:${{ secrets.WEB_GROUP }} .
+
+            echo "==> Setting correct permissions"
+            # Directories: 755 (owner rwx, group/world rx) for general files
+            find . -not -path './.git/*' -type d -exec chmod 755 {} \;
+            # Files: 644 for general files
+            find . -not -path './.git/*' -type f -exec chmod 644 {} \;
+            # Writable directories needed by Laravel at runtime
+            chmod -R 775 storage bootstrap/cache
+            # artisan must be executable
+            chmod 755 artisan
 
             echo "==> Bringing the site back up"
             php artisan up
