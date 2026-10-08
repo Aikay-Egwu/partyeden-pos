@@ -38,12 +38,15 @@ jobs:
             php artisan down --retry=15 || true
 
             echo "==> Pulling latest production code"
-            export GIT_SSH_COMMAND="ssh -i /var/www/vhosts/acme.com/.ssh/github_deploy_key -o IdentitiesOnly=yes"
+            export GIT_SSH_COMMAND="ssh -i ${{ secrets.PLESK_DEPLOY_PATH }} -o IdentitiesOnly=yes"
             git fetch --all
             git reset --hard origin/main
 
             echo "==> Installing PHP dependencies"
             composer install --no-dev --optimize-autoloader --no-interaction
+
+            echo "==> Ensuring SQLite database file exists (gitignored, must be created manually)"
+            touch database/database.sqlite
 
             echo "==> Installing frontend dependencies"
             npm ci
