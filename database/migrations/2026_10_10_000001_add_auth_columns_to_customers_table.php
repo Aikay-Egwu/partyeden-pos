@@ -18,8 +18,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('customers', function (Blueprint $table) {
-            // Password column for customer authentication
-            $table->string('password')->after('email');
+            // Password column for customer authentication. Nullable because
+            // customers can be created without credentials (guest checkout,
+            // admin CRM entry) and only gain a password when they register.
+            $table->string('password')->nullable()->after('email');
 
             // Remember token for "remember me" sessions
             $table->string('remember_token', 100)->nullable()->after('password');

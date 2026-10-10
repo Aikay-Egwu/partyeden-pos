@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Responses;
 
 use App\Models\Customer;
-use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -27,13 +26,13 @@ class VerifyEmailResponse implements VerifyEmailResponseContract
         /** @var Authenticatable|null $user */
         $user = $request->user();
 
-        // Role-aware post-verification redirect, mirroring LoginResponse.
-        $defaultPath = match (true) {
-            $user instanceof User => route('admin.dashboard'),
-            $user instanceof Customer => route('customer.dashboard'),
-            default => route('dashboard'),
-        };
+        // Customers land in their own portal after verifying. Admins keep the
+        // default dashboard, mirroring Fortify's standard post-verification
+        // redirect (which appends ?verified=1 for the UI confirmation banner).
+        $defaultPath = $user instanceof Customer
+            ? route('customer.dashboard', absolute: false)
+            : route('dashboard', absolute: false);
 
-        return redirect()->intended($defaultPath);
+        return redirect()->intended($defaultPath.'?verified=1');
     }
 }
