@@ -36,17 +36,30 @@ jobs:
 
             echo "==> Backing up the database before touching anything"
             mkdir -p storage/backups
-            DB_USER=$(grep -oP '(?<=^DB_USERNAME=).*' .env || true)
-            DB_PASS=$(grep -oP '(?<=^DB_PASSWORD=).*' .env || true)
-            DB_NAME=$(grep -oP '(?<=^DB_DATABASE=).*' .env || true)
-            MYSQL_PWD="$DB_PASS" mysqldump --single-transaction -u "$DB_USER" "$DB_NAME" > storage/backups/pre-deploy-$(date +%Y%m%d%H%M%S).sql || true
+            # Parse .env values safely: split on first '=' (handles '=' in values),
+            # then strip surrounding quotes. Avoids bash expansion that `source .env` would trigger.
+            DB_USER=$(grep '^DB_USERNAME=' .env | head -n1 | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+            DB_PASS=$(grep '^DB_PASSWORD=' .env | head -n1 | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+            DB_NAME=$(grep '^DB_DATABASE=' .env | head -n1 | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+            DB_HOST=$(grep '^DB_HOST=' .env | head -n1 | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+            # Connect using the same host Laravel uses. Without -h, mysqldump defaults to the
+            # localhost socket, but 'user'@'localhost' and 'user'@'127.0.0.1' are separate
+            # MySQL accounts that can have different passwords/grants.
+            MYSQL_PWD="$DB_PASS" mysqldump --single-transaction -h "${DB_HOST:-localhost}" -u "$DB_USER" "$DB_NAME" > storage/backups/pre-deploy-$(date +%Y%m%d%H%M%S).sql 2>/dev/null || true
 
             echo "==> Putting the site into maintenance mode"
             php artisan down --retry=15 || true
 
             echo "==> Pulling latest production code"
             export GIT_SSH_COMMAND="ssh -i ${{ secrets.PLESK_DEPLOY_PATH }} -o IdentitiesOnly=yes"
-            git fetch --all
+            # The deploy directory may not contain a .git folder (e.g. files were uploaded
+            # via Plesk/FTP without repo metadata). Initialize a repo and point it at GitHub.
+            if [ ! -d .git ]; then
+              echo "==> .git not found in deploy path; initializing repository"
+              git init
+              git remote add origin "git@github.com:${{ github.repository }}.git"
+            fi
+            git fetch origin main
             git reset --hard origin/main
 
             echo "==> Installing PHP dependencies"
