@@ -51,16 +51,17 @@ jobs:
             php artisan down --retry=15 || true
 
             echo "==> Pulling latest production code"
-            export GIT_SSH_COMMAND="ssh -i ${{ secrets.PLESK_DEPLOY_PATH }} -o IdentitiesOnly=yes"
             # The deploy directory may not contain a .git folder (e.g. files were uploaded
-            # via Plesk/FTP without repo metadata). Initialize a repo and point it at GitHub.
+            # via Plesk/FTP without repo metadata).
             if [ ! -d .git ]; then
               echo "==> .git not found in deploy path; initializing repository"
               git init
-              git remote add origin "git@github.com:${{ github.repository }}.git"
             fi
-            git fetch origin main
-            git reset --hard origin/main
+            # Fetch over HTTPS using the ephemeral GITHUB_TOKEN provided by GitHub Actions.
+            # This avoids needing a deploy key file on the Plesk server. The token only
+            # lives for the duration of the job, so it isn't persisted on disk.
+            git fetch "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" main
+            git reset --hard FETCH_HEAD
 
             echo "==> Installing PHP dependencies"
             composer install --no-dev --optimize-autoloader --no-interaction
