@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Auth\DualUserProvider;
 use App\Events\OrderStatusChanged;
 use App\Jobs\SendOrderDeliveredEmail;
 use App\Jobs\SendOrderStatusEmail;
@@ -9,6 +10,7 @@ use App\Services\Analytics\AnalyticsRecorder;
 use App\Services\Analytics\GeoLocator;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
@@ -37,6 +39,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Auth::provider('dual', function ($app, array $config) {
+            return new DualUserProvider($app['hash']);
+        });
+
         $this->configureDefaults();
         $this->configureGates();
         $this->configureEventListeners();

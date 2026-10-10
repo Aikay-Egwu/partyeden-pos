@@ -3,12 +3,7 @@ import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { useMemo } from 'react';
 
 import AnalyticsSeries from '@/components/analytics-series';
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Select,
     SelectContent,
@@ -16,7 +11,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import admin from '@/routes/admin';
 import {
     Table,
     TableBody,
@@ -25,6 +19,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import admin from '@/routes/admin';
 import type {
     AnalyticsCountry,
     AnalyticsLabelCount,
@@ -87,7 +82,9 @@ function StatCard({
                     {typeof change === 'number' && (
                         <span
                             className={`flex items-center gap-0.5 text-xs ${
-                                change >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                                change >= 0
+                                    ? 'text-emerald-600 dark:text-emerald-400'
+                                    : 'text-red-600 dark:text-red-400'
                             }`}
                         >
                             {change >= 0 ? (
@@ -126,7 +123,10 @@ function ShareBars({
         );
     }
 
-    const peak = Math.max(...rows.map((row) => ('views' in row ? row.views : row.visitors)), 1);
+    const peak = Math.max(
+        ...rows.map((row) => ('views' in row ? row.views : row.visitors)),
+        1,
+    );
 
     return (
         <ul className="flex flex-col gap-3">
@@ -137,7 +137,7 @@ function ShareBars({
                     <li key={row.label} className="flex flex-col gap-1">
                         <div className="flex items-center justify-between text-sm">
                             <span className="truncate">{row.label}</span>
-                            <span className="tabular-nums text-muted-foreground">
+                            <span className="text-muted-foreground tabular-nums">
                                 {count.toLocaleString()}
                             </span>
                         </div>
@@ -383,7 +383,10 @@ export default function Analytics({
                     days. Country is resolved locally from a geolocation
                     database at request time and stored as a two letter code
                     only — addresses and query strings are never written to the
-                    database. Breakdowns{breakdownsFrom ? ` cover data since ${breakdownsFrom}.` : ' are disabled while raw event storage is off.'}
+                    database. Breakdowns
+                    {breakdownsFrom
+                        ? ` cover data since ${breakdownsFrom}.`
+                        : ' are disabled while raw event storage is off.'}
                 </p>
             </div>
         </>

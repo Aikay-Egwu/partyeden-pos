@@ -41,7 +41,7 @@ export type CatalogNewsletterFooterProps = {
     voucherCtaLabel?: string;
 
     /* ===== Footer Brand column ===== */
-    /** "Pop & Joy" brand name */
+    /** "Party Eden" brand name */
     brandName?: string;
     /** Brand description blurb (curators of luxury balloons...) */
     brandDescription?: string;
@@ -117,7 +117,7 @@ const defaultLegalLinks: CatalogFooterLink[] = [
  *             gold-shadow pill button.
  *
  * 2) 4-COL FOOTER GRID (popjoy-purple-bg section):
- *    - Col 1 "Pop & Joy": large purple brand heading + description +
+ *    - Col 1 "Party Eden": large purple brand heading + description +
  *      rounded-pill "Helium Quality Certified" badge (balloon icon).
  *    - Col 2 "Celebrations" — 5 category links.
  *    - Col 3 "Customer Care" — 5 support/delivery links.
@@ -125,7 +125,7 @@ const defaultLegalLinks: CatalogFooterLink[] = [
  *      purple "London Studio & White Glove Courier Hub" text.
  *
  * 3) COPYRIGHT BAR — horizontal popjoy-divider border above:
- *    - LEFT: © 2026 Pop & Joy Balloons Boutique Ltd text.
+ *    - LEFT: © 2026 Party Eden Balloons Boutique Ltd text.
  *    - RIGHT: 3 legal links (Privacy / Terms / Eco Promise).
  *
  * @example
@@ -138,8 +138,8 @@ export function CatalogNewsletterFooter({
     emailPlaceholder = 'Enter your celebratory email...',
     voucherCtaLabel = 'Claim £10 Voucher',
 
-    brandName = 'Pop & Joy',
-    brandDescription = 'Curators of luxury inflated balloon moments, helium centerpieces, organic party arches, and unforgettable bespoke installations delivered across the UK.',
+    brandName = 'Party Eden',
+    brandDescription = 'Curators of luxury inflated balloon moments, helium centerpieces, organic party arches, and unforgettable bespoke installations.',
     heliumBadgeIconSrc = '/figma-img/mui8bfpf-w56anb1.svg',
     heliumBadgeLabel = 'Helium Quality Certified',
 
@@ -148,7 +148,7 @@ export function CatalogNewsletterFooter({
     studioHoursWeekend = 'Sat - Sun: 9:00am - 4:00pm',
     studioLocation = 'London Studio & White Glove Courier Hub',
 
-    copyrightText = '© 2025 Pop & Joy Balloons Boutique Ltd. All celebration rights reserved.',
+    copyrightText = '© 2025 Party Eden Balloons Boutique Ltd. All celebration rights reserved.',
     legalLinks = defaultLegalLinks,
 
     className,

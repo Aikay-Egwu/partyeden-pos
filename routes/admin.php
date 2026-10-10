@@ -35,8 +35,10 @@ use App\Http\Controllers\Admin\AdminVariantController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
-// All admin routes behind auth + admin gate
-Route::middleware(['auth', 'verified', 'can:admin'])->prefix('admin')->group(function () {
+// All admin routes behind auth + verified + role guard + admin gate (belt-and-suspenders)
+// role.admin runs BEFORE can:admin so it can redirect Customers with a friendly
+// 302 + flash message instead of the gate returning a bare 403.
+Route::middleware(['auth', 'verified', 'role.admin', 'can:admin'])->prefix('admin')->group(function () {
     // Admin dashboard home - shows overview stats
     Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('analytics', [AnalyticsController::class, 'index'])->name('admin.analytics.index');

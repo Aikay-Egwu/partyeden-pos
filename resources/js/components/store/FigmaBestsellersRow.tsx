@@ -184,7 +184,7 @@ function normalizeProduct(
 export function FigmaBestsellersRow({
     title = 'Trending Bestsellers',
     eyebrow = 'CUSTOMER FAVOURITES',
-    description = 'Handcrafted balloon bouquets, personalised bubbles, and ready-to-party installations delivered across the UK.',
+    description = 'Handcrafted balloon bouquets, personalised bubbles, and ready-to-party installations.',
     products,
     className,
     id = 'bestsellers',

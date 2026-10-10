@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { edit } from '@/routes/profile';
 import { send } from '@/routes/verification';
+import { getUserDisplayName } from '@/types';
 import type { Auth } from '@/types';
 
 type PageProps = {
@@ -52,7 +53,7 @@ export default function Profile({
                                 <Input
                                     id="name"
                                     className="mt-1 block w-full"
-                                    defaultValue={auth.user.name}
+                                    defaultValue={getUserDisplayName(auth.user)}
                                     name="name"
                                     required
                                     autoComplete="name"

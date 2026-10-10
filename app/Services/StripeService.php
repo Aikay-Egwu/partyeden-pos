@@ -83,13 +83,27 @@ class StripeService
         }
 
         $mode = (string) config('stripe.mode', 'test');
-        $expectedPrefix = $mode === 'live' ? 'sk_live_' : 'sk_test_';
-        if (! str_starts_with($secretKey, $expectedPrefix)) {
+
+        // Accept both standard ("sk_") and restricted ("rk_") secret keys.
+        $expectedPrefixes = $mode === 'live'
+            ? ['sk_live_', 'rk_live_']
+            : ['sk_test_', 'rk_test_'];
+
+        $hasValidPrefix = false;
+        foreach ($expectedPrefixes as $prefix) {
+            if (str_starts_with($secretKey, $prefix)) {
+                $hasValidPrefix = true;
+                break;
+            }
+        }
+
+        if (! $hasValidPrefix) {
             throw new RuntimeException(
                 sprintf(
-                    'Stripe secret key has the wrong prefix for %s mode. Expected key starting with "%s". Get one from https://dashboard.stripe.com/%sapikeys',
+                    'Stripe secret key has the wrong prefix for %s mode. Expected key starting with "%s" or "%s". Get one from https://dashboard.stripe.com/%sapikeys',
                     $mode === 'live' ? 'live' : 'test (sandbox)',
-                    $expectedPrefix,
+                    $expectedPrefixes[0],
+                    $expectedPrefixes[1],
                     $mode === 'live' ? '' : 'test/',
                 ),
             );

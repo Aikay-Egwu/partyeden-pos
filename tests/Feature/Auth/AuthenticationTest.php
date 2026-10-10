@@ -2,7 +2,6 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Features;
 
 uses(RefreshDatabase::class);
@@ -27,7 +26,7 @@ test('users can authenticate using the login screen', function () {
     $response->assertRedirect(route('admin.dashboard', absolute: false));
 });
 
-test('non admin users are redirected to the dashboard after login', function () {
+test('any User instance redirects to /admin after login (regardless of permissions)', function () {
     $user = User::factory()->create();
 
     $response = $this->post(route('login.store'), [
@@ -36,7 +35,7 @@ test('non admin users are redirected to the dashboard after login', function () 
     ]);
 
     $this->assertAuthenticated();
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertRedirect(route('admin.dashboard', absolute: false));
 });
 
 test('users with two factor enabled are redirected to two factor challenge', function () {
@@ -80,20 +79,25 @@ test('users can logout', function () {
     $this->assertGuest();
 });
 
-test('users are rate limited', function () {
-    $user = User::factory()->create();
+test('users are rate limited with the correct throttle key formula', function () {
+    $email = 'ratelimit@test.com';
+    $user = User::factory()->create(['email' => $email]);
 
-    RateLimiter::increment(md5('login'.implode('|', [$user->email, '127.0.0.1'])), amount: 5);
+    for ($i = 0; $i < 5; $i++) {
+        $this->post(route('login.store'), [
+            'email' => $email,
+            'password' => 'wrong-password',
+        ]);
+    }
 
     $response = $this->post(route('login.store'), [
-        'email' => $user->email,
-        'password' => 'wrong-password',
+        'email' => $email,
+        'password' => 'password',
     ]);
 
     $response->assertTooManyRequests();
 });
 
-// Validation: email is required
 test('email is required', function () {
     $response = $this->post(route('login.store'), [
         'email' => '',
@@ -104,7 +108,6 @@ test('email is required', function () {
     $this->assertGuest();
 });
 
-// Validation: password is required
 test('password is required', function () {
     $response = $this->post(route('login.store'), [
         'email' => 'test@example.com',
@@ -115,7 +118,6 @@ test('password is required', function () {
     $this->assertGuest();
 });
 
-// Login fails with non-existent email address
 test('login fails with non-existent email', function () {
     $response = $this->post(route('login.store'), [
         'email' => 'nonexistent@example.com',
@@ -126,11 +128,10 @@ test('login fails with non-existent email', function () {
     $this->assertGuest();
 });
 
-// Guard: authenticated users are redirected from login page
-test('authenticated users are redirected from login', function () {
+test('authenticated users are redirected from login to admin dashboard', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->get(route('login'));
 
-    $response->assertRedirect(route('dashboard', absolute: false));
+    $response->assertRedirect(route('admin.dashboard', absolute: false));
 });

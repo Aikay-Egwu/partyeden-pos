@@ -28,10 +28,20 @@ createInertiaApp({
             case name === 'store/products/show':
                 // Product details page renders its own full-bleed Figma header/footer.
                 return null;
+            case name === 'auth/login':
+                // Login page renders its own full-viewport branded layout
+                // (two-column split with gradient brand panel + form panel).
+                return null;
+            case name === 'auth/register':
+                // Register page renders its own full-viewport branded layout
+                // (matching login page's two-column brand/form split).
+                return null;
             case name.startsWith('auth/'):
                 return AuthLayout;
             case name.startsWith('settings/'):
                 return [AppLayout, SettingsLayout];
+            case name.startsWith('customer/'):
+                return null;
             case name.startsWith('admin/'):
                 return AdminLayout;
             case name.startsWith('store/'):

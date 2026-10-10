@@ -10,9 +10,44 @@ export type User = {
     [key: string]: unknown;
 };
 
-export type Auth = {
-    user: User;
+/** Authenticated storefront shopper (separate Customer model with a UUID id). */
+export type Customer = {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone?: string | null;
+    date_of_birth?: string | null;
+    company_name?: string | null;
+    is_active?: boolean;
+    email_verified_at?: string | null;
+    created_at?: string;
+    updated_at?: string;
+    [key: string]: unknown;
 };
+
+/**
+ * The currently authenticated user: either an admin `User` or a storefront
+ * `Customer`. Guests have no entry here (resolved to `null` at runtime).
+ */
+export type Auth = {
+    user: User | Customer;
+};
+
+/**
+ * Human-readable display name for either authenticated user type.
+ * Admins use `name`; customers compose `first_name` + `last_name`.
+ */
+export function getUserDisplayName(user: User | Customer): string {
+    if ('first_name' in user) {
+        return [user.first_name, user.last_name]
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+    }
+
+    return user.name;
+}
 
 /* @chisel-passkeys */
 export type Passkey = {

@@ -91,7 +91,7 @@ export default function Home({
 
     return (
         <>
-            <Head title="Pop &amp; Joy — Make Every Moment Float" />
+            <Head title="Party &amp; Eden — Make Every Moment Float" />
             <a
                 href="#main"
                 className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-100 focus:rounded focus:bg-popjoy-purple focus:px-4 focus:py-2 focus:text-white"
@@ -99,7 +99,7 @@ export default function Home({
                 Skip to content
             </a>
 
-            {/* Page canvas — Pop &amp; Joy cream/lilac background */}
+            {/* Page canvas — Party &amp; Eden cream/lilac background */}
             <div className="store-light min-h-screen w-full bg-popjoy-bg">
                 {/* Header stack */}
                 {/* <FigmaAnnouncementBar /> */}

@@ -1,9 +1,29 @@
 import { Link, usePage } from '@inertiajs/react';
-import { ChevronRight, Menu, ShoppingCart, X } from 'lucide-react';
+import {
+    ChevronRight,
+    LayoutDashboard,
+    LogOut,
+    Menu,
+    ShoppingBag,
+    ShoppingCart,
+    User as UserIcon,
+    X,
+} from 'lucide-react';
 import { useState } from 'react';
 import { CatalogSearch } from '@/components/store/catalog-search';
-
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { logout } from '@/routes';
+import { dashboard } from '@/routes/customer';
+import { getUserDisplayName } from '@/types';
+import type { Auth } from '@/types';
 
 /**
  * Navigation link item for the FigmaHeader desktop nav.
@@ -58,11 +78,14 @@ export function FigmaHeader({
     className,
     id,
 }: FigmaHeaderProps) {
-    const { cart } = usePage().props as {
+    const { auth, cart } = usePage().props as {
         cart?: { count: number };
+        auth?: Auth;
     };
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const itemCount = cartCount ?? cart?.count ?? 0;
+    // Guests have no authenticated user, so the account menu is hidden for them.
+    const authUser = auth?.user ?? null;
 
     return (
         <header
@@ -124,6 +147,69 @@ export function FigmaHeader({
                     <div className="hidden w-72 xl:block">
                         <CatalogSearch placeholder="Search themes, ages..." />
                     </div>
+                    {/* Account menu — shown only when a user is signed in. */}
+                    {authUser && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    type="button"
+                                    aria-label={`Account menu for ${getUserDisplayName(authUser)}`}
+                                    className="inline-flex items-center gap-2 rounded-full bg-popjoy-purple-bg px-3 py-2.5 text-sm font-semibold text-popjoy-ink transition-colors hover:bg-popjoy-purple-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple"
+                                >
+                                    <UserIcon
+                                        aria-hidden="true"
+                                        className="h-4 w-4 shrink-0"
+                                    />
+                                    <span className="hidden max-w-36 truncate sm:inline">
+                                        {getUserDisplayName(authUser)}
+                                    </span>
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="end"
+                                className="w-56"
+                            >
+                                <DropdownMenuLabel className="font-normal">
+                                    <span className="block truncate text-sm font-medium text-popjoy-ink">
+                                        {getUserDisplayName(authUser)}
+                                    </span>
+                                    <span className="block truncate text-xs text-popjoy-muted">
+                                        {authUser.email}
+                                    </span>
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href={dashboard()}
+                                        className="block w-full cursor-pointer"
+                                    >
+                                        <LayoutDashboard className="mr-2" />
+                                        My dashboard
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href="/products"
+                                        className="block w-full cursor-pointer"
+                                    >
+                                        <ShoppingBag className="mr-2" />
+                                        Continue shopping
+                                    </Link>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href={logout()}
+                                        as="button"
+                                        className="block w-full cursor-pointer"
+                                    >
+                                        <LogOut className="mr-2" />
+                                        Log out
+                                    </Link>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                     {/* Cart icon with live gold item count badge */}
                     {onCartClick ? (
                         <button
