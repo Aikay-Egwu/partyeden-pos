@@ -69,6 +69,18 @@ jobs:
             echo "==> Installing frontend dependencies"
             npm ci
 
+            echo "==> Clearing stale caches (route/config/view) from previous deploys"
+            # bootstrap/cache/*.php are gitignored, so a stale routes-v7.php from a
+            # prior deploy would shadow the current routes/ files. Clearing ensures
+            # wayfinder:generate and the build see the latest routes.
+            php artisan optimize:clear
+
+            echo "==> Generating Wayfinder route/action TypeScript files"
+            # resources/js/routes and resources/js/actions are gitignored, so they
+            # don't arrive via git reset. Run the generator explicitly so any failure
+            # is loud (the Vite plugin swallows its own generate errors silently).
+            php artisan wayfinder:generate --with-form
+
             echo "==> Building assets (client + SSR), mirroring Plesk's own build step"
             export INERTIA_SSR_PORT=$(grep -oP '(?<=^INERTIA_SSR_PORT=).*' .env || true)
             rm -rf public/hot
