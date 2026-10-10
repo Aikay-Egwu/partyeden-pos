@@ -60,4 +60,13 @@ class User extends Authenticatable implements PasskeyUser
         return in_array($permission, $permissions, true)
             || in_array('*', $permissions, true);
     }
+
+    /**
+     * Return the authentication role identifier for this user type.
+     * Used by middleware/auth logic to distinguish customer vs admin sessions.
+     */
+    public function getAuthRole(): string
+    {
+        return 'admin';
+    }
 }

@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Customer extends Model
+class Customer extends Authenticatable implements MustVerifyEmailContract
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, HasUuids, MustVerifyEmail, Notifiable, SoftDeletes;
 
     /**
      * Explicit allow-list — columns not listed here can never be mass-assigned.
@@ -22,6 +25,9 @@ class Customer extends Model
         'first_name',
         'last_name',
         'email',
+        'password',
+        'remember_token',
+        'email_verified_at',
         'phone',
         'date_of_birth',
         'company_name',
@@ -33,10 +39,39 @@ class Customer extends Model
 
     protected $keyType = 'string';
 
-    protected $casts = [
-        'date_of_birth' => 'date',
-        'is_active' => 'boolean',
+    /**
+     * Attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+            'email_verified_at' => 'datetime',
+            'date_of_birth' => 'date',
+            'is_active' => 'boolean',
+        ];
+    }
+
+    /**
+     * Return the authentication role identifier for this user type.
+     * Used by middleware/auth logic to distinguish customer vs admin sessions.
+     */
+    public function getAuthRole(): string
+    {
+        return 'customer';
+    }
 
     /** @return HasMany<CustomerAddress, $this> */
     public function addresses(): HasMany

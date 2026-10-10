@@ -20,7 +20,8 @@ export function NavUser() {
     const { state } = useSidebar();
     const isMobile = useIsMobile();
 
-    if (!auth.user) {
+    // Admin sidebar only renders admin `User` accounts; skip storefront customers.
+    if (!auth.user || 'first_name' in auth.user) {
         return null;
     }
 

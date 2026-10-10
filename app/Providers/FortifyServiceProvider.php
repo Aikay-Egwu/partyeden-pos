@@ -2,17 +2,21 @@
 
 namespace App\Providers;
 
-use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
 use App\Http\Responses\LoginResponse as AuthenticatedLoginResponse;
+use App\Http\Responses\VerifyEmailResponse as AuthenticatedVerifyEmailResponse;
+use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Laravel\Fortify\Contracts\VerifyEmailResponse as VerifyEmailResponseContract;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 
@@ -24,6 +28,7 @@ class FortifyServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(LoginResponseContract::class, AuthenticatedLoginResponse::class);
+        $this->app->singleton(VerifyEmailResponseContract::class, AuthenticatedVerifyEmailResponse::class);
     }
 
     /**
@@ -42,7 +47,40 @@ class FortifyServiceProvider extends ServiceProvider
     private function configureActions(): void
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
-        Fortify::createUsersUsing(CreateNewUser::class);
+
+        // Sequential authentication: admin (users) table first, fall back to customers table.
+        // If admin authentication fails (no match OR wrong password), automatically retry
+        // the SAME credentials against the customers table.
+        // Returning null always produces the exact same generic validation error message
+        // regardless of the failure reason (prevents email enumeration).
+        // IMPORTANT: do NOT call Auth::login() here — Fortify does that internally AFTER
+        // checking two-factor / confirming the pipeline. Calling login() here would bypass
+        // 2FA challenges (user would be fully authenticated before Fortify's 2FA guard).
+        Fortify::authenticateUsing(function (Request $request) {
+            $email = $request->input(Fortify::username());
+            $password = $request->input('password');
+
+            // STEP 1: Try admin User model first.
+            $adminUser = User::query()
+                ->where(Fortify::username(), $email)
+                ->first();
+
+            if ($adminUser !== null && Hash::check($password, $adminUser->getAuthPassword())) {
+                return $adminUser;
+            }
+
+            // STEP 2: Fall through to Customer. Per spec we retry on both no-match AND wrong password.
+            $customer = Customer::query()
+                ->where(Fortify::username(), $email)
+                ->first();
+
+            if ($customer !== null && Hash::check($password, $customer->getAuthPassword())) {
+                return $customer;
+            }
+
+            // BOTH failed. Return null so Fortify emits generic "credentials do not match" error.
+            return null;
+        });
     }
 
     /**
@@ -67,10 +105,6 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::verifyEmailView(fn (Request $request) => Inertia::render('auth/verify-email', [
             'status' => $request->session()->get('status'),
-        ]));
-
-        Fortify::registerView(fn () => Inertia::render('auth/register', [
-            'passwordRules' => Password::defaults()->toPasswordRulesString(),
         ]));
 
         Fortify::twoFactorChallengeView(fn () => Inertia::render('auth/two-factor-challenge'));

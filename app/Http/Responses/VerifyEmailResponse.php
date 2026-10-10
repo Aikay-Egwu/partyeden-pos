@@ -9,38 +9,31 @@ use App\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Laravel\Fortify\Contracts\VerifyEmailResponse as VerifyEmailResponseContract;
 
-class LoginResponse implements LoginResponseContract
+class VerifyEmailResponse implements VerifyEmailResponseContract
 {
     /**
-     * Create an HTTP response for a successful login.
+     * Create an HTTP response for a successful email verification.
      *
      * @return JsonResponse|RedirectResponse
      */
     public function toResponse(mixed $request): mixed
     {
         if ($request->wantsJson()) {
-            return response()->json(['two_factor' => false]);
+            return response()->json('', 204);
         }
 
         /** @var Authenticatable|null $user */
         $user = $request->user();
 
-        // Unverified customers must confirm their email address before
-        // entering the customer portal.
-        if ($user instanceof Customer && ! $user->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
-        }
-
-        // Role-based post-login redirects
+        // Role-aware post-verification redirect, mirroring LoginResponse.
         $defaultPath = match (true) {
             $user instanceof User => route('admin.dashboard'),
             $user instanceof Customer => route('customer.dashboard'),
             default => route('dashboard'),
         };
 
-        // intended() preserves URL stored by guest middleware before login redirect
         return redirect()->intended($defaultPath);
     }
 }

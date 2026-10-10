@@ -43,7 +43,9 @@ type Props = {
 
 export default function OccasionsIndex({ occasions, filters }: Props) {
     const deleteDialog = useDeleteDialog<Occasion>();
-    const [togglingFeaturedIds, setTogglingFeaturedIds] = useState<Set<string>>(new Set());
+    const [togglingFeaturedIds, setTogglingFeaturedIds] = useState<Set<string>>(
+        new Set(),
+    );
 
     const meta: PaginationMeta = {
         current_page: occasions.current_page,

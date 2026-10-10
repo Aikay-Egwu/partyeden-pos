@@ -6,10 +6,7 @@
 
 // Image binding — how a product image is attached (gallery, variant, etc.)
 export type ImageBindingType =
-    | 'default'
-    | 'variant'
-    | 'primary_color'
-    | 'addon';
+    'default' | 'variant' | 'primary_color' | 'addon';
 
 // Color palette record (colors table uses integer ids)
 export type ColorOption = {

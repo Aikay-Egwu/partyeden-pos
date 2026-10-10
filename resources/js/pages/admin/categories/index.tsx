@@ -46,7 +46,9 @@ type Props = {
 export default function CategoriesIndex({ categories, filters }: Props) {
     const deleteDialog = useDeleteDialog<Category>();
     const [togglingIds, setTogglingIds] = useState<Set<string>>(new Set());
-    const [togglingFeaturedIds, setTogglingFeaturedIds] = useState<Set<string>>(new Set());
+    const [togglingFeaturedIds, setTogglingFeaturedIds] = useState<Set<string>>(
+        new Set(),
+    );
 
     const meta: PaginationMeta = {
         current_page: categories.current_page,
