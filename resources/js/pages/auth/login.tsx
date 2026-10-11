@@ -43,7 +43,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                 className="text-3xl font-extrabold tracking-tight sm:text-4xl"
                                 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
                             >
-                                Party &amp; Eden
+                             Eden Eden
                             </h1>
 
                             {/* Tagline beneath brand name */}

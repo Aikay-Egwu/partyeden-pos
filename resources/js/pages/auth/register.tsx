@@ -87,7 +87,7 @@ export default function Register({ passwordRulesList, status }: Props) {
                                 className="text-3xl font-extrabold tracking-tight sm:text-4xl"
                                 style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)' }}
                             >
-                                Party &amp; Eden
+                                Party Eden
                             </h1>
 
                             {/* Tagline beneath brand name — customer registration focused */}
@@ -124,7 +124,7 @@ export default function Register({ passwordRulesList, status }: Props) {
                                     Create your account
                                 </h2>
                                 <p className="mt-2 text-muted-foreground">
-                                    Join Party &amp; Eden for faster checkout,
+                                    Join Party Eden for faster checkout,
                                     order tracking, and exclusive rewards.
                                 </p>
                             </div>

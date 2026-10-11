@@ -135,7 +135,7 @@ export default function Home({
 
     return (
         <>
-            <Head title={`${customer.first_name}'s account — Party &amp; Eden`} />
+            <Head title={`${customer.first_name}'s account — Party Eden`} />
 
             <a
                 href="#main"
@@ -163,7 +163,7 @@ export default function Home({
                                 Hi, {customer.first_name} 👋
                             </h1>
                             <p className="mt-1 text-muted-foreground">
-                                Welcome back to your Party &amp; Eden account.
+                                Welcome back to your Party Eden account.
                             </p>
                         </div>
 
