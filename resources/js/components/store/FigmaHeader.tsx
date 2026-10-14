@@ -58,6 +58,7 @@ const defaultNavLinks: FigmaNavLink[] = [
     { labelPrimary: 'Shop', href: '/products' },
     { labelPrimary: 'Categories', href: '/categories' },
     { labelPrimary: 'Occasions', href: '/occasions' },
+    { labelPrimary: 'Contact', href: '/contact' },
     /* { labelPrimary: 'Reviews', href: '/reviews' },
     { labelPrimary: 'Gallery', href: '/gallery' },
     { labelPrimary: 'Blog', href: '/blog' }, */
@@ -165,10 +166,7 @@ export function FigmaHeader({
                                     </span>
                                 </button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                align="end"
-                                className="w-56"
-                            >
+                            <DropdownMenuContent align="end" className="w-56">
                                 <DropdownMenuLabel className="font-normal">
                                     <span className="block truncate text-sm font-medium text-popjoy-ink">
                                         {getUserDisplayName(authUser)}
@@ -215,7 +213,10 @@ export function FigmaHeader({
                             aria-label="Sign in"
                             className="inline-flex items-center gap-2 rounded-full bg-popjoy-purple-bg px-3 py-2.5 text-sm font-semibold text-popjoy-ink transition-colors hover:bg-popjoy-purple-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple"
                         >
-                            <UserIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                            <UserIcon
+                                aria-hidden="true"
+                                className="h-4 w-4 shrink-0"
+                            />
                             <span className="hidden sm:inline">Sign In</span>
                         </Link>
                     )}

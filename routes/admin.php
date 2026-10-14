@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\AdminGiftCardController;
 use App\Http\Controllers\Admin\AdminInventoryController;
 use App\Http\Controllers\Admin\AdminLocationController;
 use App\Http\Controllers\Admin\AdminLoyaltyController;
+use App\Http\Controllers\Admin\AdminMessageController;
 use App\Http\Controllers\Admin\AdminOccasionController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminProductController;
@@ -108,6 +109,13 @@ Route::middleware(['auth', 'verified', 'role.admin', 'can:admin'])->prefix('admi
     Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.index');
     Route::get('reviews/{review}', [AdminReviewController::class, 'show'])->name('reviews.show');
     Route::patch('reviews/{review}', [AdminReviewController::class, 'update'])->name('reviews.update');
+
+    // ── Messages ────────────────────────────────────────────────────
+    Route::get('messages', [AdminMessageController::class, 'index'])->name('messages.index');
+    Route::get('messages/{message}', [AdminMessageController::class, 'show'])->name('messages.show');
+    Route::post('messages/{message}/reply', [AdminMessageController::class, 'reply'])->name('messages.reply');
+    Route::patch('messages/{message}/status', [AdminMessageController::class, 'updateStatus'])->name('messages.status.update');
+    Route::delete('messages/{message}', [AdminMessageController::class, 'destroy'])->name('messages.destroy');
 
     // ── Orders ──────────────────────────────────────────────────────
     Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');

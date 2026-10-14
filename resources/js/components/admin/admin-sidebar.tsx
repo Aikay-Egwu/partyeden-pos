@@ -3,6 +3,7 @@ import {
     ChartLine,
     ClipboardList,
     FileText,
+    Inbox,
     LayoutGrid,
     MessageSquare,
     Package,
@@ -108,6 +109,7 @@ const adminNavSections: { label: string; items: AdminNavItem[] }[] = [
             { title: 'Customers', href: '/admin/customers', icon: Users },
             { title: 'Loyalty', href: '/admin/loyalty', icon: Users },
             { title: 'Reviews', href: '/admin/reviews', icon: MessageSquare },
+            { title: 'Messages', href: '/admin/messages', icon: Inbox },
         ],
     },
     {

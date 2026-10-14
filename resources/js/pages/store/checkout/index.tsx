@@ -817,7 +817,10 @@ export default function CheckoutPage({
                                                             celebration order
                                                             with no extra charge
                                                             — ready when you
-                                                            arrive!
+                                                            arrive @ Party Eden,
+                                                            203 High Street
+                                                            West, SR1 1UA,
+                                                            Sunderland.
                                                         </p>
                                                         <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-popjoy-gold/20 px-3 py-1 text-xs font-extrabold text-popjoy-gold-ink">
                                                             FREE
@@ -1146,7 +1149,7 @@ export default function CheckoutPage({
                                             )}
 
                                         {loyaltyAccount && (
-                                            <div className="rounded-2xl border border-popjoy-gold-border/70 bg-gradient-to-br from-popjoy-gold/10 via-popjoy-gold/5 to-popjoy-purple-bg/50 p-5">
+                                            <div className="rounded-2xl border border-popjoy-gold-border/70 bg-linear-to-br from-popjoy-gold/10 via-popjoy-gold/5 to-popjoy-purple-bg/50 p-5">
                                                 <div className="flex items-center justify-between">
                                                     <div>
                                                         <p className="font-plus-jakarta text-sm font-bold text-popjoy-ink">

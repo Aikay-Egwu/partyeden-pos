@@ -4,6 +4,7 @@ use App\Http\Controllers\Store\StoreBlogController;
 use App\Http\Controllers\Store\StoreCartController;
 use App\Http\Controllers\Store\StoreCategoryController;
 use App\Http\Controllers\Store\StoreCheckoutController;
+use App\Http\Controllers\Store\StoreContactController;
 use App\Http\Controllers\Store\StoreFaqController;
 use App\Http\Controllers\Store\StoreOccasionController;
 use App\Http\Controllers\Store\StoreOrderController;
@@ -34,6 +35,10 @@ Route::middleware('throttle:60,1')->group(function (): void {
     Route::get('reviews', [StoreReviewController::class, 'index'])->name('store.reviews.index');
     Route::get('gallery', [StoreReviewController::class, 'gallery'])->name('store.gallery.index');
     Route::get('faq', [StoreFaqController::class, 'index'])->name('store.faqs.index');
+
+    // Static content pages
+    Route::inertia('about', 'store/about')->name('store.about');
+    Route::inertia('contact', 'store/contact')->name('store.contact');
 
     // Legal pages (static content)
     Route::inertia('privacy-policy', 'store/legal/privacy-policy')->name('store.privacy-policy');
@@ -94,3 +99,8 @@ Route::middleware('throttle:10,1')->group(function (): void {
 Route::post('reviews', [StoreReviewController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('store.reviews.store');
+
+// Public contact form submission (strict limit to prevent spam)
+Route::post('contact', [StoreContactController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('store.contact.store');

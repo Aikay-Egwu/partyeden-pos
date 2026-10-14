@@ -1,6 +1,6 @@
 import { useForm, Head } from '@inertiajs/react';
-import { useEffect } from 'react';
 import { Gift, Sparkles, PartyPopper } from 'lucide-react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
@@ -9,8 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { login } from '@/routes';
 import { useFlashToast } from '@/hooks/use-flash-toast';
+import { login } from '@/routes';
 
 type Props = {
     // Human-readable bullet list of password requirements (e.g. "At least 8
@@ -124,8 +124,8 @@ export default function Register({ passwordRulesList, status }: Props) {
                                     Create your account
                                 </h2>
                                 <p className="mt-2 text-muted-foreground">
-                                    Join Party Eden for faster checkout,
-                                    order tracking, and exclusive rewards.
+                                    Join Party Eden for faster checkout, order
+                                    tracking, and exclusive rewards.
                                 </p>
                             </div>
 

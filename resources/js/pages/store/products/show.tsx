@@ -196,7 +196,6 @@ export default function ProductShow({ product }: Props) {
     const selectedPrice =
         Number(product.selling_price) +
         Number(selectedVariant?.price_adjustment ?? 0);
-    const needsVariantSelection = variants.length > 0 && !selectedVariant;
     const attributes =
         selectedVariant?.variant_attributes?.flatMap((item) => {
             const value = item.attribute_value;
@@ -709,10 +708,7 @@ export default function ProductShow({ product }: Props) {
                                     <button
                                         type="button"
                                         onClick={addToCart}
-                                        disabled={
-                                            form.processing ||
-                                            needsVariantSelection
-                                        }
+                                        disabled={form.processing}
                                         className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-popjoy-purple px-6 py-4 font-plus-jakarta text-sm font-bold text-white shadow-[0_8px_20px_-8px_rgba(99,14,212,0.6)] transition hover:bg-popjoy-purple/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         <ShoppingBag
@@ -723,11 +719,6 @@ export default function ProductShow({ product }: Props) {
                                             ? 'Adding to your bag…'
                                             : 'Add to bag'}
                                     </button>
-                                    {needsVariantSelection && (
-                                        <p className="text-center text-xs font-semibold text-popjoy-purple">
-                                            Choose an option above to continue.
-                                        </p>
-                                    )}
                                     <p className="text-center text-xs leading-5 text-popjoy-muted">
                                         Your selected options and
                                         personalisation are saved with your
