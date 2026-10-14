@@ -147,8 +147,8 @@ export function FigmaHeader({
                     <div className="hidden w-72 xl:block">
                         <CatalogSearch placeholder="Search themes, ages..." />
                     </div>
-                    {/* Account menu — shown only when a user is signed in. */}
-                    {authUser && (
+                    {/* Account menu — shown only when a user is signed in; Sign In link for guests. */}
+                    {authUser ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <button
@@ -209,6 +209,15 @@ export function FigmaHeader({
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
+                    ) : (
+                        <Link
+                            href="/login"
+                            aria-label="Sign in"
+                            className="inline-flex items-center gap-2 rounded-full bg-popjoy-purple-bg px-3 py-2.5 text-sm font-semibold text-popjoy-ink transition-colors hover:bg-popjoy-purple-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple"
+                        >
+                            <UserIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                            <span className="hidden sm:inline">Sign In</span>
+                        </Link>
                     )}
                     {/* Cart icon with live gold item count badge */}
                     {onCartClick ? (

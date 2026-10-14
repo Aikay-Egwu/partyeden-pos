@@ -8,10 +8,10 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Daily admin report of pending orders (runs at 8:00 AM)
+// Daily admin digest of orders due today + upcoming orders (runs at 8:00 AM)
 Schedule::command('orders:send-daily-report')
     ->dailyAt('08:00')
-    ->description('Send daily pending orders report to admin');
+    ->description('Send daily orders digest (today + upcoming) to admin');
 
 // Customer reminders for orders pending > 24 hours (runs at 10:00 AM)
 Schedule::command('orders:send-pending-reminders')

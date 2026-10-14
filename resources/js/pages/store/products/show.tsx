@@ -120,7 +120,8 @@ export default function ProductShow({ product }: Props) {
     const [cartOpen, setCartOpen] = useState(false);
     const form = useForm<CartForm>({
         product_id: product.id,
-        variant_id: variants[0]?.id ?? null,
+        // Start unselected so the base product is the initial hero image.
+        variant_id: null,
         quantity: 1,
         customization_text: '',
         customization_font: customizationFonts[0],
@@ -132,31 +133,70 @@ export default function ProductShow({ product }: Props) {
         (variant) => variant.id === form.data.variant_id,
     );
     const primaryColorId = form.data.customization_primary_color_id;
-    const variantImages = (product.images ?? []).filter(
+    const variantLabelFor = (variant: Variant) =>
+        variant.variant_attributes
+            ?.flatMap((item) => {
+                const value = item.attribute_value;
+
+                return value?.attribute
+                    ? [`${value.attribute.name}: ${value.value}`]
+                    : value
+                      ? [value.value]
+                      : [];
+            })
+            .join(' · ') ||
+        variant.name ||
+        variant.sku;
+
+    // Unified, clickable gallery: base product images first, then each variant's
+    // images grouped by variant. Clicking a thumbnail selects that variant (or the
+    // base product when variantId is null) and brings its image to the hero.
+    const allImages = product.images ?? [];
+    const baseImages = allImages.filter(
         (image) =>
-            image.binding_type === 'variant' &&
-            image.variant_id === selectedVariant?.id,
+            image.binding_type === 'default' ||
+            (image.binding_type === 'primary_color' &&
+                image.primary_color_id === primaryColorId),
     );
-    const primaryColorImages = (product.images ?? []).filter(
-        (image) =>
-            image.binding_type === 'primary_color' &&
-            image.primary_color_id === primaryColorId,
-    );
-    const defaultImages = (product.images ?? []).filter(
-        (image) => image.binding_type === 'default',
-    );
-    const galleryImages =
-        variantImages.length > 0
-            ? variantImages
-            : primaryColorImages.length > 0
-              ? primaryColorImages
-              : defaultImages;
-    const selectedImage =
-        galleryImages.find((image) => image.id === selectedImageId) ??
-        galleryImages[0];
+    type GalleryEntry = {
+        image: ProductImage;
+        variantId: string | null;
+        label: string;
+    };
+    const galleryEntries: GalleryEntry[] = [
+        ...baseImages.map((image) => ({
+            image,
+            variantId: null,
+            label: product.name,
+        })),
+        ...variants.flatMap((variant) =>
+            allImages
+                .filter(
+                    (image) =>
+                        image.binding_type === 'variant' &&
+                        image.variant_id === variant.id,
+                )
+                .map((image) => ({
+                    image,
+                    variantId: variant.id,
+                    label: variantLabelFor(variant),
+                })),
+        ),
+    ];
+
+    const selectedEntry =
+        galleryEntries.find((entry) => entry.image.id === selectedImageId) ??
+        galleryEntries.find(
+            (entry) =>
+                entry.variantId !== null &&
+                entry.variantId === form.data.variant_id,
+        ) ??
+        galleryEntries[0];
+    const selectedImage = selectedEntry?.image;
     const selectedPrice =
         Number(product.selling_price) +
         Number(selectedVariant?.price_adjustment ?? 0);
+    const needsVariantSelection = variants.length > 0 && !selectedVariant;
     const attributes =
         selectedVariant?.variant_attributes?.flatMap((item) => {
             const value = item.attribute_value;
@@ -283,35 +323,58 @@ export default function ProductShow({ product }: Props) {
                                 )}
                             </div>
 
-                            {galleryImages.length > 1 && (
+                            {galleryEntries.length > 1 && (
                                 <div
                                     aria-label="Choose a product photo"
                                     className="grid grid-cols-4 gap-3 sm:grid-cols-5"
                                 >
-                                    {galleryImages.map((image, index) => (
-                                        <button
-                                            key={image.id}
-                                            type="button"
-                                            aria-label={`Show photo ${index + 1}`}
-                                            aria-pressed={
-                                                selectedImage?.id === image.id
-                                            }
-                                            onClick={() =>
-                                                setSelectedImageId(image.id)
-                                            }
-                                            className={`aspect-square overflow-hidden rounded-2xl border-2 bg-white p-2 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple ${
-                                                selectedImage?.id === image.id
-                                                    ? 'border-popjoy-purple shadow-sm'
-                                                    : 'border-transparent hover:border-popjoy-purple-surface'
-                                            }`}
-                                        >
-                                            <img
-                                                src={image.url}
-                                                alt=""
-                                                className="size-full object-contain"
-                                            />
-                                        </button>
-                                    ))}
+                                    {galleryEntries.map((entry, index) => {
+                                        const isActive =
+                                            selectedImage?.id ===
+                                            entry.image.id;
+
+                                        return (
+                                            <button
+                                                key={entry.image.id}
+                                                type="button"
+                                                title={entry.label}
+                                                aria-label={`Show ${entry.label}${entry.variantId ? ' variant' : ''} photo ${index + 1}`}
+                                                aria-pressed={isActive}
+                                                onClick={() => {
+                                                    form.setData(
+                                                        'variant_id',
+                                                        entry.variantId,
+                                                    );
+                                                    setSelectedImageId(
+                                                        entry.image.id,
+                                                    );
+                                                }}
+                                                className={`group relative aspect-square overflow-hidden rounded-2xl border-2 bg-white p-2 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple ${
+                                                    isActive
+                                                        ? 'border-popjoy-purple shadow-sm'
+                                                        : 'border-transparent hover:border-popjoy-purple-surface'
+                                                }`}
+                                            >
+                                                <img
+                                                    src={entry.image.url}
+                                                    alt=""
+                                                    className="size-full object-contain"
+                                                />
+                                                {entry.variantId && (
+                                                    <span
+                                                        aria-hidden="true"
+                                                        className={`pointer-events-none absolute inset-x-1 bottom-1 truncate rounded-full bg-popjoy-purple/85 px-2 py-0.5 text-[10px] font-semibold text-white transition ${
+                                                            isActive
+                                                                ? 'opacity-100'
+                                                                : 'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100'
+                                                        }`}
+                                                    >
+                                                        {entry.label}
+                                                    </span>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             )}
                         </section>
@@ -646,7 +709,10 @@ export default function ProductShow({ product }: Props) {
                                     <button
                                         type="button"
                                         onClick={addToCart}
-                                        disabled={form.processing}
+                                        disabled={
+                                            form.processing ||
+                                            needsVariantSelection
+                                        }
                                         className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-popjoy-purple px-6 py-4 font-plus-jakarta text-sm font-bold text-white shadow-[0_8px_20px_-8px_rgba(99,14,212,0.6)] transition hover:bg-popjoy-purple/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-popjoy-purple disabled:cursor-not-allowed disabled:opacity-60"
                                     >
                                         <ShoppingBag
@@ -657,6 +723,11 @@ export default function ProductShow({ product }: Props) {
                                             ? 'Adding to your bag…'
                                             : 'Add to bag'}
                                     </button>
+                                    {needsVariantSelection && (
+                                        <p className="text-center text-xs font-semibold text-popjoy-purple">
+                                            Choose an option above to continue.
+                                        </p>
+                                    )}
                                     <p className="text-center text-xs leading-5 text-popjoy-muted">
                                         Your selected options and
                                         personalisation are saved with your

@@ -8,6 +8,7 @@ import {
     Package,
     Palette,
     Receipt,
+    ShieldCheck,
     ShoppingCart,
     Tags,
     Truck,
@@ -122,7 +123,14 @@ const adminNavSections: { label: string; items: AdminNavItem[] }[] = [
     },
     {
         label: 'Staff',
-        items: [{ title: 'Staff Members', href: '/admin/staff', icon: Users }],
+        items: [
+            { title: 'Staff Members', href: '/admin/staff', icon: Users },
+            {
+                title: 'Administrators',
+                href: '/admin/users',
+                icon: ShieldCheck,
+            },
+        ],
     },
     {
         label: 'System',

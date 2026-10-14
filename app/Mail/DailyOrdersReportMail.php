@@ -13,17 +13,21 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 
 /**
- * Daily digest sent to admin with all pending/preorder orders.
- * Helps fulfillment team prioritize order processing.
+ * Daily digest sent to admin listing orders due today followed by
+ * upcoming (future) orders. Helps the fulfillment team plan the day.
  */
 class DailyOrdersReportMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
-     * @param  Collection<int, Order>  $orders
+     * @param  Collection<int, Order>  $todaysOrders
+     * @param  Collection<int, Order>  $futureOrders
      */
-    public function __construct(public readonly Collection $orders) {}
+    public function __construct(
+        public readonly Collection $todaysOrders,
+        public readonly Collection $futureOrders,
+    ) {}
 
     public function envelope(): Envelope
     {

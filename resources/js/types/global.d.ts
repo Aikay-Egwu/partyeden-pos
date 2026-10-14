@@ -15,6 +15,7 @@ declare module '@inertiajs/core' {
             sidebarOpen: boolean;
             cart: { count: number; total: string };
             paypalClientId: string;
+            whatsapp: { number: string; default_message: string | null };
             [key: string]: unknown;
         };
     }

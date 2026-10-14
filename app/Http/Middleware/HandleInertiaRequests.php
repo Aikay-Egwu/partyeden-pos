@@ -50,6 +50,11 @@ class HandleInertiaRequests extends Middleware
             'paypalClientId' => config('paypal.client_id'),
             // Stripe publishable key for Elements SDK (test or live based on env)
             'stripePublicKey' => config('services.stripe.key'),
+            // Business WhatsApp contact for the bespoke-request banner (empty = not configured)
+            'whatsapp' => [
+                'number' => config('whatsapp.number'),
+                'default_message' => config('whatsapp.default_message'),
+            ],
         ];
     }
 }

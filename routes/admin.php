@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\AdminSupplierController;
 use App\Http\Controllers\Admin\AdminTaxCategoryController;
 use App\Http\Controllers\Admin\AdminTillSessionController;
 use App\Http\Controllers\Admin\AdminTransactionController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminVariantController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use Illuminate\Support\Facades\Route;
@@ -128,6 +129,9 @@ Route::middleware(['auth', 'verified', 'role.admin', 'can:admin'])->prefix('admi
 
     // ── Staff ───────────────────────────────────────────────────────
     Route::resource('staff', AdminStaffController::class);
+
+    // ── Administrators (users table) ────────────────────────────────
+    Route::resource('users', AdminUserController::class)->except(['show']);
 
     // ── System ──────────────────────────────────────────────────────
     Route::get('audit-logs', [AdminAuditLogController::class, 'index'])->name('audit-logs.index');

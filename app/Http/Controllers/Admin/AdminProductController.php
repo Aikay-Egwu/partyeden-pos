@@ -338,31 +338,70 @@ class AdminProductController extends Controller
             'stock_entries.*.location_id' => ['required', 'uuid', 'exists:locations,id'],
             'stock_entries.*.quantity' => ['required', 'numeric', 'min:0'],
             'stock_entries.*.reason' => ['nullable', 'string', 'max:255'],
+            'stock_entries.*._removed' => ['nullable', 'boolean'],
         ]);
 
-        foreach ($validated['stock_entries'] ?? [] as $entry) {
-            $balance = InventoryBalance::firstOrCreate([
-                'product_id' => $product->id,
-                'location_id' => $entry['location_id'],
-                'variant_id' => null,
-            ]);
+        DB::transaction(function () use ($product, $validated): void {
+            foreach ($validated['stock_entries'] ?? [] as $entry) {
+                // withTrashed so a previously soft-deleted balance can be
+                // restored if stock is re-added at the same location.
+                $balance = InventoryBalance::withTrashed()->firstWhere([
+                    'product_id' => $product->id,
+                    'location_id' => $entry['location_id'],
+                    'variant_id' => null,
+                ]);
 
-            $oldQuantity = (float) $balance->quantity;
-            $newQuantity = (float) $entry['quantity'];
+                $oldQuantity = $balance ? (float) $balance->quantity : 0.0;
+                $isRemoval = ! empty($entry['_removed']);
+                $newQuantity = $isRemoval ? 0.0 : (float) $entry['quantity'];
 
-            if ($newQuantity !== $oldQuantity) {
-                $balance->update(['quantity' => $newQuantity]);
+                if ($balance && $balance->trashed()) {
+                    // Restore soft-deleted balance if stock is being re-added
+                    if ($newQuantity > 0) {
+                        $balance->restore();
+                        $balance->update(['quantity' => $newQuantity]);
+                    } else {
+                        // Nothing to do — balance stays deleted
+                        continue;
+                    }
+                } elseif (! $balance) {
+                    if ($newQuantity <= 0) {
+                        // No balance existed and nothing to add — skip
+                        continue;
+                    }
+                    $balance = InventoryBalance::create([
+                        'product_id' => $product->id,
+                        'location_id' => $entry['location_id'],
+                        'variant_id' => null,
+                        'quantity' => $newQuantity,
+                    ]);
+                } elseif ($newQuantity !== $oldQuantity) {
+                    $balance->update(['quantity' => $newQuantity]);
+                } else {
+                    // No change — skip movement logging
+                    continue;
+                }
+
+                $delta = $newQuantity - $oldQuantity;
 
                 InventoryMovement::create([
                     'product_id' => $product->id,
                     'location_id' => $entry['location_id'],
-                    'type' => 'adjustment',
-                    'quantity' => $newQuantity - $oldQuantity,
-                    'reason' => $entry['reason'] ?? 'Manual adjustment via product edit',
-                    'user_id' => $request->user()?->id,
+                    'type' => $isRemoval ? 'adjustment' : ($delta >= 0 ? 'in' : 'adjustment'),
+                    'quantity' => $delta,
+                    'reason' => $isRemoval
+                        ? ($entry['reason'] ?? 'Removed stock entry')
+                        : ($entry['reason'] ?? 'Manual adjustment via product edit'),
+                    'user_id' => request()->user()?->id,
                 ]);
+
+                // After zeroing, soft-delete the balance so it no longer shows
+                // on the product edit page.
+                if ($isRemoval && $balance->exists && ! $balance->trashed()) {
+                    $balance->delete();
+                }
             }
-        }
+        });
 
         return redirect()->back()->with('success', 'Stock levels updated.');
     }

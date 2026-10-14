@@ -8,14 +8,15 @@ use App\Jobs\SendDailyOrdersReport;
 use Illuminate\Console\Command;
 
 /**
- * Artisan command to send daily pending orders report to admin.
- * Scheduled to run every morning via console kernel.
+ * Artisan command to send the daily orders digest to admin.
+ * Lists orders due today followed by upcoming orders.
+ * Scheduled to run every morning via routes/console.php.
  */
 class SendDailyOrdersReportCommand extends Command
 {
     protected $signature = 'orders:send-daily-report';
 
-    protected $description = 'Send daily report of pending orders to admin';
+    protected $description = 'Send daily orders digest (today + upcoming) to admin';
 
     public function handle(): int
     {

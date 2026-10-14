@@ -18,6 +18,7 @@ import { FigmaOccasionsRow } from '@/components/store/FigmaOccasionsRow';
 import type { FigmaOccasionCard } from '@/components/store/FigmaOccasionsRow';
 //import { FigmaPaletteSwatches } from '@/components/store/FigmaPaletteSwatches';
 //import { FigmaReviewsFaq } from '@/components/store/FigmaReviewsFaq';
+import { StoreWhatsAppBanner } from '@/components/store/StoreWhatsAppBanner';
 
 type StoreCategory = {
     id: string;
@@ -118,6 +119,9 @@ export default function Home({
                     {/* <FigmaLiveCustomiser /> */}
                     <FigmaBestsellersRow products={bestSellers} />
                     <FigmaCelebrationServices />
+
+                    {/* Bespoke-request WhatsApp banner (number from WHATSAPP_NUMBER env) */}
+                    <StoreWhatsAppBanner />
 
                     {/* <FigmaPaletteSwatches /> */}
                     {/* <FigmaBespokeInstalls /> */}

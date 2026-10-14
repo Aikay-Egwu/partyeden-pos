@@ -7,6 +7,7 @@ namespace App\Jobs;
 use App\Mail\NewOrderAdminMail;
 use App\Mail\OrderConfirmationMail;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -42,10 +43,19 @@ class SendOrderConfirmationEmail implements ShouldQueue
             Mail::to($customerEmail)->send(new OrderConfirmationMail($this->order));
         }
 
-        // Send new-order alert to the admin team
-        $adminEmail = config('mail.admin_email');
+        // Send new-order alert to the admin team.
+        // Admin accounts are User records that pass the 'admin' permission check
+        // (explicit 'admin' or '*' wildcard) — the same rule used by the can:admin
+        // gate. Customers live in a separate model, so they are never included here.
+        $admins = User::all()
+            ->filter(fn (User $user) => $user->hasPermission('admin'));
+
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new NewOrderAdminMail($this->order));
+        }
+        /* $adminEmail = config('mail.admin_email');
         if ($adminEmail) {
             Mail::to($adminEmail)->send(new NewOrderAdminMail($this->order));
-        }
+        } */
     }
 }
