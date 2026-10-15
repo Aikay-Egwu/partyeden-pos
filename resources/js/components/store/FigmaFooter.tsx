@@ -90,7 +90,7 @@ const defaultColumns: FigmaFooterColumn[] = [
             { label: 'About Us', href: '/about' },
             { label: 'Check Delivery Dates', href: '#' },
             { label: 'Helium Float Care Guide', href: '/faq' },
-            { label: 'Track Order (DPD)', href: '#' },
+            { label: 'Track Order Progress', href: '/orders/track' },
             /* { label: 'Returns & Replacements', href: '#' }, */
             { label: 'Contact Studio Support', href: '/contact' },
         ],

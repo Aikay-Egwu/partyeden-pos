@@ -7,6 +7,7 @@ import {
 } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import {
+    Clock,
     CreditCard,
     Gift,
     Lock,
@@ -28,14 +29,44 @@ const normalizePostcode = (postcode: string) =>
     postcode.replace(/\s+/g, '').toUpperCase().trim();
 
 /**
- * Allowed time-of-day windows per fulfillment type (24h "HH:MM").
- * Delivery: 5:00 PM–9:00 PM. Collection: 12:00 PM–5:30 PM.
+ * Half-hour time slots per fulfillment type (24h "HH:MM").
+ * Delivery: 5:00 PM–8:00 PM. Collection: 12:00 PM–5:30 PM.
  * Must stay in sync with OrderScheduleService on the server.
  */
 const FULFILLMENT_WINDOWS = {
-    delivery: { start: '17:00', end: '21:00', label: '5:00 PM and 9:00 PM' },
+    delivery: { start: '17:00', end: '20:00', label: '5:00 PM and 8:00 PM' },
     pickup: { start: '12:00', end: '17:30', label: '12:00 PM and 5:30 PM' },
 } as const;
+
+const generateTimeSlots = (start: string, end: string): string[] => {
+    const slots: string[] = [];
+    const [startH, startM] = start.split(':').map(Number);
+    const [endH, endM] = end.split(':').map(Number);
+    let mins = startH * 60 + startM;
+    const endMins = endH * 60 + endM;
+
+    while (mins <= endMins) {
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+        mins += 30;
+    }
+
+    return slots;
+};
+
+const formatTimeSlot = (slot: string): string => {
+    const [h, m] = slot.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour12 = h % 12 || 12;
+    return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+};
+
+const getTomorrowDate = (): string => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    return d.toISOString().split('T')[0];
+};
 
 type CartItem = {
     line_key: string;
@@ -158,13 +189,21 @@ export default function CheckoutPage({
         phone: customer?.phone ?? '',
         notes: '',
         fulfillment_type: 'pickup',
-        expected_at: '',
+        expected_date: '',
+        expected_time: '',
         delivery_postcode: '',
         address_line1: '',
         address_line2: '',
         city: '',
         loyalty_points: '',
     });
+
+    const tomorrowDate = getTomorrowDate();
+    const timeWindow =
+        data.fulfillment_type === 'delivery'
+            ? FULFILLMENT_WINDOWS.delivery
+            : FULFILLMENT_WINDOWS.pickup;
+    const availableTimeSlots = generateTimeSlots(timeWindow.start, timeWindow.end);
 
     const normalizedDeliveryPostcode = normalizePostcode(
         data.delivery_postcode,
@@ -374,31 +413,29 @@ export default function CheckoutPage({
             return;
         }
 
-        const selectedTime = data.expected_at.split('T')[1] ?? '';
-        const minimumForFulfillment =
-            data.fulfillment_type === 'delivery'
-                ? minimumDeliveryAt
-                : minimumExpectedAt;
+        if (!data.expected_date || !data.expected_time) {
+            toast.error('Please choose a date and time for your order.');
 
-        if (!data.expected_at || data.expected_at < minimumForFulfillment) {
-            toast.error(
-                'Please choose a later delivery or collection date and time.',
-            );
+            return;
+        }
+
+        if (data.expected_date < tomorrowDate) {
+            toast.error('Orders must be placed for tomorrow or later.');
 
             return;
         }
 
         const isDelivery = data.fulfillment_type === 'delivery';
-        const timeWindow = isDelivery
+        const window = isDelivery
             ? FULFILLMENT_WINDOWS.delivery
             : FULFILLMENT_WINDOWS.pickup;
 
         if (
-            selectedTime &&
-            (selectedTime < timeWindow.start || selectedTime > timeWindow.end)
+            data.expected_time < window.start ||
+            data.expected_time > window.end
         ) {
             toast.error(
-                `${isDelivery ? 'Delivery' : 'Collection'} is available between ${timeWindow.label}.`,
+                `${isDelivery ? 'Delivery' : 'Collection'} is available between ${window.label}.`,
             );
 
             return;
@@ -445,7 +482,7 @@ export default function CheckoutPage({
                 body: JSON.stringify({
                     email: data.email,
                     fulfillment_type: data.fulfillment_type,
-                    expected_at: data.expected_at,
+                    expected_at: `${data.expected_date}T${data.expected_time}`,
                     delivery_postcode: data.delivery_postcode,
                     loyalty_points: appliedLoyaltyPoints,
                 }),
@@ -883,52 +920,107 @@ export default function CheckoutPage({
                                             </label>
                                         </div>
 
-                                        <div className="mt-6 space-y-2 rounded-2xl border border-popjoy-divider/70 bg-popjoy-bg/50 p-5">
-                                            <Label
-                                                htmlFor="expected_at"
-                                                className="text-xs font-bold tracking-wide text-popjoy-ink"
-                                            >
-                                                {data.fulfillment_type ===
-                                                'delivery'
-                                                    ? 'Delivery date and time'
-                                                    : 'Collection date and time'}{' '}
-                                                *
-                                            </Label>
-                                            <Input
-                                                id="expected_at"
-                                                type="datetime-local"
-                                                min={
-                                                    data.fulfillment_type ===
+                                        <div className="mt-6 space-y-4 rounded-2xl border border-popjoy-divider/70 bg-popjoy-bg/50 p-5">
+                                            <div className="flex items-center gap-2">
+                                                <Clock className="size-4 text-popjoy-purple" />
+                                                <p className="text-sm font-bold text-popjoy-ink">
+                                                    {data.fulfillment_type ===
                                                     'delivery'
-                                                        ? minimumDeliveryAt
-                                                        : minimumExpectedAt
-                                                }
-                                                required
-                                                value={data.expected_at}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        'expected_at',
-                                                        e.target.value,
-                                                    )
-                                                }
-                                                className="h-11 rounded-xl border-popjoy-divider/80 bg-white focus:border-popjoy-purple focus:ring-popjoy-purple/20"
-                                            />
+                                                        ? 'Delivery date and time'
+                                                        : 'Collection date and time'}{' '}
+                                                    *
+                                                </p>
+                                            </div>
+
+                                            <div className="grid gap-4 sm:grid-cols-2">
+                                                <div className="space-y-2">
+                                                    <Label
+                                                        htmlFor="expected_date"
+                                                        className="text-xs font-bold tracking-wide text-popjoy-ink"
+                                                    >
+                                                        Date *
+                                                    </Label>
+                                                    <Input
+                                                        id="expected_date"
+                                                        type="date"
+                                                        min={tomorrowDate}
+                                                        required
+                                                        value={
+                                                            data.expected_date
+                                                        }
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'expected_date',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        className="h-11 rounded-xl border-popjoy-divider/80 bg-white focus:border-popjoy-purple focus:ring-popjoy-purple/20"
+                                                    />
+                                                    <InputError
+                                                        message={
+                                                            errors.expected_date
+                                                        }
+                                                    />
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <Label
+                                                        htmlFor="expected_time"
+                                                        className="text-xs font-bold tracking-wide text-popjoy-ink"
+                                                    >
+                                                        Time *
+                                                    </Label>
+                                                    <select
+                                                        id="expected_time"
+                                                        required
+                                                        value={
+                                                            data.expected_time
+                                                        }
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'expected_time',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        className="h-11 w-full rounded-xl border border-popjoy-divider/80 bg-white px-3 text-sm focus:border-popjoy-purple focus:ring-2 focus:ring-popjoy-purple/20 focus:outline-none"
+                                                    >
+                                                        <option value="">
+                                                            Select time
+                                                        </option>
+                                                        {availableTimeSlots.map(
+                                                            (slot) => (
+                                                                <option
+                                                                    key={slot}
+                                                                    value={slot}
+                                                                >
+                                                                    {formatTimeSlot(
+                                                                        slot,
+                                                                    )}
+                                                                </option>
+                                                            ),
+                                                        )}
+                                                    </select>
+                                                    <InputError
+                                                        message={
+                                                            errors.expected_time
+                                                        }
+                                                    />
+                                                </div>
+                                            </div>
+
                                             <p className="text-xs text-popjoy-muted">
-                                                Preparation takes up to{' '}
-                                                {maximumTurnoverTimeHours}{' '}
-                                                {maximumTurnoverTimeHours === 1
-                                                    ? 'hour'
-                                                    : 'hours'}{' '}
-                                                based on the longest-turnaround
-                                                item.{' '}
                                                 {data.fulfillment_type ===
                                                 'delivery'
-                                                    ? 'Delivery is available between 5:00 PM and 9:00 PM.'
-                                                    : 'Collection is available between 12:00 PM and 5:30 PM.'}
+                                                    ? 'Delivery available between 5:00 PM and 8:00 PM.'
+                                                    : 'Collection available between 12:00 PM and 5:30 PM.'}{' '}
+                                                Need an earlier time?{' '}
+                                                <a
+                                                    href="/contact"
+                                                    className="font-semibold text-popjoy-purple hover:underline"
+                                                >
+                                                    Contact us
+                                                </a>
                                             </p>
-                                            <InputError
-                                                message={errors.expected_at}
-                                            />
                                         </div>
 
                                         {/* Delivery address fields */}
@@ -1539,7 +1631,8 @@ type StripePaymentFormProps = {
         phone: string;
         notes: string;
         fulfillment_type: string;
-        expected_at: string;
+        expected_date: string;
+        expected_time: string;
         delivery_postcode: string;
         address_line1: string;
         address_line2: string;
@@ -1675,7 +1768,7 @@ function StripePaymentForm({
                     phone: data.phone || null,
                     notes: data.notes || null,
                     fulfillment_type: data.fulfillment_type,
-                    expected_at: data.expected_at,
+                    expected_at: `${data.expected_date}T${data.expected_time}`,
                     delivery_postcode: data.delivery_postcode || null,
                     address_line1: data.address_line1 || null,
                     address_line2: data.address_line2 || null,
