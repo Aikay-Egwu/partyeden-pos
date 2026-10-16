@@ -6,13 +6,19 @@ use App\Jobs\SendDailyOrdersReport;
 use App\Mail\DailyOrdersReportMail;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 
 uses(RefreshDatabase::class);
 
-beforeEach(function (): void {
-    config()->set('mail.admin_email', 'admin@example.com');
+// The digest is delivered to admin users (identified via the JSON
+// `permissions` column), so every scenario needs at least one admin present.
+beforeEach(function (): User {
+    return User::factory()->create([
+        'email' => 'admin@example.com',
+        'permissions' => ['admin'],
+    ]);
 });
 
 it('splits orders into today and upcoming buckets and skips past/cancelled/delivered', function (): void {

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
@@ -29,12 +30,12 @@ class DatabaseSeeder extends Seeder
 
     }
 
-    private function user()
+    protected function user(): void
     {
         $first_user = new User;
         $first_user->name = 'Ikenna Egwu';
         $first_user->email = 'justaikay@gmail.com';
-        $first_user->email_verified_at = now();
+        $first_user->email_verified_at = Carbon::now();
         $first_user->password = Hash::make('SecretPassword');
         $first_user->save();
     }
