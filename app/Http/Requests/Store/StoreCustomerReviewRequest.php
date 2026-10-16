@@ -16,6 +16,8 @@ class StoreCustomerReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // Set when the review is submitted from the feedback-request email link
+            'order_id' => ['nullable', 'uuid', 'exists:orders,id'],
             'product_id' => ['nullable', 'uuid', 'exists:products,id'],
             'occasion_id' => ['nullable', 'uuid', 'exists:occasions,id'],
             'name' => ['required', 'string', 'max:255'],

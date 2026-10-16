@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Mail\DailyOrdersReportMail;
 use App\Models\Order;
+use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -42,10 +43,14 @@ class SendDailyOrdersReport implements ShouldQueue
             return; // Nothing scheduled today or later — skip the email.
         }
 
-        $adminEmail = config('mail.admin_email');
-        if ($adminEmail) {
-            Mail::to($adminEmail)->send(new DailyOrdersReportMail($todaysOrders, $futureOrders));
+        $admin = User::whereJsonContains('permissions', 'admin')
+            ->orWhereJsonContains('permissions', '*')->get();
+        foreach ($admin as $admin) {
+            Mail::to($admin)->send(new DailyOrdersReportMail($todaysOrders, $futureOrders));
         }
+        /* if ($adminEmail) {
+            Mail::to($adminEmail)->send(new DailyOrdersReportMail($todaysOrders, $futureOrders));
+        } */
     }
 
     /**

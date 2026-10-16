@@ -33,6 +33,8 @@ Route::middleware('throttle:60,1')->group(function (): void {
 
     // Reviews and gallery (read-only)
     Route::get('reviews', [StoreReviewController::class, 'index'])->name('store.reviews.index');
+    // Order-linked review form (opened from the post-delivery feedback email)
+    Route::get('reviews/create', [StoreReviewController::class, 'create'])->name('store.reviews.create');
     Route::get('gallery', [StoreReviewController::class, 'gallery'])->name('store.gallery.index');
     Route::get('faq', [StoreFaqController::class, 'index'])->name('store.faqs.index');
 

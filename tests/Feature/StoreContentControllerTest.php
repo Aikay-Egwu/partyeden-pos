@@ -2,8 +2,12 @@
 
 use App\Models\BlogPost;
 use App\Models\Category;
+use App\Models\Customer;
 use App\Models\CustomerReview;
 use App\Models\Occasion;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -151,4 +155,57 @@ test('review submission validates required fields', function () {
         ->assertSessionHasErrors(['name', 'email', 'rating', 'feedback']);
 
     $this->assertDatabaseCount('customer_reviews', 0);
+});
+
+// ── Order-linked review form (feedback-request email) ────────────────
+
+test('order-linked review form renders with customer details prefilled', function () {
+    $customer = Customer::factory()->create([
+        'first_name' => 'Ada',
+        'last_name' => 'Obi',
+        'email' => 'ada@example.com',
+    ]);
+    $order = Order::factory()->create(['customer_id' => $customer->id]);
+    OrderItem::factory()->create([
+        'order_id' => $order->id,
+        'product_id' => Product::factory()->create(['name' => 'Birthday Arch Kit']),
+    ]);
+
+    $this->get(route('store.reviews.create', ['order_id' => $order->id]))
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page) => $page
+            ->component('store/reviews/create')
+            ->where('order.id', $order->id)
+            ->where('prefill.name', 'Ada Obi')
+            ->where('prefill.email', 'ada@example.com')
+            ->has('products', 1)
+            ->where('products.0.name', 'Birthday Arch Kit')
+        );
+});
+
+test('review form returns 404 for unknown or missing order id', function () {
+    $this->get(route('store.reviews.create', ['order_id' => '01a13711-9487-7304-8ff8-55778941a62a']))
+        ->assertNotFound();
+
+    $this->get(route('store.reviews.create'))->assertNotFound();
+});
+
+test('review submitted from the email link is attributed to the order', function () {
+    $order = Order::factory()->create(['customer_id' => Customer::factory()->create()]);
+
+    $this->from(route('store.reviews.create', ['order_id' => $order->id]))
+        ->post(route('store.reviews.store'), [
+            'order_id' => $order->id,
+            'name' => 'Ada Obi',
+            'email' => 'ada@example.com',
+            'rating' => 5,
+            'feedback' => 'The balloons were amazing!',
+        ])
+        ->assertRedirect(route('store.reviews.create', ['order_id' => $order->id]));
+
+    $this->assertDatabaseHas('customer_reviews', [
+        'email' => 'ada@example.com',
+        'order_id' => $order->id,
+        'status' => 'pending',
+    ]);
 });

@@ -47,7 +47,7 @@
         </div>
 
         <div style="text-align:center;margin:24px 0;">
-            <a href="{{ config('app.url') }}/reviews/create?order_id={{ $order->id }}" class="btn">
+            <a href="{{ route('store.reviews.create', ['order_id' => $order->id]) }}" class="btn">
                 Leave a Review
             </a>
         </div>

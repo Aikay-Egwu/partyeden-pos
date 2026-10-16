@@ -8,8 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Store\StoreCustomerReviewRequest;
 use App\Models\CustomerReview;
 use App\Models\Occasion;
+use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -47,6 +50,47 @@ class StoreReviewController extends Controller
                 ->where('is_active', true)
                 ->orderBy('name')
                 ->get(['id', 'name']),
+            'occasions' => Occasion::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get(['id', 'name']),
+        ]);
+    }
+
+    /**
+     * Review form opened from the post-delivery feedback-request email.
+     * Prefills the customer's details and the products from their order.
+     */
+    public function create(Request $request): Response
+    {
+        $orderId = $request->query('order_id');
+        abort_if(! is_string($orderId) || $orderId === '', 404, 'Order not found.');
+
+        try {
+            $order = Order::query()
+                ->with(['customer', 'items.product'])
+                ->findOrFail($orderId);
+        } catch (ModelNotFoundException) {
+            abort(404, 'Order not found.');
+        }
+
+        $products = $order->items
+            ->map(fn ($item) => $item->product ? ['id' => $item->product->id, 'name' => $item->product->name] : null)
+            ->filter()
+            ->unique('id')
+            ->values();
+
+        return Inertia::render('store/reviews/create', [
+            'order' => [
+                'id' => $order->id,
+                'order_number' => $order->order_number,
+            ],
+            'prefill' => [
+                'name' => trim($order->customer->first_name.' '.$order->customer->last_name),
+                'email' => $order->customer->email,
+            ],
+            'products' => $products,
             'occasions' => Occasion::query()
                 ->where('is_active', true)
                 ->orderBy('sort_order')

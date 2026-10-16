@@ -113,6 +113,12 @@ class Order extends Model
         return $this->hasMany(StockReservation::class);
     }
 
+    /** @return HasMany<CustomerReview, $this> */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(CustomerReview::class);
+    }
+
     /**
      * Delivery zone matched from the customer's postcode.
      */

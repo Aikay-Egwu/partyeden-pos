@@ -41,4 +41,10 @@ class CustomerReview extends Model
     {
         return $this->belongsTo(Occasion::class);
     }
+
+    /** @return BelongsTo<Order, $this> */
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
+    }
 }
