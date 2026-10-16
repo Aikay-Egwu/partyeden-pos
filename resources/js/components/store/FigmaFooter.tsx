@@ -129,7 +129,7 @@ const defaultLegalLinks: FigmaFooterLink[] = [
  */
 export function FigmaFooter({
     brandName = 'Party Eden',
-    brandDescription = "The UK's premier destination for luxury pre-inflated balloon gifts, event styling, and personalized party decor. Handcrafted in our bespoke London studio.",
+    brandDescription = "The UK's premier destination for luxury pre-inflated balloon gifts, event styling, and personalized party decor. Handcrafted in our bespoke Sunderland studio.",
     socialIcons = defaultSocialIcons,
     columns = defaultColumns,
     copyrightText = `© ${new Date().getFullYear()} Party Eden. All rights reserved. 100% Biodegradable Latex Promise.`,

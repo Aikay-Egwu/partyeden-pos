@@ -59,7 +59,7 @@ export type CatalogNewsletterFooterProps = {
     studioHoursWeekday?: string;
     /** Sat-Sun line */
     studioHoursWeekend?: string;
-    /** London Studio & White Glove Courier Hub line */
+    /** Sunderland Studio & White Glove Courier Hub line */
     studioLocation?: string;
 
     /* ===== Copyright bar ===== */
@@ -122,7 +122,7 @@ const defaultLegalLinks: CatalogFooterLink[] = [
  *    - Col 2 "Celebrations" — 5 category links.
  *    - Col 3 "Customer Care" — 5 support/delivery links.
  *    - Col 4 "Studio Hours": Mon-Fri, Sat-Sun lines +
- *      purple "London Studio & White Glove Courier Hub" text.
+ *      purple "Sunderland Studio & White Glove Courier Hub" text.
  *
  * 3) COPYRIGHT BAR — horizontal popjoy-divider border above:
  *    - LEFT: © 2026 Party Eden Balloons Boutique Ltd text.
@@ -146,7 +146,7 @@ export function CatalogNewsletterFooter({
     columns = defaultColumns,
     studioHoursWeekday = 'Mon - Fri: 8:00am - 6:00pm',
     studioHoursWeekend = 'Sat - Sun: 9:00am - 4:00pm',
-    studioLocation = 'London Studio & White Glove Courier Hub',
+    studioLocation = 'Sunderland Studio & White Glove Courier Hub',
 
     copyrightText = '© 2025 Party Eden Balloons Boutique Ltd. All celebration rights reserved.',
     legalLinks = defaultLegalLinks,

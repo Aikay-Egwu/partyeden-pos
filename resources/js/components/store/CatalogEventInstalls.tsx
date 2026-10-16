@@ -69,7 +69,7 @@ export function CatalogEventInstalls({
     eyebrowIconSrc = '/figma-img/mui8bfpf-2yb4yo9.svg',
     eyebrowText = 'Corporate Events & Weddings',
     headline = 'Bespoke Venue Installations & Grand Moongates',
-    description = 'Planning a milestone gala, wedding breakfast, or brand launch? Our mobile Bristol & London design teams install freestanding 2.4m golden arches, organic balloon ceiling clouds, and custom photo backdrops on-site.',
+    description = 'Planning a milestone gala, wedding breakfast, or brand launch? Our mobile Bristol & Sunderland design teams install freestanding 2.4m golden arches, organic balloon ceiling clouds, and custom photo backdrops on-site.',
     stat1Number = '1,200+',
     stat1Label = 'UK Venues Styled',
     stat2Number = '48hr',

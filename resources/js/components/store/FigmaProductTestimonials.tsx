@@ -14,7 +14,7 @@ export type FigmaProductTestimonial = {
     photoSrc: string;
     /** Customer name */
     customerName: string;
-    /** Role / delivery line, e.g. "Delivered to Kensington, London • 30th Birthday" */
+    /** Role / delivery line, e.g. "Delivered to Pallion, Sunderland • 30th Birthday" */
     meta: string;
 };
 
@@ -47,7 +47,7 @@ const defaultItems: FigmaProductTestimonial[] = [
         quote: "The look on my sister's face when the huge\nbox opened and this giant gold feather balloon\nfloated up was completely priceless! It stayed\nperfectly inflated for almost three full weeks.",
         photoSrc: '/figma-img/mui8gtp6-dunvpcg.png',
         customerName: 'Harriet W.',
-        meta: 'Delivered to Kensington, London • 30th Birthday',
+        meta: 'Delivered to Southwick, Sunderland • 30th Birthday',
     },
     {
         stars: 5,

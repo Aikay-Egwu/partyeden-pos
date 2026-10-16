@@ -42,7 +42,7 @@ export type FigmaBespokeInstallsProps = {
 export function FigmaBespokeInstalls({
     eyebrow = 'EVENT STYLING & VENUE TRANSFORMATION',
     headline = 'Suspended Balloon Ceilings<br/>& Organic Moongate<br/>Arches',
-    description = 'Planning a luxury wedding, corporate gala, brand pop-up, or milestone anniversary?<br/>Our award-winning installation artists create breath-taking, bespoke balloon<br/>architecture across London and the UK.',
+    description = 'Planning a luxury wedding, corporate gala, brand pop-up, or milestone anniversary?<br/>Our award-winning installation artists create breath-taking, bespoke balloon<br/>architecture across Sunderland and the UK.',
     lookbookIconSrc = '/figma-img/muhjqso4-62cye1q.svg',
     backgroundImageSrc = '/figma-img/muhjqsom-pznlzvu.png',
     className,
