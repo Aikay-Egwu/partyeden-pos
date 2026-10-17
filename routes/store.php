@@ -94,6 +94,8 @@ Route::middleware('throttle:10,1')->group(function (): void {
     Route::withoutMiddleware('web')->group(function (): void {
         Route::post('payment/stripe-webhook', [StorePaymentController::class, 'stripeWebhook'])
             ->name('store.payment.stripe-webhook');
+        Route::post('webhooks/stripe', [StorePaymentController::class, 'stripeWebhook'])
+            ->name('webhooks.stripe');
     });
 });
 

@@ -5,7 +5,10 @@ declare(strict_types=1);
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
+use App\Services\StripeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Stripe\PaymentIntent;
+use Stripe\Refund;
 
 uses(RefreshDatabase::class);
 
@@ -83,4 +86,67 @@ test('order export respects status filters', function (): void {
 
     expect($content)->toContain($confirmedOrder->order_number)
         ->not->toContain('ORD-PENDING');
+});
+
+test('admin can refund a paid stripe order', function (): void {
+    $admin = createAdminUser();
+    $customer = createOrderCustomer();
+    $order = createAdminOrder($customer, [
+        'payment_status' => 'paid',
+        'payment_method' => 'stripe',
+        'stripe_charge_id' => 'ch_admin_refund_1',
+    ]);
+
+    $mock = Mockery::mock(StripeService::class);
+    $mock->shouldReceive('refundPayment')
+        ->once()
+        ->with('ch_admin_refund_1')
+        ->andReturn(new Refund('re_admin_refund_1'));
+    app()->instance(StripeService::class, $mock);
+
+    $response = $this->actingAs($admin)->post("/admin/orders/{$order->id}/refund");
+
+    $response->assertRedirect();
+    expect($order->fresh()->payment_status)->toBe('refunded');
+});
+
+test('refund falls back to the payment intent when charge id is missing', function (): void {
+    $admin = createAdminUser();
+    $customer = createOrderCustomer();
+    $order = createAdminOrder($customer, [
+        'payment_status' => 'paid',
+        'payment_method' => 'stripe',
+        'stripe_payment_intent_id' => 'pi_admin_refund_2',
+        // stripe_charge_id intentionally left null
+    ]);
+
+    $mock = Mockery::mock(StripeService::class);
+    $mock->shouldReceive('retrievePaymentIntent')
+        ->once()
+        ->with('pi_admin_refund_2')
+        ->andReturn(new PaymentIntent('pi_admin_refund_2'));
+    $mock->shouldReceive('extractChargeId')
+        ->once()
+        ->andReturn('ch_from_pi_2');
+    $mock->shouldReceive('refundPayment')
+        ->once()
+        ->with('ch_from_pi_2')
+        ->andReturn(new Refund('re_admin_refund_2'));
+    app()->instance(StripeService::class, $mock);
+
+    $response = $this->actingAs($admin)->post("/admin/orders/{$order->id}/refund");
+
+    $response->assertRedirect();
+    expect($order->fresh()->payment_status)->toBe('refunded');
+});
+
+test('unpaid orders cannot be refunded', function (): void {
+    $admin = createAdminUser();
+    $customer = createOrderCustomer();
+    $order = createAdminOrder($customer, ['payment_status' => 'unpaid']);
+
+    $response = $this->actingAs($admin)->post("/admin/orders/{$order->id}/refund");
+
+    $response->assertRedirect();
+    expect($order->fresh()->payment_status)->toBe('unpaid');
 });

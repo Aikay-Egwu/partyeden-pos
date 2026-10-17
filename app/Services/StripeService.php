@@ -8,19 +8,22 @@ use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\PaymentIntent;
+use Stripe\PaymentLink;
+use Stripe\Price;
 use Stripe\Refund;
 use Stripe\StripeClient;
 use Stripe\Webhook;
 use UnexpectedValueException;
 
 /**
- * Stripe PaymentIntents API integration service.
+ * Stripe PaymentIntents & Payment Links API integration service.
  *
  * Wraps all Stripe API interactions: PaymentIntent creation/retrieval,
- * reconciliation-field extraction, webhook signature verification,
- * and refund creation. All amount conversions between pounds-decimal
- * (application convention) and pence-integers (Stripe convention)
- * are centralised here so callers never have to worry about units.
+ * PaymentLink creation, reconciliation-field extraction, webhook
+ * signature verification, and refund creation. All amount conversions
+ * between pounds-decimal (application convention) and pence-integers
+ * (Stripe convention) are centralised here so callers never have to
+ * worry about units.
  */
 class StripeService
 {
@@ -32,17 +35,21 @@ class StripeService
 
     private int $webhookTolerance;
 
-    public function __construct()
+    public function __construct(?StripeClient $client = null)
     {
         $secretKey = (string) config('services.stripe.secret', '');
         $apiVersion = (string) config('stripe.api_version', '');
 
-        $clientConfig = ['api_key' => $secretKey];
-        if ($apiVersion !== '') {
-            $clientConfig['stripe_version'] = $apiVersion;
+        if ($client !== null) {
+            $this->client = $client;
+        } else {
+            $clientConfig = ['api_key' => $secretKey];
+            if ($apiVersion !== '') {
+                $clientConfig['stripe_version'] = $apiVersion;
+            }
+            $this->client = new StripeClient($clientConfig);
         }
 
-        $this->client = new StripeClient($clientConfig);
         $this->currency = strtolower((string) config('stripe.currency', 'gbp'));
         $this->webhookSecret = (string) config('services.stripe.webhook.secret', '');
         $this->webhookTolerance = (int) config('stripe.webhook_tolerance', 300);
@@ -169,6 +176,114 @@ class StripeService
     }
 
     /**
+     * Create a one-off Stripe Price for a manual order total.
+     *
+     * @param  float  $amountPounds  Order total in pounds (e.g. 25.00)
+     * @param  string  $productName  Description or order title for the line item
+     *
+     * @throws RuntimeException If the Stripe API call fails
+     */
+    public function createOneOffPrice(float $amountPounds, string $productName): Price
+    {
+        $this->assertSecretKeyUsable();
+
+        $amountPence = $this->toSmallestUnit($amountPounds);
+
+        if ($amountPence <= 0) {
+            throw new RuntimeException('Stripe Price requires a positive amount.');
+        }
+
+        try {
+            return $this->client->prices->create([
+                'unit_amount' => $amountPence,
+                'currency' => $this->currency,
+                'product_data' => [
+                    'name' => $productName,
+                ],
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Stripe createOneOffPrice failed', [
+                'amount_pence' => $amountPence,
+                'currency' => $this->currency,
+                'product_name' => $productName,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new RuntimeException("Stripe createOneOffPrice failed: {$e->getMessage()}", 0, $e);
+        }
+    }
+
+    /**
+     * Create a Stripe Payment Link for the given price.
+     * Includes order metadata for webhook reconciliation.
+     *
+     * @param  Price|string  $price  Stripe Price instance or price ID string
+     * @param  string  $orderUuid  Order UUID for reconciliation in webhooks
+     * @param  string|null  $customerEmail  Optional customer email to prefill on checkout
+     * @param  string|null  $redirectUrl  Optional redirect URL after successful payment
+     *
+     * @throws RuntimeException If the Stripe API call fails
+     */
+    public function createPaymentLink(
+        Price|string $price,
+        string $orderUuid,
+        ?string $customerEmail = null,
+        ?string $redirectUrl = null,
+    ): PaymentLink {
+        $this->assertSecretKeyUsable();
+
+        $priceId = $price instanceof Price ? $price->id : $price;
+
+        $params = [
+            'line_items' => [
+                [
+                    'price' => $priceId,
+                    'quantity' => 1,
+                ],
+            ],
+            'metadata' => [
+                'order_uuid' => $orderUuid,
+            ],
+            'restrictions' => [
+                'completed_sessions' => [
+                    'limit' => 1,
+                ],
+            ],
+        ];
+
+        if ($redirectUrl !== null && $redirectUrl !== '') {
+            $params['after_completion'] = [
+                'type' => 'redirect',
+                'redirect' => [
+                    'url' => $redirectUrl,
+                ],
+            ];
+        }
+
+        try {
+            /** @var PaymentLink $link */
+            $link = $this->client->paymentLinks->create($params);
+
+            // If a customer email is provided, append it as a prefill query parameter
+            // so the Stripe checkout page has their email already filled in.
+            if ($customerEmail !== null && $customerEmail !== '') {
+                $separator = str_contains($link->url, '?') ? '&' : '?';
+                $link->url = $link->url.$separator.'prefilled_email='.urlencode($customerEmail);
+            }
+
+            return $link;
+        } catch (\Throwable $e) {
+            Log::error('Stripe createPaymentLink failed', [
+                'price_id' => $priceId,
+                'order_uuid' => $orderUuid,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw new RuntimeException("Stripe createPaymentLink failed: {$e->getMessage()}", 0, $e);
+        }
+    }
+
+    /**
      * Retrieve a PaymentIntent from Stripe using its ID.
      *
      * Used server-side to re-verify a PaymentIntent's amount, status,
@@ -194,12 +309,20 @@ class StripeService
     }
 
     /**
-     * Extract the first charge ID from a succeeded PaymentIntent.
+     * Extract the charge ID from a succeeded PaymentIntent.
      *
      * Needed later for refunds and Stripe Dashboard reconciliation.
      */
     public function extractChargeId(PaymentIntent $pi): ?string
     {
+        // Recent API versions removed the `charges` list — the charge is now
+        // exposed directly on `latest_charge`.
+        $latestCharge = $pi->latest_charge ?? null;
+        if (is_string($latestCharge) && $latestCharge !== '') {
+            return $latestCharge;
+        }
+
+        // Fallback for older API versions that still return a charges list
         $charges = $pi->charges->data ?? [];
         $firstCharge = $charges[0] ?? null;
 
@@ -210,6 +333,49 @@ class StripeService
         $id = $firstCharge->id ?? null;
 
         return is_string($id) ? $id : null;
+    }
+
+    /**
+     * Find the order reference behind a PaymentIntent's Checkout Session.
+     *
+     * A Payment Link payment always creates a Checkout Session carrying the
+     * Payment Link ID and the `order_uuid` metadata we set. This lets us
+     * reconcile a payment whose webhook never reached the app (e.g. the
+     * server was down while the customer paid).
+     *
+     * @return array{order_uuid: string|null, payment_link: string|null}|null
+     */
+    public function findCheckoutSessionOrderRef(string $paymentIntentId): ?array
+    {
+        $this->assertSecretKeyUsable();
+
+        try {
+            $sessions = $this->client->checkout->sessions->all([
+                'payment_intent' => $paymentIntentId,
+                'limit' => 1,
+            ]);
+
+            /** @var object|null $session */
+            $session = $sessions->data[0] ?? null;
+            if ($session === null) {
+                return null;
+            }
+
+            $orderUuid = $session->metadata->order_uuid ?? null;
+            $paymentLink = $session->payment_link ?? null;
+
+            return [
+                'order_uuid' => is_string($orderUuid) && $orderUuid !== '' ? $orderUuid : null,
+                'payment_link' => is_string($paymentLink) && $paymentLink !== '' ? $paymentLink : null,
+            ];
+        } catch (\Throwable $e) {
+            Log::warning('Stripe findCheckoutSessionOrderRef failed', [
+                'payment_intent_id' => $paymentIntentId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     /**

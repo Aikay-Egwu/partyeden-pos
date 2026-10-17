@@ -8,8 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Store\CapturePaymentOrderRequest;
 use App\Http\Requests\Store\CreatePaymentOrderRequest;
 use App\Jobs\SendOrderConfirmationEmail;
+use App\Mail\NewOrderAdminMail;
+use App\Mail\StoreOrderPaymentReceivedMail;
 use App\Models\DeliveryZone;
 use App\Models\Order;
+use App\Models\User;
 use App\Services\CartService;
 use App\Services\DeliveryZoneMatcher;
 use App\Services\InventoryService;
@@ -23,6 +26,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 
 /**
@@ -1029,6 +1033,10 @@ final class StorePaymentController extends Controller
                 $this->handleStripeChargeRefunded($event);
                 break;
 
+            case 'checkout.session.completed':
+                $this->handleStripeCheckoutSessionCompleted($event);
+                break;
+
             default:
                 Log::info('Stripe webhook: unhandled event type', [
                     'event_type' => $eventType,
@@ -1134,7 +1142,12 @@ final class StorePaymentController extends Controller
     }
 
     /**
-     * Handle charge.refunded webhook — mark order as refunded.
+     * Handle charge.refunded webhook — mark the matching order as refunded.
+     *
+     * A refund can arrive for a payment whose "payment received" webhook was
+     * never processed (e.g. the server was down while the customer paid), so
+     * matching on `stripe_charge_id` alone is not reliable. We resolve the
+     * order through a chain of Stripe identifiers and finally the payer email.
      *
      * @param  array<string, mixed>  $event
      */
@@ -1153,23 +1166,243 @@ final class StorePaymentController extends Controller
             return;
         }
 
-        $order = Order::where('stripe_charge_id', $chargeId)->first();
+        // PaymentIntent behind the refunded charge (used for deeper lookups).
+        $paymentIntentId = $chargeData['payment_intent'] ?? null;
+        $paymentIntentId = is_string($paymentIntentId) && $paymentIntentId !== '' ? $paymentIntentId : null;
+
+        // Payer email (guests pay without an account, so this may be null).
+        $billingDetails = $chargeData['billing_details'] ?? null;
+        $payerEmail = is_array($billingDetails) ? ($billingDetails['email'] ?? null) : null;
+        if (! is_string($payerEmail) || $payerEmail === '') {
+            $payerEmail = $chargeData['receipt_email'] ?? null;
+        }
+        $payerEmail = is_string($payerEmail) && $payerEmail !== '' ? $payerEmail : null;
+
+        [$order, $matchedBy] = $this->resolveOrderForRefund($chargeId, $paymentIntentId, $payerEmail);
 
         if (! $order instanceof Order) {
             Log::warning('Stripe webhook: no order found for charge.refunded', [
                 'charge_id' => $chargeId,
+                'payment_intent_id' => $paymentIntentId,
+                'payer_email' => $payerEmail,
             ]);
 
             return;
         }
 
+        // Record the refund and backfill any Stripe identifiers we resolved so
+        // later events match this order. Existing values are left untouched.
         $order->update([
             'payment_status' => 'refunded',
+            'payment_method' => 'stripe',
+            'stripe_charge_id' => $order->stripe_charge_id ?: $chargeId,
+            'stripe_payment_intent_id' => $order->stripe_payment_intent_id ?: $paymentIntentId,
         ]);
 
         Log::info('Order marked as refunded via Stripe webhook', [
             'order_id' => $order->id,
             'charge_id' => $chargeId,
+            'matched_by' => $matchedBy,
+        ]);
+    }
+
+    /**
+     * Resolve the local order behind a Stripe refund.
+     *
+     * Tries, most to least reliable: stored charge ID, stored PaymentIntent
+     * ID, the Checkout Session's order_uuid, the Checkout Session's payment
+     * link, then the payer email. Returns the order and the identifier that
+     * matched (for logging), or [null, null] when nothing matches.
+     *
+     * @return array{0: Order|null, 1: string|null}
+     */
+    private function resolveOrderForRefund(string $chargeId, ?string $paymentIntentId, ?string $payerEmail): array
+    {
+        // 1. Direct match on the stored charge ID — the happy path.
+        $order = Order::where('stripe_charge_id', $chargeId)->first();
+        if ($order instanceof Order) {
+            return [$order, 'charge_id'];
+        }
+
+        if ($paymentIntentId !== null) {
+            // 2. Match on the stored PaymentIntent ID.
+            $order = Order::where('stripe_payment_intent_id', $paymentIntentId)->first();
+            if ($order instanceof Order) {
+                return [$order, 'payment_intent_id'];
+            }
+
+            // 3. Recover the order from the Checkout Session that created the
+            //    payment (metadata.order_uuid, then the payment link).
+            $sessionRef = $this->stripe->findCheckoutSessionOrderRef($paymentIntentId);
+            if (is_array($sessionRef)) {
+                $orderUuid = $sessionRef['order_uuid'];
+                if (is_string($orderUuid) && $orderUuid !== '') {
+                    $order = Order::find($orderUuid);
+                    if ($order instanceof Order) {
+                        return [$order, 'checkout_session_order_uuid'];
+                    }
+                }
+
+                $paymentLink = $sessionRef['payment_link'];
+                if (is_string($paymentLink) && $paymentLink !== '') {
+                    $order = Order::where('stripe_payment_link_id', $paymentLink)->first();
+                    if ($order instanceof Order) {
+                        return [$order, 'checkout_session_payment_link'];
+                    }
+                }
+            }
+        }
+
+        // 4. Last resort: match on the payer's email via the linked customer.
+        if ($payerEmail !== null) {
+            $order = Order::whereHas('customer', function ($query) use ($payerEmail): void {
+                $query->where('email', $payerEmail);
+            })->latest()->first();
+
+            if ($order instanceof Order) {
+                return [$order, 'payer_email'];
+            }
+        }
+
+        return [null, null];
+    }
+
+    /**
+     * Handle checkout.session.completed webhook (from Stripe Payment Links).
+     *
+     * @param  array<string, mixed>  $event
+     */
+    private function handleStripeCheckoutSessionCompleted(array $event): void
+    {
+        /** @var array<string, mixed>|null $session */
+        $session = $event['data']['object'] ?? null;
+
+        if (! is_array($session)) {
+            Log::warning('Stripe webhook: checkout.session.completed missing object');
+
+            return;
+        }
+
+        /** @var string|null $orderUuid */
+        $orderUuid = $session['metadata']['order_uuid'] ?? null;
+
+        $order = null;
+        if (is_string($orderUuid) && $orderUuid !== '') {
+            $order = Order::find($orderUuid);
+        }
+
+        // Fallback: search by stripe_payment_link_id if order_uuid missing
+        if (! $order instanceof Order && isset($session['payment_link']) && is_string($session['payment_link'])) {
+            $order = Order::where('stripe_payment_link_id', $session['payment_link'])->first();
+        }
+
+        if (! $order instanceof Order) {
+            Log::warning('Stripe webhook: checkout.session.completed no matching order found', [
+                'session_id' => $session['id'] ?? null,
+                'order_uuid' => $orderUuid,
+                'payment_link' => $session['payment_link'] ?? null,
+            ]);
+
+            return;
+        }
+
+        // Idempotency: if already paid, do nothing
+        if ($order->payment_status === 'paid') {
+            Log::info('Stripe webhook: checkout.session.completed order already paid', [
+                'order_id' => $order->id,
+            ]);
+
+            return;
+        }
+
+        /** @var string|null $piId */
+        $piId = $session['payment_intent'] ?? null;
+        $chargeId = null;
+        $cardLast4 = null;
+        $cardBrand = null;
+        $methodType = null;
+        $amountReceived = null;
+
+        // If PaymentIntent ID is present, retrieve PI details for card/charge info
+        if (is_string($piId) && $piId !== '') {
+            try {
+                $pi = $this->stripe->retrievePaymentIntent($piId);
+                $chargeId = $this->stripe->extractChargeId($pi);
+                $cardLast4 = $this->stripe->extractCardLast4($pi);
+                $cardBrand = $this->stripe->extractCardBrand($pi);
+                $methodType = $this->stripe->extractPaymentMethodType($pi);
+                $amountReceived = $this->stripe->extractAmountReceived($pi);
+            } catch (\Throwable $e) {
+                Log::warning('Stripe webhook: could not retrieve PI details for checkout session', [
+                    'payment_intent_id' => $piId,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        if ($amountReceived === null && isset($session['amount_total']) && is_int($session['amount_total'])) {
+            $amountReceived = $this->stripe->fromSmallestUnit($session['amount_total']);
+        }
+
+        $order->update([
+            'payment_status' => 'paid',
+            'payment_method' => 'stripe',
+            'stripe_payment_intent_id' => is_string($piId) ? $piId : $order->stripe_payment_intent_id,
+            'stripe_charge_id' => $chargeId ?? $order->stripe_charge_id,
+            'stripe_card_last4' => $cardLast4 ?? $order->stripe_card_last4,
+            'stripe_card_brand' => $cardBrand ?? $order->stripe_card_brand,
+            'stripe_payment_method_type' => $methodType ?? 'card',
+            'amount_paid' => $amountReceived ?? $order->total,
+            'paid_at' => $order->paid_at ?? now(),
+        ]);
+
+        // Stock deduction
+        try {
+            $this->inventory->reserveForOrder($order);
+            $this->inventory->convertReservationToDeduction($order);
+        } catch (\Throwable $e) {
+            Log::error('Stripe webhook: stock reservation/deduction failed', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Email customer: payment received confirmation
+        $order->loadMissing(['customer', 'items']);
+        /** @var string|null $customerEmail */
+        $customerEmail = $order->customer?->email;
+        if (! $customerEmail && isset($session['customer_details']['email']) && is_string($session['customer_details']['email'])) {
+            $customerEmail = $session['customer_details']['email'];
+        }
+
+        if ($customerEmail) {
+            try {
+                Mail::to($customerEmail)->send(new StoreOrderPaymentReceivedMail($order));
+            } catch (\Throwable $e) {
+                Log::error('Stripe webhook: sending payment received email failed', [
+                    'order_id' => $order->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        // Also notify admin team
+        $admins = User::all()->filter(fn (User $user): bool => $user->hasPermission('admin'));
+        foreach ($admins as $admin) {
+            try {
+                Mail::to($admin->email)->send(new NewOrderAdminMail($order));
+            } catch (\Throwable $e) {
+                Log::error('Stripe webhook: sending admin email failed', [
+                    'order_id' => $order->id,
+                    'admin_id' => $admin->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
+
+        Log::info('Order payment status updated to paid via checkout.session.completed', [
+            'order_id' => $order->id,
+            'amount_paid' => $order->amount_paid,
         ]);
     }
 }

@@ -1,8 +1,23 @@
-import { Head, router } from '@inertiajs/react';
-import { Printer } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import {
+    ArrowLeft,
+    Copy,
+    Check,
+    ExternalLink,
+    Mail,
+    MessageCircle,
+    Printer,
+    RefreshCw,
+    RotateCcw,
+} from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import { PageHeader } from '@/components/admin/page-header';
 import { StatusBadge } from '@/components/admin/status-badge';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { formatCurrency } from '@/lib/currency';
 
 type OrderItem = {
@@ -70,6 +85,9 @@ type Order = {
     shipping_address: string | null;
     billing_address: string | null;
     created_at: string;
+    order_source?: string | null;
+    stripe_payment_link_id?: string | null;
+    stripe_payment_link_url?: string | null;
     fulfillment_type?: string | null;
     expected_at?: string | null;
     delivery_postcode?: string | null;
@@ -78,6 +96,7 @@ type Order = {
         first_name: string;
         last_name: string;
         email: string | null;
+        phone?: string | null;
     } | null;
     location?: { id: string; name: string } | null;
     createdBy?: { id: string; name: string } | null;
@@ -100,6 +119,56 @@ export default function OrderShow({
     statusTransitions,
     checkoutTimezone,
 }: Props) {
+    const [copiedLink, setCopiedLink] = useState(false);
+    const [isSendingEmail, setIsSendingEmail] = useState(false);
+    const [isGeneratingLink, setIsGeneratingLink] = useState(false);
+    const [isRefunding, setIsRefunding] = useState(false);
+
+    const handleCopyPaymentLink = (url: string) => {
+        navigator.clipboard.writeText(url);
+        setCopiedLink(true);
+        toast.success('Payment link copied to clipboard!');
+        setTimeout(() => setCopiedLink(false), 2500);
+    };
+
+    const handleResendPaymentLink = (sendEmail: boolean) => {
+        if (sendEmail) {
+            setIsSendingEmail(true);
+        } else {
+            setIsGeneratingLink(true);
+        }
+
+        router.post(
+            `/admin/store-orders/${order.id}/resend-link`,
+            { send_email: sendEmail },
+            {
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    const flash = (page.props as any).flash;
+
+                    if (flash?.success) {
+                        toast.success(flash.success);
+                    }
+
+                    if (flash?.error) {
+                        toast.error(flash.error);
+                    }
+                },
+                onError: (err) => {
+                    toast.error(
+                        typeof err === 'string'
+                            ? err
+                            : 'Failed to update payment link.',
+                    );
+                },
+                onFinish: () => {
+                    setIsSendingEmail(false);
+                    setIsGeneratingLink(false);
+                },
+            },
+        );
+    };
+
     const handleStatusUpdate = (status: string) => {
         if (!confirm(`Change order status to ${status}?`)) {
             return;
@@ -114,10 +183,54 @@ export default function OrderShow({
         );
     };
 
+    // Refund the full amount at Stripe and mark the order as refunded.
+    const handleRefund = () => {
+        if (
+            !confirm(
+                `Refund ${formatCurrency(order.total)} for order ${order.order_number}? This cannot be undone.`,
+            )
+        ) {
+            return;
+        }
+
+        setIsRefunding(true);
+
+        router.post(
+            `/admin/orders/${order.id}/refund`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    const flash = (page.props as any).flash;
+
+                    if (flash?.success) {
+                        toast.success(flash.success);
+                    }
+
+                    if (flash?.error) {
+                        toast.error(flash.error);
+                    }
+                },
+                onError: () => {
+                    toast.error('Failed to process refund.');
+                },
+                onFinish: () => setIsRefunding(false),
+            },
+        );
+    };
+
     return (
         <>
             <Head title={`Order ${order.order_number}`} />
             <div className="space-y-6 p-4">
+                {/* Back link to the orders list */}
+                <Button asChild variant="ghost" size="sm" className="gap-1">
+                    <Link href="/admin/orders">
+                        <ArrowLeft className="size-4" />
+                        Back to orders
+                    </Link>
+                </Button>
+
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <PageHeader
@@ -140,9 +253,23 @@ export default function OrderShow({
 
                 <div className="flex justify-end">
                     <div className="flex flex-col items-end gap-2">
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                             <StatusBadge value={order.status} />
                             <StatusBadge value={order.payment_status} />
+                            {order.order_source && (
+                                <Badge
+                                    variant="outline"
+                                    className={`capitalize ${
+                                        order.order_source === 'whatsapp'
+                                            ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
+                                            : order.order_source === 'phone'
+                                              ? 'border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300'
+                                              : ''
+                                    }`}
+                                >
+                                    Source: {order.order_source}
+                                </Badge>
+                            )}
                         </div>
                         {statusTransitions.length > 0 && (
                             <div className="flex gap-2">
@@ -165,8 +292,184 @@ export default function OrderShow({
                                 ))}
                             </div>
                         )}
+                        {/* Full Stripe refund — available on paid orders */}
+                        {order.payment_status === 'paid' && (
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                disabled={isRefunding}
+                                onClick={handleRefund}
+                                className="gap-1.5"
+                            >
+                                <RotateCcw className="size-4" />
+                                {isRefunding ? 'Refunding...' : 'Refund'}
+                            </Button>
+                        )}
                     </div>
                 </div>
+
+                {/* Stripe Payment Link Banner (for phone/WhatsApp orders or orders with payment link) */}
+                {(order.stripe_payment_link_url ||
+                    (order.order_source &&
+                        order.order_source !== 'online' &&
+                        order.payment_status === 'unpaid')) && (
+                    <Card className="border-primary/30 bg-primary/5">
+                        <CardHeader className="pb-3">
+                            <CardTitle className="flex items-center justify-between text-base">
+                                <span className="flex items-center gap-2">
+                                    <span className="rounded bg-primary/10 p-1 text-primary">
+                                        💳
+                                    </span>
+                                    Stripe Payment Link
+                                </span>
+                                <Badge
+                                    variant={
+                                        order.payment_status === 'paid'
+                                            ? 'default'
+                                            : 'outline'
+                                    }
+                                >
+                                    {order.payment_status === 'paid'
+                                        ? 'Paid'
+                                        : 'Awaiting Payment'}
+                                </Badge>
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            {order.stripe_payment_link_url ? (
+                                <>
+                                    <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+                                        <Input
+                                            readOnly
+                                            value={
+                                                order.stripe_payment_link_url
+                                            }
+                                            className="flex-1 bg-background font-mono text-xs select-all"
+                                        />
+                                        <div className="flex shrink-0 gap-2">
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    handleCopyPaymentLink(
+                                                        order.stripe_payment_link_url!,
+                                                    )
+                                                }
+                                                className="gap-1.5"
+                                            >
+                                                {copiedLink ? (
+                                                    <Check className="size-3.5 text-emerald-600" />
+                                                ) : (
+                                                    <Copy className="size-3.5" />
+                                                )}
+                                                {copiedLink
+                                                    ? 'Copied'
+                                                    : 'Copy Link'}
+                                            </Button>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() =>
+                                                    window.open(
+                                                        order.stripe_payment_link_url!,
+                                                        '_blank',
+                                                    )
+                                                }
+                                                className="gap-1.5"
+                                            >
+                                                <ExternalLink className="size-3.5" />
+                                                Open
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                                        {order.customer?.phone && (
+                                            <a
+                                                href={`https://wa.me/${order.customer.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+                                                    `Hi ${order.customer.first_name}, here is the link to complete payment for your Party Eden order #${order.order_number}:\n\n${order.stripe_payment_link_url}`,
+                                                )}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1.5 rounded-md bg-emerald-600 px-3 py-1.5 font-medium text-white transition-colors hover:bg-emerald-700"
+                                            >
+                                                <MessageCircle className="size-3.5" />
+                                                Share on WhatsApp
+                                            </a>
+                                        )}
+
+                                        {order.payment_status === 'unpaid' && (
+                                            <>
+                                                {order.customer?.email && (
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        size="sm"
+                                                        disabled={
+                                                            isSendingEmail
+                                                        }
+                                                        onClick={() =>
+                                                            handleResendPaymentLink(
+                                                                true,
+                                                            )
+                                                        }
+                                                        className="gap-1.5"
+                                                    >
+                                                        <Mail className="size-3.5" />
+                                                        {isSendingEmail
+                                                            ? 'Sending...'
+                                                            : 'Send Link to Email'}
+                                                    </Button>
+                                                )}
+
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    disabled={isGeneratingLink}
+                                                    onClick={() =>
+                                                        handleResendPaymentLink(
+                                                            false,
+                                                        )
+                                                    }
+                                                    className="gap-1.5 text-muted-foreground"
+                                                >
+                                                    <RefreshCw
+                                                        className={`size-3.5 ${isGeneratingLink ? 'animate-spin' : ''}`}
+                                                    />
+                                                    Regenerate Link
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="flex items-center justify-between">
+                                    <p className="text-sm text-muted-foreground">
+                                        No Stripe payment link has been
+                                        generated for this order yet.
+                                    </p>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        disabled={isGeneratingLink}
+                                        onClick={() =>
+                                            handleResendPaymentLink(false)
+                                        }
+                                        className="gap-1.5"
+                                    >
+                                        <RefreshCw
+                                            className={`size-3.5 ${isGeneratingLink ? 'animate-spin' : ''}`}
+                                        />
+                                        Generate Payment Link
+                                    </Button>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Info grid */}
                 <div className="grid gap-4 rounded-lg border p-4 sm:grid-cols-3">

@@ -8,6 +8,7 @@ import {
     MessageSquare,
     Package,
     Palette,
+    PhoneCall,
     Receipt,
     ShieldCheck,
     ShoppingCart,
@@ -116,6 +117,11 @@ const adminNavSections: { label: string; items: AdminNavItem[] }[] = [
         label: 'Orders',
         items: [
             { title: 'Orders', href: '/admin/orders', icon: ShoppingCart },
+            {
+                title: 'New Store Order',
+                href: '/admin/store-orders/create',
+                icon: PhoneCall,
+            },
             { title: 'Shipments', href: '/admin/shipments', icon: Truck },
         ],
     },

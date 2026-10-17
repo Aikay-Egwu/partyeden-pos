@@ -128,7 +128,7 @@ export function DataTable<T>({
                     <thead className="border-b bg-muted/50">
                         <tr>
                             {onSelectionChange && (
-                                <th className="w-[40px] px-4 py-3">
+                                <th className="w-10 px-4 py-3">
                                     <Checkbox
                                         checked={
                                             data.length > 0 &&

@@ -1,5 +1,5 @@
-import { Head, router } from '@inertiajs/react';
-import { Download, CheckCircle } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { Download, CheckCircle, PhoneCall } from 'lucide-react';
 import { useCallback, useState } from 'react';
 import { toast } from 'sonner';
 import type {
@@ -19,6 +19,7 @@ type Order = {
     id: string;
     order_number: string;
     status: string;
+    order_source?: string;
     payment_status: string;
     payment_method: string | null;
     subtotal: string;
@@ -137,6 +138,23 @@ export default function OrdersIndex({ orders, filters }: Props) {
             ),
         },
         {
+            key: 'order_source',
+            label: 'Source',
+            render: (o) => (
+                <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${
+                        o.order_source === 'whatsapp'
+                            ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                            : o.order_source === 'phone'
+                              ? 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                              : 'bg-muted text-muted-foreground'
+                    }`}
+                >
+                    {o.order_source ?? 'online'}
+                </span>
+            ),
+        },
+        {
             key: 'total',
             label: 'Total',
             render: (o) => formatCurrency(o.total),
@@ -155,6 +173,12 @@ export default function OrdersIndex({ orders, filters }: Props) {
                         description="View and manage customer orders"
                     />
                     <div className="flex gap-2">
+                        <Link href="/admin/store-orders/create">
+                            <Button variant="default" className="gap-2">
+                                <PhoneCall className="size-4" />
+                                New Store Order
+                            </Button>
+                        </Link>
                         {selectedIds.length > 0 && (
                             <Button
                                 onClick={handleBulkConfirm}
@@ -172,7 +196,7 @@ export default function OrdersIndex({ orders, filters }: Props) {
                 </div>
 
                 {/* Filters */}
-                <div className="flex gap-4">
+                <div className="flex flex-wrap gap-4">
                     <select
                         className="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
                         value={filters.status ?? ''}
@@ -213,6 +237,19 @@ export default function OrdersIndex({ orders, filters }: Props) {
                         <option value="pickup">Pickup</option>
                         <option value="delivery">Delivery</option>
                         <option value="shipping">Shipping</option>
+                    </select>
+
+                    <select
+                        className="h-9 rounded-md border border-input bg-transparent px-3 text-sm"
+                        value={filters.order_source ?? ''}
+                        onChange={(e) =>
+                            handleFilter('order_source', e.target.value)
+                        }
+                    >
+                        <option value="">All Sources</option>
+                        <option value="online">Online</option>
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="phone">Phone</option>
                     </select>
 
                     <div className="flex items-center gap-2">

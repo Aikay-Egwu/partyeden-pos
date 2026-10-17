@@ -2,10 +2,14 @@
 
 declare(strict_types=1);
 
+use App\Mail\StoreOrderPaymentReceivedMail;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Services\StripeService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
+use Stripe\PaymentIntent;
 
 uses(RefreshDatabase::class);
 
@@ -161,6 +165,130 @@ test('stripe webhook marks order refunded on charge.refunded', function (): void
     expect($order->payment_status)->toBe('refunded');
 });
 
+test('stripe webhook refund resolves order by payment_intent when charge id missing', function (): void {
+    // This order never received a payment webhook, so no charge id was stored.
+    $order = Order::create([
+        'order_number' => 'ORD-20260101-STRIPE-RFND-PI',
+        'payment_status' => 'unpaid',
+        'payment_method' => 'stripe',
+        'stripe_payment_intent_id' => 'pi_refund_fallback_1',
+        'subtotal' => '15.00',
+        'total' => '15.00',
+    ]);
+
+    $event = [
+        'id' => 'evt_test_refunded_pi',
+        'type' => 'charge.refunded',
+        'data' => [
+            'object' => [
+                'id' => 'ch_refund_fallback_1',
+                'payment_intent' => 'pi_refund_fallback_1',
+            ],
+        ],
+    ];
+    mockWebhookVerify($event);
+
+    $response = $this->postJson('payment/stripe-webhook', $event, [
+        'Stripe-Signature' => 't=123,v1=mock',
+    ]);
+
+    $response->assertStatus(200);
+
+    $order->refresh();
+    expect($order->payment_status)->toBe('refunded');
+    // The resolved charge id is backfilled so future events match directly.
+    expect($order->stripe_charge_id)->toBe('ch_refund_fallback_1');
+});
+
+test('stripe webhook refund resolves order via checkout session when no ids stored', function (): void {
+    $order = Order::create([
+        'order_number' => 'ORD-20260101-STRIPE-RFND-CS',
+        'payment_status' => 'unpaid',
+        'payment_method' => 'stripe',
+        'subtotal' => '20.00',
+        'total' => '20.00',
+    ]);
+
+    $event = [
+        'id' => 'evt_test_refunded_cs',
+        'type' => 'charge.refunded',
+        'data' => [
+            'object' => [
+                'id' => 'ch_refund_fallback_cs',
+                'payment_intent' => 'pi_refund_fallback_cs',
+            ],
+        ],
+    ];
+
+    // The Checkout Session is the only link back to the order here.
+    $mock = Mockery::mock(StripeService::class)->makePartial();
+    $mock->shouldReceive('verifyWebhookSignature')->andReturn($event);
+    $mock->shouldReceive('findCheckoutSessionOrderRef')
+        ->with('pi_refund_fallback_cs')
+        ->andReturn([
+            'order_uuid' => $order->id,
+            'payment_link' => null,
+        ]);
+    app()->instance(StripeService::class, $mock);
+
+    $response = $this->postJson('payment/stripe-webhook', $event, [
+        'Stripe-Signature' => 't=123,v1=mock',
+    ]);
+
+    $response->assertStatus(200);
+
+    $order->refresh();
+    expect($order->payment_status)->toBe('refunded');
+});
+
+test('stripe webhook refund resolves order by payer email as last resort', function (): void {
+    $customer = Customer::create([
+        'first_name' => 'Refund',
+        'last_name' => 'Guest',
+        'email' => 'refund.guest@example.com',
+        'phone' => '07700900456',
+        'is_active' => true,
+    ]);
+
+    $order = Order::create([
+        'order_number' => 'ORD-20260101-STRIPE-RFND-EM',
+        'customer_id' => $customer->id,
+        'payment_status' => 'unpaid',
+        'payment_method' => 'stripe',
+        'subtotal' => '10.00',
+        'total' => '10.00',
+    ]);
+
+    $event = [
+        'id' => 'evt_test_refunded_email',
+        'type' => 'charge.refunded',
+        'data' => [
+            'object' => [
+                'id' => 'ch_refund_fallback_email',
+                'payment_intent' => 'pi_refund_fallback_email',
+                'billing_details' => [
+                    'email' => 'refund.guest@example.com',
+                ],
+            ],
+        ],
+    ];
+
+    // No Checkout Session match — force the email fallback path.
+    $mock = Mockery::mock(StripeService::class)->makePartial();
+    $mock->shouldReceive('verifyWebhookSignature')->andReturn($event);
+    $mock->shouldReceive('findCheckoutSessionOrderRef')->andReturn(null);
+    app()->instance(StripeService::class, $mock);
+
+    $response = $this->postJson('payment/stripe-webhook', $event, [
+        'Stripe-Signature' => 't=123,v1=mock',
+    ]);
+
+    $response->assertStatus(200);
+
+    $order->refresh();
+    expect($order->payment_status)->toBe('refunded');
+});
+
 test('stripe webhook returns 200 for unhandled event types', function (): void {
     $event = [
         'id' => 'evt_ignore',
@@ -174,4 +302,132 @@ test('stripe webhook returns 200 for unhandled event types', function (): void {
     ]);
 
     $response->assertStatus(200);
+});
+
+test('stripe webhook processes checkout.session.completed and marks store order as paid', function (): void {
+    Mail::fake();
+
+    $customer = Customer::create([
+        'first_name' => 'Alice',
+        'last_name' => 'Store',
+        'email' => 'alice.store@example.com',
+        'phone' => '07700900123',
+        'is_active' => true,
+    ]);
+
+    $order = Order::create([
+        'order_number' => 'ORD-STORE-WHATSAPP-01',
+        'customer_id' => $customer->id,
+        'order_source' => 'whatsapp',
+        'payment_status' => 'unpaid',
+        'payment_method' => 'stripe',
+        'stripe_payment_link_id' => 'plink_test_wh_1',
+        'stripe_payment_link_url' => 'https://buy.stripe.com/test_wh_1',
+        'subtotal' => '45.00',
+        'total' => '45.00',
+    ]);
+
+    $event = [
+        'id' => 'evt_test_checkout_session_1',
+        'type' => 'checkout.session.completed',
+        'data' => [
+            'object' => [
+                'id' => 'cs_test_session_1',
+                'payment_intent' => 'pi_checkout_test_1',
+                'payment_link' => 'plink_test_wh_1',
+                'amount_total' => 4500,
+                'metadata' => [
+                    'order_uuid' => $order->id,
+                    'order_number' => $order->order_number,
+                ],
+                'customer_details' => [
+                    'email' => 'alice.store@example.com',
+                ],
+            ],
+        ],
+    ];
+
+    $mock = Mockery::mock(StripeService::class)->makePartial();
+    $mock->shouldReceive('verifyWebhookSignature')
+        ->andReturn($event);
+
+    $dummyPi = new PaymentIntent('pi_checkout_test_1');
+    $mock->shouldReceive('retrievePaymentIntent')
+        ->with('pi_checkout_test_1')
+        ->andReturn($dummyPi);
+    $mock->shouldReceive('extractChargeId')
+        ->with($dummyPi)
+        ->andReturn('ch_checkout_charge_1');
+    $mock->shouldReceive('extractCardLast4')
+        ->with($dummyPi)
+        ->andReturn('4242');
+    $mock->shouldReceive('extractCardBrand')
+        ->with($dummyPi)
+        ->andReturn('visa');
+    $mock->shouldReceive('extractPaymentMethodType')
+        ->with($dummyPi)
+        ->andReturn('card');
+    $mock->shouldReceive('extractAmountReceived')
+        ->with($dummyPi)
+        ->andReturn('45.0000');
+    app()->instance(StripeService::class, $mock);
+
+    $response = $this->postJson('payment/stripe-webhook', $event, [
+        'Stripe-Signature' => 't=123,v1=mock',
+    ]);
+
+    $response->assertStatus(200);
+
+    $order->refresh();
+    expect($order->payment_status)->toBe('paid');
+    expect($order->stripe_payment_intent_id)->toBe('pi_checkout_test_1');
+    expect($order->stripe_charge_id)->toBe('ch_checkout_charge_1');
+    expect($order->stripe_card_last4)->toBe('4242');
+    expect($order->stripe_card_brand)->toBe('visa');
+    expect($order->paid_at)->not->toBeNull();
+
+    Mail::assertSent(StoreOrderPaymentReceivedMail::class);
+});
+
+test('stripe webhook checkout.session.completed resolves order by payment_link fallback', function (): void {
+    Mail::fake();
+
+    $order = Order::create([
+        'order_number' => 'ORD-STORE-PHONE-02',
+        'order_source' => 'phone',
+        'payment_status' => 'unpaid',
+        'payment_method' => 'stripe',
+        'stripe_payment_link_id' => 'plink_fallback_test_2',
+        'stripe_payment_link_url' => 'https://buy.stripe.com/test_fallback_2',
+        'subtotal' => '30.00',
+        'total' => '30.00',
+    ]);
+
+    $event = [
+        'id' => 'evt_test_checkout_session_2',
+        'type' => 'checkout.session.completed',
+        'data' => [
+            'object' => [
+                'id' => 'cs_test_session_2',
+                'payment_link' => 'plink_fallback_test_2',
+                'amount_total' => 3000,
+                'metadata' => [],
+            ],
+        ],
+    ];
+
+    $mock = Mockery::mock(StripeService::class)->makePartial();
+    $mock->shouldReceive('verifyWebhookSignature')
+        ->andReturn($event);
+    app()->instance(StripeService::class, $mock);
+
+    $response = $this->postJson('payment/stripe-webhook', $event, [
+        'Stripe-Signature' => 't=123,v1=mock',
+    ]);
+
+    $response->assertStatus(200);
+
+    $order->refresh();
+    expect($order->payment_status)->toBe('paid');
+    expect($order->amount_paid)->toBe('30.0000');
 });

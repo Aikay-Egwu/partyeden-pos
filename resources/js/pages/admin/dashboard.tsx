@@ -4,6 +4,7 @@ import {
     ClipboardList,
     MapPin,
     Package,
+    PlusCircle,
     Receipt,
     ShoppingCart,
     Tags,
@@ -65,6 +66,13 @@ const dashboardCards: DashboardCard[] = [
         href: '/admin/orders',
         icon: ShoppingCart,
         color: 'text-orange-600',
+    },
+    {
+        title: 'New Store Order',
+        description: 'Create an order for a customer',
+        href: '/admin/store-orders/create',
+        icon: PlusCircle,
+        color: 'text-emerald-600',
     },
     {
         title: 'Delivery Zones',

@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\AdminShipmentController;
 use App\Http\Controllers\Admin\AdminSkuController;
 use App\Http\Controllers\Admin\AdminStaffController;
 use App\Http\Controllers\Admin\AdminStockReservationController;
+use App\Http\Controllers\Admin\AdminStoreOrderController;
 use App\Http\Controllers\Admin\AdminSupplierController;
 use App\Http\Controllers\Admin\AdminTaxCategoryController;
 use App\Http\Controllers\Admin\AdminTillSessionController;
@@ -121,9 +122,14 @@ Route::middleware(['auth', 'verified', 'role.admin', 'can:admin'])->prefix('admi
     Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('orders/export', [AdminOrderController::class, 'export'])->name('orders.export');
     Route::post('orders/bulk-confirm', [AdminOrderController::class, 'bulkConfirm'])->name('orders.bulk-confirm');
+    Route::get('store-orders/create', [AdminStoreOrderController::class, 'create'])->name('store-orders.create');
+    Route::get('store-orders/products', [AdminStoreOrderController::class, 'searchProducts'])->name('store-orders.products');
+    Route::post('store-orders', [AdminStoreOrderController::class, 'store'])->name('store-orders.store');
+    Route::post('store-orders/{order}/resend-link', [AdminStoreOrderController::class, 'resendPaymentLink'])->name('store-orders.resend-link');
     Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::get('orders/{order}/print', [AdminOrderController::class, 'print'])->name('orders.print');
     Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status.update');
+    Route::post('orders/{order}/refund', [AdminOrderController::class, 'refund'])->name('orders.refund');
     Route::resource('shipments', AdminShipmentController::class);
 
     // ── Returns ─────────────────────────────────────────────────────

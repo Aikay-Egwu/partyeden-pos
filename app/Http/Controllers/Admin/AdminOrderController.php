@@ -8,6 +8,7 @@ use App\Events\OrderStatusChanged;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\InventoryService;
+use App\Services\StripeService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,7 +45,7 @@ class AdminOrderController extends Controller
 
         return Inertia::render('admin/orders/index', [
             'orders' => $orders,
-            'filters' => $request->only(['status', 'payment_status', 'search', 'fulfillment_type', 'from_date', 'to_date']),
+            'filters' => $request->only(['status', 'payment_status', 'search', 'fulfillment_type', 'order_source', 'from_date', 'to_date']),
         ]);
     }
 
@@ -125,6 +126,52 @@ class AdminOrderController extends Controller
         event(new OrderStatusChanged($order, $previousStatus));
 
         return back()->with('success', "Order #{$order->order_number} marked as {$newStatus}.");
+    }
+
+    /**
+     * Issue a full Stripe refund for a paid order.
+     *
+     * Covers the "order was cancelled, customer wants their money back" case:
+     * refunds the charge at Stripe and marks the order as refunded. The
+     * charge.refunded webhook confirms the same state asynchronously.
+     */
+    public function refund(Order $order, StripeService $stripe): RedirectResponse
+    {
+        if ($order->payment_status === 'refunded') {
+            return back()->with('error', 'This order has already been refunded.');
+        }
+
+        if ($order->payment_status !== 'paid') {
+            return back()->with('error', 'Only paid orders can be refunded.');
+        }
+
+        try {
+            $chargeId = $order->stripe_charge_id;
+
+            // Fall back to the PaymentIntent when the payment webhook never
+            // stored the charge on the order.
+            if (
+                (! is_string($chargeId) || $chargeId === '')
+                && is_string($order->stripe_payment_intent_id)
+                && $order->stripe_payment_intent_id !== ''
+            ) {
+                $chargeId = $stripe->extractChargeId(
+                    $stripe->retrievePaymentIntent($order->stripe_payment_intent_id),
+                );
+            }
+
+            if (! is_string($chargeId) || $chargeId === '') {
+                return back()->with('error', 'No Stripe charge found for this order.');
+            }
+
+            $stripe->refundPayment($chargeId);
+        } catch (\Throwable $e) {
+            return back()->with('error', "Refund failed: {$e->getMessage()}");
+        }
+
+        $order->update(['payment_status' => 'refunded']);
+
+        return back()->with('success', "Order #{$order->order_number} refunded.");
     }
 
     public function bulkConfirm(
@@ -212,6 +259,7 @@ class AdminOrderController extends Controller
             ->when($request->filled('status'), fn (Builder $query): Builder => $query->where('status', $request->string('status')->toString()))
             ->when($request->filled('payment_status'), fn (Builder $query): Builder => $query->where('payment_status', $request->string('payment_status')->toString()))
             ->when($request->filled('fulfillment_type'), fn (Builder $query): Builder => $query->where('fulfillment_type', $request->string('fulfillment_type')->toString()))
+            ->when($request->filled('order_source'), fn (Builder $query): Builder => $query->where('order_source', $request->string('order_source')->toString()))
             ->when($request->filled('from_date'), fn (Builder $query): Builder => $query->whereDate('created_at', '>=', $request->string('from_date')->toString()))
             ->when($request->filled('to_date'), fn (Builder $query): Builder => $query->whereDate('created_at', '<=', $request->string('to_date')->toString()))
             ->when($search !== null, function (Builder $query) use ($search): Builder {

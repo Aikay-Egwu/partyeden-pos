@@ -48,7 +48,9 @@ const generateTimeSlots = (start: string, end: string): string[] => {
     while (mins <= endMins) {
         const h = Math.floor(mins / 60);
         const m = mins % 60;
-        slots.push(`${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`);
+        slots.push(
+            `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`,
+        );
         mins += 30;
     }
 
@@ -57,14 +59,18 @@ const generateTimeSlots = (start: string, end: string): string[] => {
 
 const formatTimeSlot = (slot: string): string => {
     const [h, m] = slot.split(':').map(Number);
+
     const period = h >= 12 ? 'PM' : 'AM';
+
     const hour12 = h % 12 || 12;
+
     return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
 };
 
 const getTomorrowDate = (): string => {
     const d = new Date();
     d.setDate(d.getDate() + 1);
+
     return d.toISOString().split('T')[0];
 };
 
@@ -154,9 +160,9 @@ export default function CheckoutPage({
     cart,
     customer,
     loyaltySettings,
-    minimumExpectedAt,
-    minimumDeliveryAt,
-    maximumTurnoverTimeHours,
+    minimumExpectedAt: _minimumExpectedAt,
+    minimumDeliveryAt: _minimumDeliveryAt,
+    maximumTurnoverTimeHours: _maximumTurnoverTimeHours,
 }: Props) {
     const { props: pageProps } = usePage<{
         stripePublicKey?: string;
@@ -203,7 +209,10 @@ export default function CheckoutPage({
         data.fulfillment_type === 'delivery'
             ? FULFILLMENT_WINDOWS.delivery
             : FULFILLMENT_WINDOWS.pickup;
-    const availableTimeSlots = generateTimeSlots(timeWindow.start, timeWindow.end);
+    const availableTimeSlots = generateTimeSlots(
+        timeWindow.start,
+        timeWindow.end,
+    );
 
     const normalizedDeliveryPostcode = normalizePostcode(
         data.delivery_postcode,
