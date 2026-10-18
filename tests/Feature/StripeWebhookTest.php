@@ -16,7 +16,7 @@ uses(RefreshDatabase::class);
 beforeEach(function (): void {
     // The webhook route is already registered in routes/store.php but we
     // still mock StripeService to avoid hitting the real Stripe API.
-    Route::post('payment/stripe-webhook', 'App\Http\Controllers\Store\StorePaymentController@stripeWebhook')
+    Route::post('payment/stripe-webhook', 'App\Http\Controllers\Store\WebhooksController@stripeWebhook')
         ->name('store.payment.stripe-webhook.test');
 });
 

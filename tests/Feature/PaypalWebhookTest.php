@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Store\StorePaymentController;
+use App\Http\Controllers\Store\WebhooksController;
 use App\Models\Order;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
@@ -12,7 +12,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     // Register the webhook route for testing
-    Route::post('api/paypal/webhook', [StorePaymentController::class, 'handleWebhook'])
+    Route::post('api/paypal/webhook', [WebhooksController::class, 'handleWebhook'])
         ->name('api.paypal.webhook');
 
     // Mock PayPal OAuth

@@ -41,7 +41,7 @@ use App\Http\Controllers\Api\TransactionItemController;
 use App\Http\Controllers\Api\TransactionPaymentController;
 use App\Http\Controllers\Api\VariantAttributeController;
 use App\Http\Controllers\Api\VariantController;
-use App\Http\Controllers\Store\StorePaymentController;
+use App\Http\Controllers\Store\WebhooksController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('v1')->name('api.')->group(function () {
@@ -237,5 +237,5 @@ Route::middleware(['auth'])->prefix('v1')->name('api.')->group(function () {
 });
 
 // ── PayPal Webhook (no auth — called by PayPal servers) ──────────────
-Route::post('paypal/webhook', [StorePaymentController::class, 'handleWebhook'])
+Route::post('paypal/webhook', [WebhooksController::class, 'handleWebhook'])
     ->name('api.paypal.webhook');

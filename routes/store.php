@@ -11,6 +11,7 @@ use App\Http\Controllers\Store\StoreOrderController;
 use App\Http\Controllers\Store\StorePaymentController;
 use App\Http\Controllers\Store\StoreProductController;
 use App\Http\Controllers\Store\StoreReviewController;
+use App\Http\Controllers\Store\WebhooksController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public storefront at root (no auth required) ────────────────────
@@ -92,9 +93,9 @@ Route::middleware('throttle:10,1')->group(function (): void {
         ->name('store.payment.stripe-confirm');
     // Stripe webhook is NOT throttled (Stripe retries aggressively) and is CSRF-exempt
     Route::withoutMiddleware('web')->group(function (): void {
-        Route::post('payment/stripe-webhook', [StorePaymentController::class, 'stripeWebhook'])
+        Route::post('payment/stripe-webhook', [WebhooksController::class, 'stripeWebhook'])
             ->name('store.payment.stripe-webhook');
-        Route::post('webhooks/stripe', [StorePaymentController::class, 'stripeWebhook'])
+        Route::post('webhooks/stripe', [WebhooksController::class, 'stripeWebhook'])
             ->name('webhooks.stripe');
     });
 });
